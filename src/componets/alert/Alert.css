@@ -1,5 +1,5 @@
 .alert {
-    width: 80%;
+    width: 400px;
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
@@ -37,4 +37,10 @@
     animation-name: Alert-out;
     animation-duration: .5s;
     animation-fill-mode: forwards;
+}
+
+@media only screen and (max-width: 600px){
+    .alert{
+        width: 100%;
+    }
 }

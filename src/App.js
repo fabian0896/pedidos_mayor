@@ -12,6 +12,7 @@ import PrivateRoute from './componets/privateRoute/PrivateRoute';
 import LoginRoute from './componets/loginRoute.js/LoginRoute';
 import Alert from './componets/alert/Alert';
 
+
 class App extends Component {
   
   state ={

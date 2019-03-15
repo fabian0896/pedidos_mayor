@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import firebase from 'firebase/app'
+import 'firebase/firestore';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux'
 import rootReducer from './reducers';
@@ -21,6 +22,7 @@ firebase.initializeApp({
     messagingSenderId: "320580183648"    
 });
 
+firebase.firestore();
 
 
 
