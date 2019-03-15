@@ -15,3 +15,21 @@ export function deleteUser(){
         payload:{}
     }
 }
+
+
+export function showAlert(type, message){
+    return{
+        type: 'SHOW_ALERT',
+        payload: {
+            type,
+            message
+        }
+    }
+}
+
+
+export function hideAlert(){
+    return{
+        type: 'HIDE_ALERT'
+    }
+}

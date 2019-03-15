@@ -5,11 +5,12 @@ import { Switch, Redirect, withRouter } from 'react-router-dom'
 import firebase from 'firebase/app';
 import 'firebase/auth'
 import { connect } from 'react-redux';
-import {updateUser, deleteUser} from './actions'
+import {updateUser, deleteUser } from './actions'
 
 import Home from './pages/home/Home'
 import PrivateRoute from './componets/privateRoute/PrivateRoute';
 import LoginRoute from './componets/loginRoute.js/LoginRoute';
+import Alert from './componets/alert/Alert';
 
 class App extends Component {
   
@@ -18,7 +19,7 @@ class App extends Component {
   }
   
   getUser = () => {
-    firebase.auth().onAuthStateChanged((user) => {
+      firebase.auth().onAuthStateChanged((user) => {
       
       this.setState({loading: false})
 
@@ -40,6 +41,7 @@ class App extends Component {
   render() {
     return (
         <div className="App">
+        <Alert />
           {
             !this.state.loading &&
             <Switch>
@@ -54,6 +56,9 @@ class App extends Component {
 }
 
 
+
+
+
 function mapStateToProps(state, props) {
   return {
     user: state.user
@@ -62,7 +67,7 @@ function mapStateToProps(state, props) {
 
 const mapDispatchToProps = {
   updateUser,
-  deleteUser
+  deleteUser,
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

@@ -4,7 +4,9 @@ import './Login.css'
 import LoinForm from './LoginForm';
 import firebase from 'firebase/app'
 import 'firebase/auth'
-
+import { connect } from 'react-redux'
+import { showAlert, hideAlert } from '../../actions'
+ 
 
 class Login extends Component{
 
@@ -27,7 +29,9 @@ class Login extends Component{
             actions.setSubmitting(false);
         })
         .catch(err =>{
-            console.log("Usuario o clave incorrecta")
+            console.log("Usuario o clave incorrecta");
+            this.props.showAlert('danger', 'Usuario o clave incorrectas');
+            actions.setSubmitting(false)
         }) 
       }
     
@@ -45,4 +49,9 @@ class Login extends Component{
     }
 }
 
-export default Login;
+const mapDispatchToProps ={
+    showAlert,
+    hideAlert
+}
+
+export default connect(null, mapDispatchToProps)(Login);
