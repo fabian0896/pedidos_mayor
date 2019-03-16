@@ -27,7 +27,7 @@ class App extends Component {
       if (user) {
         //agregar el usuario al estado
         this.props.updateUser(user);
-        this.props.history.push(this.ruta)
+        this.props.history.push(this.ruta);
       } else {
         //retirar el usuario del estado
         this.props.deleteUser();
