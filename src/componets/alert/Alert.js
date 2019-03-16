@@ -1,35 +1,38 @@
 import React from 'react'
-import './Alert.css'
 import { connect } from 'react-redux'
 import { showAlert, hideAlert } from '../../actions'
+import Snackbar from '@material-ui/core/Snackbar';
+import MySnackbarContentWrapper from './MySnackbarContentWrapper'
 
 
-class Alert extends React.Component{
-    
-    state = {
-        show: true
-    }
-    
-    handleShow = () =>{
-        this.setState({show: false})
-    }
-    render(){
-        const { type, message, show } = this.props;
-        
-        let temporizador;
-        if(show){
-            temporizador = setTimeout(()=>{ this.props.hideAlert() }, 3000)
-        } else {
-            clearTimeout(temporizador);
+class Alert extends React.Component {
+
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
         }
-
-        return(
-        <div className={`${show? 'AlertIn' : 'AlertOut'} alert alert-${type} alert-dismissible fade show` }role="alert">
-            {message}
-            <button onClick={this.props.hideAlert} type="button" className="close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+    
+        this.props.hideAlert();
+    }
+    render() {
+        const { type, message, show } = this.props;
+        return (
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left'
+                }}
+                open={show}
+                autoHideDuration={5000}
+                onClose={this.handleClose}
+            >
+                <MySnackbarContentWrapper
+                    onClose={this.handleClose}
+                    variant={type}
+                    message={message}
+                />
+            </Snackbar>
         )
     }
 }
@@ -39,7 +42,7 @@ const mapDispatchToProps = {
     hideAlert
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state) {
     return {
         type: state.alert.type,
         show: state.alert.show,

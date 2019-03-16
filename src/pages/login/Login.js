@@ -31,7 +31,7 @@ class Login extends Component{
         })
         .catch(err =>{
             console.log("Usuario o clave incorrecta");
-            this.props.showAlert('danger', 'Usuario o clave incorrectas');
+            this.props.showAlert('error', 'Usuario o clave incorrectas');
             actions.setSubmitting(false)
         }) 
       }
