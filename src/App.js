@@ -7,10 +7,19 @@ import 'firebase/auth'
 import { connect } from 'react-redux';
 import {updateUser, deleteUser } from './actions'
 
-import Home from './pages/home/Home'
+
 import PrivateRoute from './componets/privateRoute/PrivateRoute';
 import LoginRoute from './componets/loginRoute.js/LoginRoute';
 import Alert from './componets/alert/Alert';
+
+
+import Home from './pages/home/Home'
+import Clientes from './pages/clientes/Clientes'
+import Estadisticas from './pages/estadisticas/Estadisticas';
+import Notificaciones from './pages/notificaciones/Notificaciones'
+import Pagos from './pages/pagos/Pagos'
+import Pedidos from './pages/pedidos/Pedidos'
+import Prendas from './pages/prendas/Prendas'
 
 
 class App extends Component {
@@ -22,7 +31,9 @@ class App extends Component {
   getUser = () => {
       firebase.auth().onAuthStateChanged((user) => {
       
-      this.setState({loading: false})
+      if(this.state.loading){
+        this.setState({loading: false})
+      }
 
       if (user) {
         //agregar el usuario al estado
@@ -39,6 +50,8 @@ class App extends Component {
     this.getUser();
     this.ruta = this.props.location.pathname;
   }
+
+
   render() {
     return (
         <div className="App">
@@ -46,9 +59,15 @@ class App extends Component {
           {
             !this.state.loading &&
             <Switch>
-                <PrivateRoute exact path="/home" component={Home}/>      
+                <PrivateRoute exact path="/inicio" component={Home}/>      
+               <PrivateRoute exact path="/clientes" component={Clientes}/>      
+                <PrivateRoute exact path="/estadisticas" component={Estadisticas}/>      
+                <PrivateRoute exact path="/pagos" component={Pagos}/>      
+                <PrivateRoute exact path="/pedidos" component={Pedidos}/>      
+                <PrivateRoute exact path="/prendas" component={Prendas}/>
+                <PrivateRoute exact path="/notificaciones" component={Notificaciones}/> 
                 <LoginRoute exact path="/login" component={Login}/>
-                <Redirect to="/home"/>
+                <Redirect to="/inicio"/>
             </Switch>
           }
         </div>

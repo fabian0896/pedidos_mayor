@@ -5,6 +5,8 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemIText from '@material-ui/core/ListItemText'
 import logo from '../../assets/fajas-logo.png'
+import { NavLink } from 'react-router-dom'
+import './SideNavBar.css'
 
 
 
@@ -29,11 +31,19 @@ class SideNavBar extends React.Component{
                 </div>
                 <List>
                     {
-                        links.map(link => {
+                        links.map(({ text, route, Icon }) => {
                             return(
-                                <ListItem button key={link.text}>
-                                    <ListItemIText primary={link.text} />
-                                </ListItem>
+                                <NavLink 
+                                    to={route} 
+                                    key={text}
+                                    style={{textDecoration: 'none'}}
+                                    activeClassName={ classes.selectedRoute }
+                                    >
+                                    <ListItem button >
+                                        <ListItemIcon><Icon/></ListItemIcon>
+                                        <ListItemIText primary={text} />
+                                    </ListItem>
+                                </NavLink>
                             )
                         })
                     }

@@ -3,6 +3,16 @@ import NavBar from '../navBar/NavBar';
 import SideNavBar from '../sideNavBar/SideNavBar';
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { withStyles } from '@material-ui/core/styles'
+import { 
+    AccessibilityNew, 
+    Home,
+    FlightTakeoff,
+    InsertChart,
+    Notifications,
+    Group,
+    AttachMoney,
+    Widgets
+ } from '@material-ui/icons'
 
 const drawerWidth = 240
 
@@ -36,8 +46,55 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing.unit * 3,
       },
+    slectedRoute:{
+        color: 'red'
+    }
 
 })
+
+
+const links = [
+    {
+        text: 'Inicio',
+        route: '/inicio',
+        Icon: Home
+    },
+    {
+        text: 'Clientes',
+        route: '/clientes',
+        Icon: Group
+    },
+    {
+        text: 'Pagos',
+        route: '/pedidos',
+        Icon: AttachMoney
+    },
+    {
+        text: 'Pedidos',
+        route: '/pedidos',
+        Icon: Widgets
+    },
+    {
+        text: 'Prendas',
+        route: '/prendas',
+        Icon: AccessibilityNew
+    },
+    {
+        text: 'Estadisticas',
+        route: '/estadisticas',
+        Icon: InsertChart
+    },
+    ,{
+        text: 'Envios',
+        route: '/envios',
+        Icon: FlightTakeoff
+    },
+    {
+        text: 'Notificaciones',
+        route: '/notificaciones',
+        Icon: Notifications
+    }
+]
 
 
 class Layout extends React.Component{
@@ -47,33 +104,6 @@ class Layout extends React.Component{
     render(){
         
         const { classes, children } = this.props
-        
-        const links = [
-            {
-                text: 'Inicio',
-                route: 'inicio'
-            },
-            {
-                text: 'Clientes',
-                route: 'clientes'
-            },
-            {
-                text: 'Pagos',
-                route: 'pedidos'
-            },
-            {
-                text: 'Prendas',
-                route: 'prendas'
-            },
-            {
-                text: 'Estadisticas',
-                route: 'estadisticas'
-            },
-            {
-                text: 'Notificaciones',
-                route: 'notificaciones'
-            }
-        ]
         
         return(
             <div className={ classes.root }>
