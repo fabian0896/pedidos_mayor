@@ -3,7 +3,6 @@ import firebase from 'firebase/app';
 import 'firebase/auth'
 
 
-
 class Home extends Component{
 
     logOut = ()=>{
@@ -14,8 +13,8 @@ class Home extends Component{
 
     render(){
         return(
-            <div>
-                <button className="btn btn-outline-danger" onClick={this.logOut}>Salir</button>
+            <div >
+                Hola desde Home 
             </div>
         )
     }

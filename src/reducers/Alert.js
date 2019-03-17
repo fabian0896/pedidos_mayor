@@ -3,7 +3,7 @@
 
 // types: primary, secundary, success, danger, warning, info, light, dark
 const initialState = {
-    type: 'danger',
+    type: 'info',
     message: 'default message',
     show: false
 }
@@ -19,7 +19,7 @@ function alert(state = initialState, action){
         }
         case 'HIDE_ALERT':{
             return {
-                ...state.alert,
+                ...state,
                 show: false
             }
         }

@@ -46,7 +46,7 @@ class App extends Component {
           {
             !this.state.loading &&
             <Switch>
-                <PrivateRoute exact path="/home" component={Home}/>
+                <PrivateRoute exact path="/home" component={Home}/>      
                 <LoginRoute exact path="/login" component={Login}/>
                 <Redirect to="/home"/>
             </Switch>

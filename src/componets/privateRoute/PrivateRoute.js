@@ -2,7 +2,7 @@ import React from 'react'
 import { Route, Redirect } from 'react-router-dom';
 import firebase from 'firebase/app';
 import 'firebase/auth'
-
+import Layout from '../layout/Layout'
 
 class PrivateRoute extends React.Component{
 
@@ -12,7 +12,7 @@ class PrivateRoute extends React.Component{
             <Route 
                 {...rest}
                 render={
-                    (props)=> firebase.auth().currentUser ? <Component {...props} /> : <Redirect to="/login"/>
+                    (props)=> firebase.auth().currentUser ? <Layout> <Component {...props} /> </Layout>  : <Redirect to="/login"/>
                 }        
                 />
     
