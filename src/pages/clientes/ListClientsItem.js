@@ -63,15 +63,15 @@ class ListClientesItem extends Component{
                         <div className={ classes.statsContainer }>
                             <div className={ classes.stats }>
                                 <Typography component="span" variant="subheading" color="textSecondary">Saldo Pendiente</Typography>
-                                <Typography component="span" variant="headline" color="textPrimary">$1.000.000</Typography>
+                                <Typography align="center" component="span" variant="headline" color="textPrimary">$1.000.000</Typography>
                             </div>
                             <div className={ classNames(classes.helper, classes.stats) }>
                                 <Typography component="span" variant="subheading" color="textSecondary">Ultimo pago</Typography>
-                                <Typography component="span" variant="headline" color="textPrimary">5 de Febrero 2018</Typography>
+                                <Typography align="center" component="span" variant="headline" color="textPrimary">5 de Febrero 2018</Typography>
                             </div>
                             <div className={ classNames(classes.helper, classes.stats) }>
                                 <Typography component="span" variant="subheading" color="textSecondary">Total de pedidos</Typography>
-                                <Typography component="span" variant="headline" color="textPrimary">35</Typography>
+                                <Typography align="center" component="span" variant="headline" color="textPrimary">35</Typography>
                             </div>
                         </div>
                     </ExpansionPanelDetails>
