@@ -84,7 +84,7 @@ const links = [
         route: '/estadisticas',
         Icon: InsertChart
     },
-    ,{
+    {
         text: 'Envios',
         route: '/envios',
         Icon: FlightTakeoff

@@ -11,27 +11,22 @@ class ClientList extends Component{
         this.setState({ expanded: expanded? panel : null });
     }
     
+    
     render(){
-
+        const { clients } = this.props
         const { expanded } = this.state
 
         return(
-            <div style={{marginTop: '20px'}}>
-            <ListClientItem 
-                expanded={ expanded === 'panel1' } 
-                handleChange={ this.handleChange('panel1') } />
-            <ListClientItem 
-                expanded={ expanded === 'panel2' } 
-                handleChange={ this.handleChange('panel2') } />
-            <ListClientItem 
-                expanded={ expanded === 'panel3' } 
-                handleChange={ this.handleChange('panel3') } />
-            <ListClientItem 
-                expanded={ expanded === 'panel4' } 
-                handleChange={ this.handleChange('panel4') } />
-            <ListClientItem 
-                expanded={ expanded === 'panel5' } 
-                handleChange={ this.handleChange('panel5') } />
+        <div style={{marginTop: '20px'}}>
+        {
+            clients.map((client, index) =>(
+                <ListClientItem
+                    key={index}
+                    client={client} 
+                    expanded={ expanded === index } 
+                    handleChange={ this.handleChange(index) } />
+            ))
+        }      
         </div>
         )
     }

@@ -12,7 +12,11 @@ import Button from '@material-ui/core/Button';
 
 
 const styles = theme => ({
-    container:{
+    infoContainer:{
+        display: 'flex',
+        justifyContent: 'center',
+    },
+    mainContainer:{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
@@ -33,6 +37,7 @@ const styles = theme => ({
      },
      stats:{
         width: '100%',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -46,15 +51,15 @@ const styles = theme => ({
 class ListClientesItem extends Component{
      
     render(){
-        const { classes, expanded, handleChange } = this.props
+        const { classes, expanded, handleChange, client } = this.props
         
         return(
                 <ExpansionPanel expanded={ expanded } onChange={ handleChange }>
                     <ExpansionPanelSummary expandIcon={ <ExpandMoreIcon /> }>
-                        <div className={ classes.container }>
+                        <div className={ classes.mainContainer }>
                             <Avatar>FB</Avatar>
-                            <div className={ classNames(classes.container, classes.row) }>
-                                <Typography variant="h6">Fabian David Dueñas</Typography>
+                            <div className={ classNames(classes.infoContainer, classes.row) }>
+                                <Typography variant="h6">{ client.name }</Typography>
                                 <Typography component="span" variant="subheading" color="textSecondary">Ultimo pedido: hace 2 dias</Typography>
                             </div>
                         </div>
