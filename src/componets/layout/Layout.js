@@ -66,7 +66,7 @@ const links = [
     },
     {
         text: 'Pagos',
-        route: '/pedidos',
+        route: '/pagos',
         Icon: AttachMoney
     },
     {
@@ -103,12 +103,12 @@ class Layout extends React.Component{
     
     render(){
         
-        const { classes, children } = this.props
+        const { classes, children, title } = this.props
         
         return(
             <div className={ classes.root }>
                 <CssBaseline />
-                <NavBar className={ classes.navBar } />
+                <NavBar title={title} className={ classes.navBar } />
                 
                 <SideNavBar 
                     links={links}

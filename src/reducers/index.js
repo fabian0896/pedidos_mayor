@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import user from './user'
-import alert from './Alert'
+import alert from './alert'
 
 const rootReducer = combineReducers({
     user,

@@ -59,13 +59,13 @@ class App extends Component {
           {
             !this.state.loading &&
             <Switch>
-                <PrivateRoute exact path="/inicio" component={Home}/>      
-               <PrivateRoute exact path="/clientes" component={Clientes}/>      
-                <PrivateRoute exact path="/estadisticas" component={Estadisticas}/>      
-                <PrivateRoute exact path="/pagos" component={Pagos}/>      
-                <PrivateRoute exact path="/pedidos" component={Pedidos}/>      
-                <PrivateRoute exact path="/prendas" component={Prendas}/>
-                <PrivateRoute exact path="/notificaciones" component={Notificaciones}/> 
+                <PrivateRoute title="Inicio" exact path="/inicio" component={Home}/>      
+                <PrivateRoute title="Clientes" exact path="/clientes" component={Clientes}/>      
+                <PrivateRoute title="Estadisticas" exact path="/estadisticas" component={Estadisticas}/>      
+                <PrivateRoute title="Pagos" exact path="/pagos" component={Pagos}/>      
+                <PrivateRoute title="Pedidos" exact path="/pedidos" component={Pedidos}/>      
+                <PrivateRoute title="Prendas" exact path="/prendas" component={Prendas}/>
+                <PrivateRoute title="Notificaciones" exact path="/notificaciones" component={Notificaciones}/> 
                 <LoginRoute exact path="/login" component={Login}/>
                 <Redirect to="/inicio"/>
             </Switch>

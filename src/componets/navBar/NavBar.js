@@ -45,7 +45,7 @@ class NavBar extends Component{
 
     render(){
 
-        const { classes, className } = this.props
+        const { classes, className, title } = this.props
         const { anchorEl } = this.state
 
         const menuOpen = Boolean(anchorEl)
@@ -69,7 +69,7 @@ class NavBar extends Component{
             <div className={ '' } >
                 <AppBar className={ className } position="fixed">
                     <Toolbar>
-                        <Typography variant="h6" color="inherit" >Home</Typography>
+                        <Typography variant="h6" color="inherit" >{ title }</Typography>
 
                         <div className={ classes.grow }></div>
 

@@ -7,12 +7,12 @@ import Layout from '../layout/Layout'
 class PrivateRoute extends React.Component{
 
     render(){
-        const {component: Component, ...rest } = this.props;
+        const {component: Component, title, ...rest } = this.props;
         return (
             <Route 
                 {...rest}
                 render={
-                    (props)=> firebase.auth().currentUser ? <Layout> <Component {...props} /> </Layout>  : <Redirect to="/login"/>
+                    (props)=> firebase.auth().currentUser ? <Layout title ={title}> <Component {...props} /> </Layout>  : <Redirect to="/login"/>
                 }        
                 />
     
