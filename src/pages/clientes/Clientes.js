@@ -6,23 +6,28 @@ import ClientList from './ClientList'
 //objeto de clientes para hacer las pruebas
 //este objeto vendra desde el estado global de la App que lo tomara de la base de datos
 const clientes = [
-    {
+    {   
+        id: 1,
         name: 'Fabian David Dueñas',
         seller_id: 3
     },
     {
+        id: 2,
         name: 'Alberto Mora',
         seller_id: 1
     },
-    {
+    {   
+        id: 3,
         name: 'Pepe Gonsales',
         seller_id: 1
     },
-    {
+    {   
+        id: 4,
         name: 'Ingrid Popayan',
         seller_id: 2
     },
-    {
+    {   
+        id: 5,
         name: 'Vanessa Cardona Davila',
         seller_id: 2
     },
@@ -62,6 +67,10 @@ class Clientes extends Component{
         })
     }
 
+    handleClickVerMas = id => () => {
+        this.props.history.push(`/clientes/${id}`);
+    }
+
     filter = (clients, all, name) =>{
         return clients.filter(client =>{
             let nameValue = false;
@@ -93,7 +102,9 @@ class Clientes extends Component{
                     checkValue={ checkValue }
                     textValue={ textValue }
                     />
-                <ClientList clients={clientsFilter} />
+                <ClientList
+                    handleClickVerMas={this.handleClickVerMas} 
+                    clients={clientsFilter} />
             </div>
         )
     }

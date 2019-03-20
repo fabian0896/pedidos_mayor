@@ -21,6 +21,7 @@ class ClientList extends Component{
         {
             clients.map((client, index) =>(
                 <ListClientItem
+                    handleClickVerMas={this.props.handleClickVerMas(client.id)}
                     key={index}
                     client={client} 
                     expanded={ expanded === index } 

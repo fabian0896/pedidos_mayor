@@ -81,7 +81,7 @@ class ListClientesItem extends Component{
                         </div>
                     </ExpansionPanelDetails>
                     <ExpansionPanelActions>
-                        <Button size="small" color="secondary">ver mas</Button>
+                        <Button onClick={this.props.handleClickVerMas} size="small" color="secondary">ver mas</Button>
                         <Button size="small" color="primary">Agregar pedido</Button>
                     </ExpansionPanelActions>
                 </ExpansionPanel>
