@@ -6,69 +6,104 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button'
 import FormGroup from '@material-ui/core/FormGroup';
 import Checkbox from '@material-ui/core/Checkbox';
+import Paper from '@material-ui/core/Paper'
+import {
+    IconButton,
+    InputBase,
+    Divider,
+    Fab
+} from '@material-ui/core'
 
-const styles = theme =>({
-    input:{
-        width: '100%'
+import {
+    Search,
+    Add
+} from '@material-ui/icons'
+
+const styles = theme => ({
+    root: {
+        padding: '2px 4px',
+        display: 'flex',
+        alignItems: 'center',
+        flex: 1
     },
     container:{
+        padding: '2px 4px',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: `${theme.spacing.unit * 5}px`
+    },
+    input: {
+        marginLeft: 8,
+        flex: 1,
+    },
+    iconButton: {
+        padding: 10,
+    },
+    divider: {
+        width: 1,
+        height: 28,
+        margin: 4,
+    },
+    fab:{
+        marginLeft: `${theme.spacing.unit * 3}px`
+    },
+    helper:{
+        flex: 1
     }
 })
 
 
-class ClienteSearch extends Component{
-        
-    render(){
-        const { 
-            classes, 
-            handleChangeInput, 
-            checkValue, 
+class ClienteSearch extends Component {
+
+    render() {
+        const {
+            classes,
+            handleChangeInput,
+            checkValue,
             textValue,
             handleChangeCheckbox,
             handleSubmit
-         } = this.props
-        
-        return(
-            <form onSubmit={ handleSubmit }>
-                <Grid container spacing={24}>
-                    <Grid item sm={6}>
-                        <TextField
-                            onChange={ handleChangeInput }
-                            value={ textValue } 
-                            variant="outlined"
-                            margin="normal"
-                            label="Buscar"
-                            type="search"
-                            className={ classes.input }
-                        />
-                    </Grid>
-                    <Grid className={ classes.container } item sm={6}>
-                        <FormGroup row>
-                            <FormControlLabel
-                                label="Solo mis pedidos"
-                                control={
-                                    <Checkbox 
-                                        value="checkBox"
-                                        checked={checkValue}
-                                        onChange={handleChangeCheckbox}
+        } = this.props
+
+        return (
+            <div className={classes.container}>
+                <form className={classes.helper} onSubmit={handleSubmit}>
+                            <Paper elevation={1} className={classes.root}>
+                                <IconButton
+                                    color="primary"
+                                    className={classes.iconButton}
+                                    >
+                                <Search
+                                    
                                     />
-                                }
-                            />
-                        </FormGroup>
-                   
-                        <Button
-                            color="primary"
-                            variant="contained"
-                            size="large"
-                            type="submit"
-                        >
-                            Buscar
-                        </Button>
-                    </Grid>
-                </Grid>
-            </form>
+                                </IconButton>
+
+                                <InputBase
+                                    className={classes.input}
+                                    placeholder="Busqueda..."
+                                    onChange={handleChangeInput}
+                                    value={textValue}
+                                />
+                                <Divider className={classes.divider} />
+                                <FormGroup row>
+                                    <FormControlLabel
+                                        label="Solo mis pedidos"
+                                        control={
+                                            <Checkbox
+                                                value="checkBox"
+                                                checked={checkValue}
+                                                onChange={handleChangeCheckbox}
+                                            />
+                                        }
+                                    />
+                                </FormGroup>
+                            </Paper>
+                </form>
+                <Fab size="medium" className={classes.fab} color="primary">
+                   <Add/>
+                </Fab>                       
+            </div>
         )
     }
 }

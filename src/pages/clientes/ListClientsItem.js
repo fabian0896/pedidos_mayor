@@ -42,8 +42,11 @@ const styles = theme => ({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center'
-     }
-
+     },
+     avatar: {
+         height: '56px',
+         width: '56px'
+     },
 })
 
 
@@ -57,7 +60,7 @@ class ListClientesItem extends Component{
                 <ExpansionPanel expanded={ expanded } onChange={ handleChange }>
                     <ExpansionPanelSummary expandIcon={ <ExpandMoreIcon /> }>
                         <div className={ classes.mainContainer }>
-                            <Avatar>FB</Avatar>
+                            <Avatar className={classes.avatar} >FB</Avatar>
                             <div className={ classNames(classes.infoContainer, classes.row) }>
                                 <Typography variant="h6">{ client.name }</Typography>
                                 <Typography component="span" variant="subheading" color="textSecondary">Ultimo pedido: hace 2 dias</Typography>
