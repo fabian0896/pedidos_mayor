@@ -11,8 +11,11 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import { ArrowBack } from '@material-ui/icons'
 
 
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
@@ -43,9 +46,13 @@ class NavBar extends Component{
         firebase.auth().signOut()
     }
 
+    handleBackButtom = ()=>{
+        this.props.history.goBack()
+    }
+
     render(){
 
-        const { classes, className, title } = this.props
+        const { classes, className, title, showBackButtom } = this.props
         const { anchorEl } = this.state
 
         const menuOpen = Boolean(anchorEl)
@@ -69,6 +76,15 @@ class NavBar extends Component{
             <div className={ '' } >
                 <AppBar className={ className } position="fixed">
                     <Toolbar>
+                        {
+                            showBackButtom &&
+                            <IconButton
+                                color="inherit"
+                                onClick={this.handleBackButtom}
+                            >
+                                <ArrowBack/>
+                            </IconButton>
+                        }
                         <Typography variant="h6" color="inherit" >{ title }</Typography>
 
                         <div className={ classes.grow }></div>
@@ -99,5 +115,10 @@ class NavBar extends Component{
     }
 }
 
+function mapStateToProps(state, props){
+    return{
+        showBackButtom: state.backButtom.activate
+    }
+}
 
-export default withStyles(styles)(NavBar);
+export default connect(mapStateToProps)(withRouter(withStyles(styles)(NavBar)));

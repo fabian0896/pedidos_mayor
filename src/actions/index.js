@@ -33,3 +33,15 @@ export function hideAlert(){
         type: 'HIDE_ALERT'
     }
 }
+
+export function showBackButtom(){
+    return{
+        type: 'ACTIVATE_BACKBUTTOM'
+    }
+}
+
+export function hideBackButtom(){
+    return{
+        type: 'HIDE_BACKBUTTOM'
+    }
+}
