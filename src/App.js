@@ -21,6 +21,7 @@ import Pagos from './pages/pagos/Pagos'
 import Pedidos from './pages/pedidos/Pedidos'
 import Prendas from './pages/prendas/Prendas'
 import ClientDetail from './pages/clientes/ClientDetails';
+import NewClient from './pages/clientes/newClient/NewClient'
 
 
 class App extends Component {
@@ -61,6 +62,7 @@ class App extends Component {
             !this.state.loading &&
             <Switch>
                 <PrivateRoute title="Inicio" exact path="/inicio" component={Home}/>      
+                <PrivateRoute title="Nuevo Cliente" exact path="/clientes/nuevo" component={NewClient}/>      
                 <PrivateRoute title="Clientes" exact path="/clientes/:id" component={ClientDetail}/>      
                 <PrivateRoute title="Clientes" exact path="/clientes" component={Clientes}/>      
                 <PrivateRoute title="Estadisticas" exact path="/estadisticas" component={Estadisticas}/>      

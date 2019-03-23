@@ -59,6 +59,10 @@ class Clientes extends Component{
         this.setState({textValue: event.target.value });
     }
 
+    handleAddClient = ()=>{
+        this.props.history.push('/clientes/nuevo')
+    }
+
     handleSubmit = event => {
         event.preventDefault();
         this.props.history.push({
@@ -99,6 +103,7 @@ class Clientes extends Component{
                     handleChangeCheckbox={ this.handleChangeCheckbox }
                     handleChangeInput={ this.handleChangeInput }
                     handleSubmit={ this.handleSubmit }
+                    handleAddClient= {this.handleAddClient}
                     checkValue={ checkValue }
                     textValue={ textValue }
                     />

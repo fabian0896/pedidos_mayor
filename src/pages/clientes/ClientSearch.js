@@ -97,7 +97,11 @@ class ClienteSearch extends Component {
                                 </FormGroup>
                             </Paper>
                 </form>
-                <Fab size="medium" className={classes.fab} color="primary">
+                <Fab 
+                    size="medium" 
+                    className={classes.fab} 
+                    color="primary"
+                    onClick={this.props.handleAddClient}>
                    <Add/>
                 </Fab>                       
             </div>
