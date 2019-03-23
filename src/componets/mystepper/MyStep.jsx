@@ -1,52 +1,63 @@
-import React, { Component } from 'react'
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
+import React, { Component, Fragment } from 'react'
 import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles'
 
+const styles = theme => ({
+  root: {
+    width: '90%',
+  },
+  button: {
+    marginTop: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+  },
+  actionsContainer: {
+    marginBottom: theme.spacing.unit * 2,
+  },
+  resetContainer: {
+    padding: theme.spacing.unit * 3,
+  },
+});
 
 
 class MyStep extends Component {
 
     render() {
 
-        const { 
-            title, 
+        const {  
             children, 
             activeStep,
             handleBack,
             handleNext,
-            steps   
+            steps,
+            classes   
         } = this.props
 
         return (
-            <Step>
-                <StepLabel>{title}</StepLabel>
-                <StepContent>
-                    {children}
-                <div >
+            <Fragment>
+                {children}
+                <div className={classes.actionsContainer}>
                   <div>
                     <Button
                       disabled={activeStep === 0}
                       onClick={handleBack}
-                     
+                      className={classes.button}
                     >
                       Back
                     </Button>
                     <Button
-                      variant="contained"
-                      color="primary"
                       onClick={handleNext}
+                      color="primary"
+                      variant="contained"
+                      className={classes.button}
                     >
-                      {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                      {(activeStep + 1) === steps ? 'Guardar' : 'Siguiente'}
                     </Button>
-                  </div>
                 </div>
-                </StepContent>
-            </Step>
+                </div>
+            </Fragment>
         )
     }
 }
 
 
-export default MyStep;
+export default withStyles(styles)(MyStep);

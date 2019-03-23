@@ -2,18 +2,23 @@ import React, {  Component } from "react";
 import MyStep from '../../../componets/mystepper/MyStep'
 import MyStepper from '../../../componets/mystepper/MyStepper'
 class NewClient extends Component{
+    
+    handleComplete = () =>{
+        console.log("Se completo el esteper")
+    }
+    
     render(){
         return(
             <div>
-                <MyStepper>
-                    <MyStep title="Prueba 1" >
-                        Hola desde Prueba 1
+                <MyStepper onComplete={this.handleComplete}>
+                    <MyStep title="Informacion Basica" >
+                        Hola desde prueba 1
                     </MyStep>
-                    <MyStep title="Prueba 2" >
-                        Hola desde Prueba 1
+                    <MyStep title="Contacto" >
+                        Hola desde prueba 2
                     </MyStep>
-                    <MyStep title="Prueba 3" >
-                        Hola desde Prueba 1
+                    <MyStep title="Extra" >
+                        Hola desde prueba 3
                     </MyStep>
                 </MyStepper>
             </div>

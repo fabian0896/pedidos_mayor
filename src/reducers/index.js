@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
-import user from './user'
-import alert from './alert'
-import backButtom from './backButtom'
+import user from './user.js'
+import alert from './alert.js'
+import backButtom from './backButtom.js'
 
 const rootReducer = combineReducers({
     user,

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Stepper from '@material-ui/core/Stepper';
-
+import Step from '@material-ui/core/Step'
+import StepContent from '@material-ui/core/StepContent'
+import StepLabel from '@material-ui/core/StepLabel'
 
 
 class MyStepper extends Component{
@@ -30,23 +32,31 @@ class MyStepper extends Component{
     render(){
         const { children } = this.props 
         const { activeStep } = this.state
-        //const step = React.Children.count(children)
-        /* const newChildren = React.Children.map(children, element =>{
+        const steps = React.Children.count(children)
+        const newChildren = React.Children.map(children, element =>{
             return React.cloneElement(element,{
                 handleBack: this.handleBack,
                 handleNext: this.handleNext,
                 handleReset: this.handleReset,
-                //step,
+                steps,
                 activeStep
             })
         })
- */
+        const finalChildren = React.Children.map(newChildren, element => {
+          return <Step>
+            <StepLabel>{ element.props.title }</StepLabel>
+            <StepContent>
+              {element}
+            </StepContent>
+          </Step>
+        })
+ 
         return(
             <Stepper
                 activeStep={activeStep}
                 orientation="vertical"
             >
-                {children}
+                {finalChildren}
             </Stepper>
         )
     }
