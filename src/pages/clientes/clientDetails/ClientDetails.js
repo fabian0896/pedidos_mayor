@@ -5,12 +5,22 @@ import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
 import ClientDetailInfo from './ClientDetailInfo';
 import {  connect } from 'react-redux'
-import { showBackButtom, hideBackButtom } from '../../actions'
+import { showBackButtom, hideBackButtom } from '../../../actions'
 
 
 const styles = theme => ({
    title:{
         marginBottom: `${theme.spacing.unit * 3}px`,
+   },
+   header:{
+       display: 'flex'
+   },
+   img:{
+        height: '50px',
+        borderRadius: '5px',
+        boxShadow: theme.shadows[2],
+        marginLeft: `${theme.spacing.unit*2}px`,
+        alignItems: 'center'
    }
 })
 
@@ -29,7 +39,10 @@ class ClientDetail extends Component {
         const { classes } = this.props
         return (
             <div>
-                <Typography className={classes.title} component="h2" variant="h2">Fabian David Dueñas {id}</Typography>
+                <div className={classes.header}>
+                    <Typography className={classes.title} component="h2" variant="h3">Fabian David Dueñas</Typography>
+                    <img className={classes.img} src={"https://restcountries.eu/data/mex.svg"}/>
+                </div>
                 
                 <ClientDetailInfo />
             </div>

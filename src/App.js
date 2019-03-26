@@ -20,7 +20,7 @@ import Notificaciones from './pages/notificaciones/Notificaciones'
 import Pagos from './pages/pagos/Pagos'
 import Pedidos from './pages/pedidos/Pedidos'
 import Prendas from './pages/prendas/Prendas'
-import ClientDetail from './pages/clientes/ClientDetails';
+import ClientDetail from "./pages/clientes/clientDetails/ClientDetails"
 import NewClient from './pages/clientes/newClient/NewClient'
 
 
