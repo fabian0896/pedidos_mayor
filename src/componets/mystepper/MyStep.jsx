@@ -28,6 +28,7 @@ class MyStep extends Component {
             activeStep,
             handleBack,
             handleNext,
+            onFinish,
             steps,
             classes   
         } = this.props
@@ -45,7 +46,7 @@ class MyStep extends Component {
                       Back
                     </Button>
                     <Button
-                      onClick={handleNext}
+                      onClick={ onFinish || handleNext}
                       color="primary"
                       variant="contained"
                       className={classes.button}

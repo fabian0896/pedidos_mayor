@@ -8,7 +8,7 @@ import StepLabel from '@material-ui/core/StepLabel'
 class MyStepper extends Component{
 
     state ={
-        activeStep: 0
+        activeStep: this.props.activeStep || 0
     }
 
     handleNext = () => {
@@ -35,11 +35,11 @@ class MyStepper extends Component{
         const steps = React.Children.count(children)
         const newChildren = React.Children.map(children, element =>{
             return React.cloneElement(element,{
-                handleBack: this.handleBack,
-                handleNext: this.handleNext,
-                handleReset: this.handleReset,
+                handleBack: this.props.handleBack || this.handleBack,
+                handleNext: this.props.handleNext || this.handleNext,
+                handleReset: this.props.handleReset || this.handleReset,
                 steps,
-                activeStep
+                activeStep: this.props.activeStep || activeStep
             })
         })
         const finalChildren = React.Children.map(newChildren, element => {
@@ -53,7 +53,7 @@ class MyStepper extends Component{
  
         return(
             <Stepper
-                activeStep={activeStep}
+                activeStep={this.props.activeStep || activeStep}
                 orientation="vertical"
             >
                 {finalChildren}
@@ -61,5 +61,6 @@ class MyStepper extends Component{
         )
     }
 }
+
 
 export default MyStepper;
