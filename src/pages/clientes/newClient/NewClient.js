@@ -7,6 +7,8 @@ import NewClientFromGeneral from "./NewClientFromGeneral";
 import NewClientResume from "./NewClientResume";
 import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom } from '../../../actions'
+import { createCliente } from '../../../lib/firebaseService'
+import {  formatPhone } from '../../../lib/utilities'
 
 
 const styles = theme => ({
@@ -49,7 +51,7 @@ class NewClient extends Component {
 
     componentDidMount(){
         this.getAllConuntries();
-        this.props.showBackButtom()
+        this.props.showBackButtom();
     }
 
     componentWillUnmount(){
@@ -94,8 +96,19 @@ class NewClient extends Component {
      }
 
      handleSave = ()=>{
-         console.log("Se guardo el registro!")
-        //logic to save or update the client in firebase
+         const { country } = this.state.info
+         const { countries } = this.state
+         const client = {
+            ...this.state.info,
+            country: countries[country.value]
+         }
+        createCliente(client, (err)=>{
+            if(err){
+                console.log(err)
+                return
+            }
+            console.log("se Guardo Correctamente")
+        })
      }
 
     render() {

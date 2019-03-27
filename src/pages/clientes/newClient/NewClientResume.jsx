@@ -4,6 +4,7 @@ import {
     Grid
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
+import { formatPhone } from '../../../lib/utilities'
 
 
 const styles = theme =>({
@@ -42,6 +43,8 @@ function NewClientResume(props){
     const flag = country.flag
     const countryName = country.translations.es || country.name
     const callingCode = country.callingCodes[0]
+    const formatPhonw = formatPhone(phone, callingCode )
+    
     return(
         <div className={ classes.root }>
             <div className={ classes.header }>
@@ -55,7 +58,7 @@ function NewClientResume(props){
                 <Grid item md={4}>
                     <div className={classes.info}>
                         <Typography component="span" variant="subtitle2" color="textSecondary">Telefono:</Typography>
-                        <Typography component="span" variant="subtitle1" color="textPrimary">+({callingCode}) {phone}</Typography>
+                        <Typography component="span" variant="subtitle1" color="textPrimary">{formatPhonw}</Typography>
                     </div>
                     <div className={classes.info}>
                         <Typography component="span" variant="subtitle2" color="textSecondary">Correo electronico:</Typography>

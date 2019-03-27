@@ -16,8 +16,7 @@ import { emphasize } from '@material-ui/core/styles/colorManipulator';
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
-    height: 250,
+    width: '300px'
   },
   input: {
     display: 'flex',
@@ -198,6 +197,7 @@ class MyAutocompleat extends React.Component {
     return (
         <NoSsr>
           <Select
+            className={this.props.className}
             classes={classes}
             styles={selectStyles}
             options={optionsList}
