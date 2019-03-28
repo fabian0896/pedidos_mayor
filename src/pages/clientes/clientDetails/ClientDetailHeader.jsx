@@ -53,11 +53,11 @@ const styles = theme => ({
 
 
 function ClientDetailHeader(props){
-    const { classes } = props
+    const { classes, client } = props
     return(
         <div className={classes.header}>
-            <img className={classes.img} src={"https://restcountries.eu/data/usa.svg"}/>
-            <Typography className={classes.title} component="h2" variant="h2">Fabian David Dueñas</Typography>
+            <img className={classes.img} src={client.country.flag}/>
+            <Typography className={classes.title} component="h2" variant="h2">{client.name}</Typography>
             <Typography className={classes.subTitle} component="span" variant="subtitle1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, nesciunt?</Typography>
         </div>
     )

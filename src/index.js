@@ -15,7 +15,7 @@ import 'firebase/firestore'
 
 //
 
-const store = createStore(rootReducer, {}, composeWithDevTools(applyMiddleware(ReduxThunk)));
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(ReduxThunk)));
 
 firebase.initializeApp({
     apiKey: "AIzaSyA-cV0x42-xB_Nnk3UFbN5VYf8P7qiYd9o",

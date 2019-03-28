@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { UpdateSharp } from '@material-ui/icons';
+import { getAllClients } from '../lib/firebaseService';
 
 
 // -------------------------- User -----------------------------
@@ -70,11 +71,16 @@ export function updateClients(clients){
 }
 
 
-export function asyncUpdateClients(){
-    console.log("se ejecuto")
+export const asyncUpdateClients = ()=>{
     return (dispatch) => {
-        console.log('entreeee')
-        dispatch(updateClients(['hola', 'mundo']))
+        getAllClients((err, data)=>{
+            if(err){
+                console.log(err)
+                return
+            }
+            dispatch(updateClients(data))
+        })
+        
     }
 }
 

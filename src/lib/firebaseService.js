@@ -17,7 +17,7 @@ export function createCliente(client, cb){
         ...client,
         phone: newPhone,
         seller: firebase.auth().currentUser.uid,
-        personalColor: randomColor(200),
+        personalColor: randomColor(200,40),
         createdAt: new Date()
     }
     
@@ -33,17 +33,29 @@ export function createCliente(client, cb){
 
 export function getAllClients(cb){
     const clientsList = []
-    firebase.firestore().collection('clients').get()
+    firebase.firestore().collection(CLIENTS).orderBy('name','asc').get()
             .then(querySnapshot =>{
                 querySnapshot.forEach(doc => {
-                    clientsList.push(doc.data())
-                    console.log(doc.data())
+                    clientsList.push({id: doc.id, ...doc.data()})
                 })
-                console.log('se realizo el dispatch')
+                cb(null, clientsList)
             })
             .catch(err => {
-                console.log(err)
+                cb(err)
             })
 }
 
 
+export function getClientById(id, callback){
+    return firebase.firestore().collection(CLIENTS).doc(id).get()
+        .then(doc=>{
+            if(doc.exists){
+                callback(null, {id: doc.id,...doc.data()})
+            } else{
+                callback(null, null)
+            }
+        }) 
+        .catch(err =>{
+            callback(err, null)
+        })   
+}

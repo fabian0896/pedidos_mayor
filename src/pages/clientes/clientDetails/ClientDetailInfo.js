@@ -74,7 +74,7 @@ const styles = theme => ({
 })
 
 function ClientDetailInfo(props){
-    const { classes } = props
+    const { classes, client } = props
     return(
         <Grid container spacing={24}>
 
@@ -87,19 +87,19 @@ function ClientDetailInfo(props){
                     <div className={classes.stats}>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">Pais:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">Mexico</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.country.translations.es}</Typography>
                         </div>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">Ciudad:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">Mexico DF</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.city}</Typography>
                         </div>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">Direccion:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">Crr 23B # 4 - 09</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.address}</Typography>
                         </div>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">Codigo Postal:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">76001</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.zipCode}</Typography>
                         </div>
                     </div>
                 </Paper>
@@ -115,15 +115,15 @@ function ClientDetailInfo(props){
                     <div className={classes.stats}>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">Telefono:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">3217378301</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.phone}</Typography>
                         </div>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">correo:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">Fabian0896@outlook.com</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.email}</Typography>
                         </div>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">vendedor encargado:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">Maria Lili</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.seller}</Typography>
                         </div>
                     </div>
                 </Paper>

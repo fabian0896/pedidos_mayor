@@ -4,37 +4,9 @@ import ClientSearch from './ClientSearch'
 import ClientList from './ClientList'
 import { connect } from 'react-redux'
 import { asyncUpdateClients } from '../../actions'
-import { getAllClients } from '../../lib/firebaseService'
 
-//objeto de clientes para hacer las pruebas
-//este objeto vendra desde el estado global de la App que lo tomara de la base de datos
-const clientes = [
-    {   
-        id: 1,
-        name: 'Fabian David Dueñas',
-        seller_id: 3
-    },
-    {
-        id: 2,
-        name: 'Alberto Mora',
-        seller_id: 1
-    },
-    {   
-        id: 3,
-        name: 'Pepe Gonsales',
-        seller_id: 1
-    },
-    {   
-        id: 4,
-        name: 'Ingrid Popayan',
-        seller_id: 2
-    },
-    {   
-        id: 5,
-        name: 'Vanessa Cardona Davila',
-        seller_id: 2
-    },
-]
+
+
 
 const mySellerId = 1;
 
@@ -103,8 +75,8 @@ class Clientes extends Component{
 
     render(){
         const { checkValue, textValue } = this.state
-        const clientsFilter = this.filter(clientes, !checkValue, textValue)
-
+        const { clients } = this.props
+    
         return(
             <div>
                 <ClientSearch  
@@ -117,21 +89,19 @@ class Clientes extends Component{
                     />
                 <ClientList
                     handleClickVerMas={this.handleClickVerMas} 
-                    clients={clientsFilter} />
+                    clients={clients} />
             </div>
         )
     }
 }
 
-const mapDispatchToProps = (dispatch, props) => {
-    return{
-        asyncUpdateClients
-    }
+const mapDispatchToProps = {
+    asyncUpdateClients
 }
 
 const mapStateToProps = (state, props) => {
     return {
-
+        clients: state.clients
     }
 } 
 
