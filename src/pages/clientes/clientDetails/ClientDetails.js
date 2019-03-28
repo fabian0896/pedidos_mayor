@@ -6,21 +6,15 @@ import classNames from 'classnames'
 import ClientDetailInfo from './ClientDetailInfo';
 import {  connect } from 'react-redux'
 import { showBackButtom, hideBackButtom } from '../../../actions'
+import ClientDetailHeader from './ClientDetailHeader';
 
 
 const styles = theme => ({
-   title:{
-        marginBottom: `${theme.spacing.unit * 3}px`,
-   },
-   header:{
-       display: 'flex'
-   },
-   img:{
-        height: '50px',
-        borderRadius: '5px',
-        boxShadow: theme.shadows[2],
-        marginLeft: `${theme.spacing.unit*2}px`,
-        alignItems: 'center'
+
+   content:{
+       position: 'relative',
+       zIndex: 3,
+       marginTop: '-80px'
    }
 })
 
@@ -35,16 +29,13 @@ class ClientDetail extends Component {
     }
 
     render() {
-        const id = this.props.match.params.id
         const { classes } = this.props
         return (
             <div>
-                <div className={classes.header}>
-                    <Typography className={classes.title} component="h2" variant="h3">Fabian David Dueñas</Typography>
-                    <img className={classes.img} src={"https://restcountries.eu/data/mex.svg"}/>
+                <ClientDetailHeader />
+                <div className={classes.content}>
+                    <ClientDetailInfo />
                 </div>
-                
-                <ClientDetailInfo />
             </div>
         )
     }
@@ -53,6 +44,12 @@ class ClientDetail extends Component {
 const mapDispatchToProps = {
     showBackButtom,
     hideBackButtom
+}
+
+function mapStateToProps(state, props){
+    return{
+        
+    }
 }
 
 export default connect(null, mapDispatchToProps)(withStyles(styles)(ClientDetail));

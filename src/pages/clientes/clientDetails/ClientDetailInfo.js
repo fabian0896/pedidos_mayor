@@ -1,10 +1,14 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Typography from '@material-ui/core/Typography'
-import Divider from '@material-ui/core/Divider'
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
 import { Paper, Grid } from '@material-ui/core';
 import { yellow, teal, blue } from '@material-ui/core/colors'
+import {
+    Place,
+    Phone,
+    AttachMoney as Money
+ } from '@material-ui/icons'
 
 
 
@@ -24,6 +28,7 @@ const styles = theme => ({
         width: '100%'
     },
     stats: {
+        minHeight: '280px',
         position: 'relative',
         width: '100%',
         height: '100%',
@@ -31,24 +36,31 @@ const styles = theme => ({
         flexDirection: 'column',
         justifyContent: 'center',
         //alignItems: 'center',
-        padding: ` 0 ${theme.spacing.unit * 2}px ${theme.spacing.unit}px`,
+        padding: `${theme.spacing.unit }px ${theme.spacing.unit * 2}px`,
     },
     statItem:{
-        marginBottom: `${theme.spacing.unit * 2}px`,
+        //marginBottom: `${theme.spacing.unit * 2}px`,
         width: '100%',
         display: 'flex',
+        flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
         //alignItems: 'center'
     },
     cardHeader:{
         color: '#FFF',
-        marginBottom: `${theme.spacing.unit}px`,
-        padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`
+        //marginBottom: `${theme.spacing.unit}px`,
+        display: 'flex',
+        flexDirection: 'column',
+        //justifyContent: 'center',
+        alignItems: 'center',
+        padding: `${theme.spacing.unit * 3}px ${theme.spacing.unit * 2}px`
     },
     paper:{
-        marginTop:`${theme.spacing.unit * 4}px`,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        display: 'flex',
+        height: '100%',
+        //flexDirection: 'column',
     },
     orange:{
         background: yellow[800],
@@ -69,6 +81,7 @@ function ClientDetailInfo(props){
             <Grid item sm={4} >
                 <Paper className={classes.paper} >
                     <div className={classNames(classes.cardHeader, classes.orange) }>
+                        <Place fontSize="large" />
                         <Typography align="center" color="inherit" component="span" variant="h6" >Ubicación</Typography>
                     </div>
                     <div className={classes.stats}>
@@ -84,6 +97,10 @@ function ClientDetailInfo(props){
                             <Typography component="span" variant="subtitle2" color="textSecondary">Direccion:</Typography>
                             <Typography align="left" component="span" variant="subtitle1" color="textPrimary">Crr 23B # 4 - 09</Typography>
                         </div>
+                        <div className={classes.statItem}>
+                            <Typography component="span" variant="subtitle2" color="textSecondary">Codigo Postal:</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">76001</Typography>
+                        </div>
                     </div>
                 </Paper>
             </Grid>
@@ -92,6 +109,7 @@ function ClientDetailInfo(props){
             <Grid item sm={4} >
                 <Paper className={classes.paper} >
                     <div className={classNames(classes.cardHeader, classes.green) }>
+                        <Phone fontSize="large" />
                         <Typography align="center" color="inherit" component="span" variant="h6" >Contacto</Typography>
                     </div>
                     <div className={classes.stats}>
@@ -115,6 +133,7 @@ function ClientDetailInfo(props){
             <Grid item sm={4} >
                 <Paper className={classes.paper} >
                     <div className={classNames(classes.cardHeader, classes.blue) }>
+                        <Money fontSize="large" />
                         <Typography align="center" color="inherit" component="span" variant="h6" >Resumen</Typography>
                     </div>
                     <div className={classes.stats}>

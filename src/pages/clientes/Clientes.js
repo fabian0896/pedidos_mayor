@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import ClientSearch from './ClientSearch'
 import ClientList from './ClientList'
+import { connect } from 'react-redux'
+import { asyncUpdateClients } from '../../actions'
+import { getAllClients } from '../../lib/firebaseService'
 
 //objeto de clientes para hacer las pruebas
 //este objeto vendra desde el estado global de la App que lo tomara de la base de datos
@@ -92,7 +95,12 @@ class Clientes extends Component{
             return true;
         })
     }
-        
+    
+    componentDidMount(){
+        //getAllClients()
+        this.props.asyncUpdateClients()
+    }
+
     render(){
         const { checkValue, textValue } = this.state
         const clientsFilter = this.filter(clientes, !checkValue, textValue)
@@ -115,6 +123,16 @@ class Clientes extends Component{
     }
 }
 
+const mapDispatchToProps = (dispatch, props) => {
+    return{
+        asyncUpdateClients
+    }
+}
 
+const mapStateToProps = (state, props) => {
+    return {
 
-export default withStyles(styles)(Clientes);
+    }
+} 
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Clientes));

@@ -9,6 +9,7 @@ import Avatar from '@material-ui/core/Avatar'
 import classNames from 'classnames'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import Button from '@material-ui/core/Button';
+import { randomColor } from '../../lib/utilities'
 
 
 const styles = theme => ({
@@ -45,7 +46,8 @@ const styles = theme => ({
      },
      avatar: {
          height: '56px',
-         width: '56px'
+         width: '56px',
+         background: `rgb(200,200,200)`
      },
 })
 
