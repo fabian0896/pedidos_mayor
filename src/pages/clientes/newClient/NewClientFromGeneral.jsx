@@ -24,15 +24,15 @@ const styles = theme => ({
 
 function NewClientFormGeneral(props) {
     
-    const { classes } = props
-    
+    const { classes, initialValues } = props
+    const { name, email, phone } = initialValues 
     return (
         <Formik
             onSubmit={props.handleSubmit}
             initialValues={{
-                name: props.name,
-                email: props.email,
-                phone: props.phone,
+                name,
+                email,
+                phone
             }}
             validationSchema={signupSchema}
         >

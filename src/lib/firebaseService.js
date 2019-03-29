@@ -32,11 +32,11 @@ export function createCliente(client, cb){
 
 
 export function getAllClients(cb){
-    const clientsList = []
+    const clientsList = {}
     firebase.firestore().collection(CLIENTS).orderBy('name','asc').get()
             .then(querySnapshot =>{
                 querySnapshot.forEach(doc => {
-                    clientsList.push({id: doc.id, ...doc.data()})
+                    clientsList[doc.id] = {id: doc.id, ...doc.data()}
                 })
                 cb(null, clientsList)
             })

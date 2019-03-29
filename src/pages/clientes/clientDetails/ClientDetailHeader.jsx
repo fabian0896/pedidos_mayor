@@ -1,6 +1,7 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
+import Button from '@material-ui/core/Button'
 
 const styles = theme => ({
     title:{
@@ -20,7 +21,7 @@ const styles = theme => ({
     },
     header:{
         display: 'flex',
-        flexDirection: 'column',
+        //flexDirection: 'column',
         height: '300px',
         background: '#888',
         '&::before':{
@@ -34,6 +35,17 @@ const styles = theme => ({
              zIndex: 1,
              background: 'rgba(0,0,0, .7)'
      }
+    },
+    headerContent:{
+        display: 'flex',
+        flex: '1',
+        flexDirection: 'column',
+        height: '100%'
+    },
+    headerActions:{
+        color: '#FFF',
+        position: 'relative',
+        zIndex: 2,
     },
     img:{
          position: 'absolute',
@@ -53,12 +65,22 @@ const styles = theme => ({
 
 
 function ClientDetailHeader(props){
-    const { classes, client } = props
+    const { classes, client, handleEdit } = props
     return(
         <div className={classes.header}>
-            <img className={classes.img} src={client.country.flag}/>
-            <Typography className={classes.title} component="h2" variant="h2">{client.name}</Typography>
-            <Typography className={classes.subTitle} component="span" variant="subtitle1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, nesciunt?</Typography>
+            <div className={ classes.headerContent }>
+                <img className={classes.img} src={client.country.flag}/>
+                <Typography className={classes.title} component="h2" variant="h2">{client.name}</Typography>
+                <Typography className={classes.subTitle} component="span" variant="subtitle1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, nesciunt?</Typography>
+            </div>
+            <div className={classes.headerActions}>
+                <Button
+                    onClick={ handleEdit } 
+                    color="inherit" 
+                    size="small">
+                        Editar
+                </Button>
+            </div>
         </div>
     )
 }

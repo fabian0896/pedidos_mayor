@@ -27,8 +27,17 @@ class ClientDetail extends Component {
     }
 
     componentDidMount(){
-        const id = this.props.match.params.id
         this.props.showBackButtom()
+        const { client, clientId } = this.props
+        if(client){
+            this.setState({loading:false, client})
+        }else{
+            this.getClient(clientId)
+        }
+    }
+
+
+    getClient = (id)=>{
         getClientById(id, (err, client)=>{
             if(err){
                 console.log(err)
@@ -41,6 +50,20 @@ class ClientDetail extends Component {
     componentWillUnmount(){
         this.props.hideBackButtom()
     }
+
+
+    handleEdit = (client) => () => {
+        console.log('editaaaar!')   
+        const from =  this.props.location.pathname
+        this.props.history.push({
+            pathname: '/clientes/nuevo',
+            state:{
+                from,
+                client
+            }
+        })
+    }
+
 
     render() {
         const { classes } = this.props
@@ -56,7 +79,7 @@ class ClientDetail extends Component {
                 {
                     (client && !loading) &&
                     <Fragment>
-                        <ClientDetailHeader client={client} />
+                        <ClientDetailHeader handleEdit={this.handleEdit(client)} client={client} />
                         <div className={classes.content}>
                             <ClientDetailInfo client={client} />
                         </div>
@@ -73,9 +96,11 @@ const mapDispatchToProps = {
 }
 
 function mapStateToProps(state, props){
+    const id = props.match.params.id
     return{
-        
+        client: state.clients[id],
+        clientId: id
     }
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(ClientDetail));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ClientDetail));

@@ -26,8 +26,7 @@ const styles = theme => ({
 
 function NewClientFormLocation(props) {
     
-    const { classes } = props
-    
+    const { classes} = props    
     return (
         <Formik
             onSubmit={props.handleSubmit}

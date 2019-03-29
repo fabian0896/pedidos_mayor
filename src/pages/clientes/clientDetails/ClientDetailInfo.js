@@ -28,7 +28,7 @@ const styles = theme => ({
         width: '100%'
     },
     stats: {
-        minHeight: '280px',
+        minHeight: '250px',
         position: 'relative',
         width: '100%',
         height: '100%',

@@ -59,7 +59,7 @@ class Clientes extends Component{
     render(){
         const { checkValue, textValue } = this.state
         const { clients } = this.props
-    
+        const clientList = Object.values(clients)
         return(
             <div>
                 <ClientSearch  
@@ -72,7 +72,7 @@ class Clientes extends Component{
                     />
                 <ClientList
                     handleClickVerMas={this.handleClickVerMas} 
-                    clients={clients} />
+                    clients={clientList} />
             </div>
         )
     }
