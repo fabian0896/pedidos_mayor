@@ -1,10 +1,14 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Typography from '@material-ui/core/Typography'
-import Divider from '@material-ui/core/Divider'
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
 import { Paper, Grid } from '@material-ui/core';
 import { yellow, teal, blue } from '@material-ui/core/colors'
+import {
+    Place,
+    Phone,
+    AttachMoney as Money
+ } from '@material-ui/icons'
 
 
 
@@ -24,6 +28,7 @@ const styles = theme => ({
         width: '100%'
     },
     stats: {
+        minHeight: '280px',
         position: 'relative',
         width: '100%',
         height: '100%',
@@ -31,24 +36,31 @@ const styles = theme => ({
         flexDirection: 'column',
         justifyContent: 'center',
         //alignItems: 'center',
-        padding: ` 0 ${theme.spacing.unit * 2}px ${theme.spacing.unit}px`,
+        padding: `${theme.spacing.unit }px ${theme.spacing.unit * 2}px`,
     },
     statItem:{
-        marginBottom: `${theme.spacing.unit * 2}px`,
+        //marginBottom: `${theme.spacing.unit * 2}px`,
         width: '100%',
         display: 'flex',
+        flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
         //alignItems: 'center'
     },
     cardHeader:{
         color: '#FFF',
-        marginBottom: `${theme.spacing.unit}px`,
-        padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`
+        //marginBottom: `${theme.spacing.unit}px`,
+        display: 'flex',
+        flexDirection: 'column',
+        //justifyContent: 'center',
+        alignItems: 'center',
+        padding: `${theme.spacing.unit * 3}px ${theme.spacing.unit * 2}px`
     },
     paper:{
-        marginTop:`${theme.spacing.unit * 4}px`,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        display: 'flex',
+        height: '100%',
+        //flexDirection: 'column',
     },
     orange:{
         background: yellow[800],
@@ -62,27 +74,32 @@ const styles = theme => ({
 })
 
 function ClientDetailInfo(props){
-    const { classes } = props
+    const { classes, client } = props
     return(
         <Grid container spacing={24}>
 
             <Grid item sm={4} >
                 <Paper className={classes.paper} >
                     <div className={classNames(classes.cardHeader, classes.orange) }>
+                        <Place fontSize="large" />
                         <Typography align="center" color="inherit" component="span" variant="h6" >Ubicación</Typography>
                     </div>
                     <div className={classes.stats}>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">Pais:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">Mexico</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.country.translations.es}</Typography>
                         </div>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">Ciudad:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">Mexico DF</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.city}</Typography>
                         </div>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">Direccion:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">Crr 23B # 4 - 09</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.address}</Typography>
+                        </div>
+                        <div className={classes.statItem}>
+                            <Typography component="span" variant="subtitle2" color="textSecondary">Codigo Postal:</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.zipCode}</Typography>
                         </div>
                     </div>
                 </Paper>
@@ -92,20 +109,21 @@ function ClientDetailInfo(props){
             <Grid item sm={4} >
                 <Paper className={classes.paper} >
                     <div className={classNames(classes.cardHeader, classes.green) }>
+                        <Phone fontSize="large" />
                         <Typography align="center" color="inherit" component="span" variant="h6" >Contacto</Typography>
                     </div>
                     <div className={classes.stats}>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">Telefono:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">3217378301</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.phone}</Typography>
                         </div>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">correo:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">Fabian0896@outlook.com</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.email}</Typography>
                         </div>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">vendedor encargado:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">Maria Lili</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.seller}</Typography>
                         </div>
                     </div>
                 </Paper>
@@ -115,6 +133,7 @@ function ClientDetailInfo(props){
             <Grid item sm={4} >
                 <Paper className={classes.paper} >
                     <div className={classNames(classes.cardHeader, classes.blue) }>
+                        <Money fontSize="large" />
                         <Typography align="center" color="inherit" component="span" variant="h6" >Resumen</Typography>
                     </div>
                     <div className={classes.stats}>

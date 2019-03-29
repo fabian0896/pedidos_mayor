@@ -14,6 +14,9 @@ const signupSchema = Yup.object().shape({
 const styles = theme => ({
     formContainer: {
         margin: `${theme.spacing.unit * 2}px 0`
+    },
+    input:{
+        width: '350px'
     }
 })
 
@@ -49,6 +52,7 @@ function NewClientFormGeneral(props) {
                             <Grid className={classes.formContainer} container spacing={24}>
                                 <Grid item sm={12}>
                                     <TextField
+                                        className={classes.input}
                                         error={ (!!errors.name) && (!!touched.name)  }
                                         variant="outlined"
                                         label="Nombre"
@@ -60,6 +64,7 @@ function NewClientFormGeneral(props) {
                                 </Grid>
                                 <Grid item sm={12}>
                                     <TextField
+                                        className={classes.input}
                                         error={ errors.phone && touched.phone }
                                         variant="outlined"
                                         label="Telefono"
@@ -71,6 +76,7 @@ function NewClientFormGeneral(props) {
                                 </Grid>
                                 <Grid item sm={12}>
                                     <TextField
+                                        className={classes.input}
                                         error={errors.email && touched.email}
                                         variant="outlined"
                                         label="Correo electronico"

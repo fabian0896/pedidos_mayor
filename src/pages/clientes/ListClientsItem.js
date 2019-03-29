@@ -9,6 +9,7 @@ import Avatar from '@material-ui/core/Avatar'
 import classNames from 'classnames'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import Button from '@material-ui/core/Button';
+import { getNameLetters } from '../../lib/utilities'
 
 
 const styles = theme => ({
@@ -45,7 +46,8 @@ const styles = theme => ({
      },
      avatar: {
          height: '56px',
-         width: '56px'
+         width: '56px',
+         background: `rgb(200,200,200)`
      },
 })
 
@@ -60,10 +62,14 @@ class ListClientesItem extends Component{
                 <ExpansionPanel expanded={ expanded } onChange={ handleChange }>
                     <ExpansionPanelSummary expandIcon={ <ExpandMoreIcon /> }>
                         <div className={ classes.mainContainer }>
-                            <Avatar className={classes.avatar} >FB</Avatar>
+                            <Avatar 
+                                className={classes.avatar} 
+                                style={{background: `rgb(${client.personalColor.join(',')})`}} >
+                                {getNameLetters(client.name)}
+                            </Avatar>
                             <div className={ classNames(classes.infoContainer, classes.row) }>
                                 <Typography variant="h6">{ client.name }</Typography>
-                                <Typography component="span" variant="subheading" color="textSecondary">Ultimo pedido: hace 2 dias</Typography>
+                                <Typography component="span" variant="subheading" color="textSecondary">{client.country.translations.es}</Typography>
                             </div>
                         </div>
                     </ExpansionPanelSummary>

@@ -7,6 +7,11 @@ import NewClientFromGeneral from "./NewClientFromGeneral";
 import NewClientResume from "./NewClientResume";
 import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom } from '../../../actions'
+import { createCliente } from '../../../lib/firebaseService'
+import Loader from '../../../componets/loader/Loader'
+import { withRouter } from 'react-router-dom'
+import { setTimeout } from "timers";
+
 
 
 const styles = theme => ({
@@ -30,7 +35,10 @@ class NewClient extends Component {
         },
         countries: null,
         activeStep: 0,
-        options: []
+        options: [],
+        saving: false,
+        loading: false,
+        success: false
     }
 
     submitFunctions = []
@@ -49,7 +57,7 @@ class NewClient extends Component {
 
     componentDidMount(){
         this.getAllConuntries();
-        this.props.showBackButtom()
+        this.props.showBackButtom();
     }
 
     componentWillUnmount(){
@@ -94,44 +102,74 @@ class NewClient extends Component {
      }
 
      handleSave = ()=>{
-         console.log("Se guardo el registro!")
-        //logic to save or update the client in firebase
+         const { country } = this.state.info
+         const { countries } = this.state
+         const client = {
+            ...this.state.info,
+            country: countries[country.value]
+         }
+
+        this.setState({saving: true, loading: true, success: false})
+
+        createCliente(client, (err)=>{
+            if(err){
+                console.log(err)
+                return
+            }
+            this.setState({success: true, loading: false})
+            setTimeout(()=>{
+                this.props.history.push('/clientes')
+            }, 600)
+        })
      }
 
     render() {
-        const { classes } = this.props
-        const { countries, activeStep, options } = this.state
+        const { 
+            countries, 
+            activeStep, 
+            options,
+            success,
+            loading,
+            saving
+         } = this.state
 
         return (
             <div>
-                <MyStepper 
-                    activeStep={activeStep} 
-                    handleNext={ this.sumbitForm}
-                    handleBack={ this.handleBack } 
-                    onComplete={this.handleComplete}>
-                    <MyStep title="Informacion General" >
-                        <NewClientFromGeneral
-                            getSubmitRef={this.getSubmitRefGeneral} 
-                            getRef={this.getFormRef}
-                            handleSubmit={ this.handleSubmit }
-                            {...this.state.info}  />
-                            
-                    </MyStep>
-                    <MyStep title="Ubicacion" >
-                        <NewClientFormLocation   
-                            options={ options }
-                            getSubmitRef={this.getSubmitRefLocation} 
-                            getRef={this.getFormRef}
-                            handleSubmit={ this.handleSubmit }
-                            {...this.state.info} />
-                    </MyStep>
-                    <MyStep onFinish={this.handleSave}  title="Resumen" >
-                        <NewClientResume 
-                            {...this.state.info}
-                            country={countries && this.state.info.country && countries[this.state.info.country.value]}
-                             />
-                    </MyStep>
-                </MyStepper>
+                {
+                    saving?
+                    <Loader 
+                        success={success}
+                        loading={loading} />
+                    :
+                    <MyStepper 
+                        activeStep={activeStep} 
+                        handleNext={ this.sumbitForm}
+                        handleBack={ this.handleBack } 
+                        onComplete={this.handleComplete}>
+                        <MyStep title="Informacion General" >
+                            <NewClientFromGeneral
+                                getSubmitRef={this.getSubmitRefGeneral} 
+                                getRef={this.getFormRef}
+                                handleSubmit={ this.handleSubmit }
+                                {...this.state.info}  />
+                                
+                        </MyStep>
+                        <MyStep title="Ubicacion" >
+                            <NewClientFormLocation   
+                                options={ options }
+                                getSubmitRef={this.getSubmitRefLocation} 
+                                getRef={this.getFormRef}
+                                handleSubmit={ this.handleSubmit }
+                                {...this.state.info} />
+                        </MyStep>
+                        <MyStep onFinish={this.handleSave}  title="Resumen" >
+                            <NewClientResume 
+                                {...this.state.info}
+                                country={countries && this.state.info.country && countries[this.state.info.country.value]}
+                                />
+                        </MyStep>
+                    </MyStepper>
+                }
             </div>
         )
     }
@@ -143,4 +181,4 @@ const mapDispatchToProps = {
     hideBackButtom
 }
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(NewClient));
+export default withRouter(connect(null, mapDispatchToProps)(withStyles(styles)(NewClient)));

@@ -1,4 +1,10 @@
+import firebase from 'firebase/app'
+import 'firebase/firestore'
+import { UpdateSharp } from '@material-ui/icons';
+import { getAllClients } from '../lib/firebaseService';
 
+
+// -------------------------- User -----------------------------
 
 export function updateUser(user){
     return{
@@ -17,6 +23,8 @@ export function deleteUser(){
 }
 
 
+// ---------------------------- Alert ---------------------------
+
 export function showAlert(type, message){
     return{
         type: 'SHOW_ALERT',
@@ -34,6 +42,9 @@ export function hideAlert(){
     }
 }
 
+
+// ------------------------ Back Buttom ---------------------
+
 export function showBackButtom(){
     return{
         type: 'ACTIVATE_BACKBUTTOM'
@@ -45,3 +56,34 @@ export function hideBackButtom(){
         type: 'HIDE_BACKBUTTOM'
     }
 }
+
+
+
+//-------------------------- Clients -------------------------
+
+export function updateClients(clients){
+    return{
+        type: 'UPDATE_CLIENTS',
+        payload:{
+            data: clients
+        }
+    }
+}
+
+
+export const asyncUpdateClients = ()=>{
+    return (dispatch) => {
+        getAllClients((err, data)=>{
+            if(err){
+                console.log(err)
+                return
+            }
+            dispatch(updateClients(data))
+        })
+        
+    }
+}
+
+
+
+

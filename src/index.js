@@ -5,13 +5,17 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import firebase from 'firebase/app'
 import 'firebase/firestore';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux'
 import rootReducer from './reducers';
 import { BrowserRouter } from 'react-router-dom'
+import ReduxThunk from 'redux-thunk'
+import { composeWithDevTools } from 'redux-devtools-extension';
+import 'firebase/firestore'
 
+//
 
-const store = createStore(rootReducer, {}, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(ReduxThunk)));
 
 firebase.initializeApp({
     apiKey: "AIzaSyA-cV0x42-xB_Nnk3UFbN5VYf8P7qiYd9o",
@@ -21,13 +25,6 @@ firebase.initializeApp({
     storageBucket: "pedidos-mayor.appspot.com",
     messagingSenderId: "320580183648"    
 });
-
-firebase.firestore();
-
-
-
-
-
 
 ReactDOM.render(
 <Provider store={store}>

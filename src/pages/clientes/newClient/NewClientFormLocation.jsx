@@ -16,6 +16,9 @@ const signupSchema = Yup.object().shape({
 const styles = theme => ({
     formContainer: {
         margin: `${theme.spacing.unit * 2}px 0`
+    },
+    input:{
+        width: '350px'
     }
 })
 
@@ -51,10 +54,11 @@ function NewClientFormLocation(props) {
                         <form ref={props.getRef} onSubmit={handleSubmit}>
                             <Grid className={classes.formContainer} container spacing={24}>
                                 <Grid item sm={12}>
-                                    <Field name="country" component={MyAutocomplete} optionsList={props.options} />
+                                    <Field className={classes.input} name="country" component={MyAutocomplete} optionsList={props.options} />
                                 </Grid>
                                 <Grid item sm={12}>
                                     <TextField
+                                        className={classes.input}
                                         error={ (!!errors.city) && (!!touched.city)  }
                                         variant="outlined"
                                         label="Ciudad"
@@ -66,6 +70,7 @@ function NewClientFormLocation(props) {
                                 </Grid>
                                 <Grid item sm={12}>
                                     <TextField
+                                        className={classes.input}
                                         error={ errors.zipCode && touched.zipCode }
                                         variant="outlined"
                                         label="Codigo Postal"
@@ -77,6 +82,7 @@ function NewClientFormLocation(props) {
                                 </Grid>
                                 <Grid item sm={12}>
                                     <TextField
+                                        className={classes.input}
                                         error={errors.address && touched.address}
                                         variant="outlined"
                                         label="direccion"
