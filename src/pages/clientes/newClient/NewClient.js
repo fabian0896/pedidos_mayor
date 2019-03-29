@@ -59,7 +59,7 @@ class NewClient extends Component {
     }
 
     componentDidMount() {    
-        this.props.showBackButtom("clientes")
+        this.props.showBackButtom()
         this.getAllConuntries()
             .then(()=>{
                 this.getEditInfo()

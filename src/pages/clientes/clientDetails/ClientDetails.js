@@ -24,7 +24,7 @@ class ClientDetail extends Component {
     }
 
     componentDidMount() {
-        this.props.showBackbuttonWithPath()
+        this.props.showBackButtom("/clientes")
         const { client, clientId } = this.props
         if (client) {
             this.setState({ loading: false, client })
