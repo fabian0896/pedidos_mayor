@@ -69,7 +69,7 @@ class ListClientesItem extends Component{
                             </Avatar>
                             <div className={ classNames(classes.infoContainer, classes.row) }>
                                 <Typography variant="h6">{ client.name }</Typography>
-                                <Typography component="span" variant="subheading" color="textSecondary">{client.country.translations.es}</Typography>
+                                <Typography component="span" variant="subheading" color="textSecondary">{client.city}, {client.country.translations.es}</Typography>
                             </div>
                         </div>
                     </ExpansionPanelSummary>
