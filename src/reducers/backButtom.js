@@ -1,5 +1,6 @@
 const initialState ={
-    activate: false
+    activate: false,
+    path: null
 }
 
 
@@ -7,12 +8,14 @@ function backButtom(state = initialState, action){
     switch(action.type){
         case 'ACTIVATE_BACKBUTTOM':{
             return {
-                activate: true
+                activate: true,
+                path: action.payload.path
             }
         }
         case 'HIDE_BACKBUTTOM':{
             return {
-                activate: false
+                activate: false,
+                path: null
             }
         }
         default:

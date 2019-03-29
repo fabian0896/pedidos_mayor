@@ -53,7 +53,7 @@ class Clientes extends Component{
     
     componentDidMount(){
         //getAllClients()
-        this.props.asyncUpdateClients()
+        //this.props.asyncUpdateClients()
     }
 
     render(){

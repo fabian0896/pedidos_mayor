@@ -1,14 +1,23 @@
-import color from "@material-ui/core/colors/red";
+
+
 
 export function formatPhone(phone, callCode){
-    if(phone.length > 10){
-        const dif = phone.length - 10;
-        const number = phone.substring(dif, phone.length);
-        const code = phone.substring(0,  dif)
-        return `+(${code.replace('+','')}) ${number}`
+    
+    let phoneNumber = ""
+    
+    for(let letter of phone){
+        if(!isNaN(letter)){
+            phoneNumber += letter
+        }
+    }
+    if(phoneNumber.length > 10){
+        const dif = phoneNumber.length - 10;
+        const number = phoneNumber.substring(dif, phoneNumber.length);
+        const code = phoneNumber.substring(0,  dif)
+        return `+(${code.replace(' ','')}) ${number}`
     } 
     
-    return `+(${callCode}) ${phone}`
+    return `+(${callCode}) ${phoneNumber}`
 }
 
 
@@ -29,6 +38,9 @@ export function getNameLetters(name){
         return name.charAt(0).toUpperCase() + name.charAt(1).toUpperCase()
     }
 }
+
+
+ 
 
 
 

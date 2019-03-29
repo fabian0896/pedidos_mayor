@@ -45,10 +45,17 @@ export function hideAlert(){
 
 // ------------------------ Back Buttom ---------------------
 
-export function showBackButtom(){
+export function showBackButtom(path){
     return{
-        type: 'ACTIVATE_BACKBUTTOM'
+        type: 'ACTIVATE_BACKBUTTOM',
+        payload:{
+            path: path
+        }
     }
+}
+
+export function showBackbuttonWithPath(path){
+    return ()=> showBackButtom(path)
 }
 
 export function hideBackButtom(){

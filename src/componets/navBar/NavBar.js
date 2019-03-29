@@ -47,7 +47,11 @@ class NavBar extends Component{
     }
 
     handleBackButtom = ()=>{
-        this.props.history.goBack()
+        if(this.props.path){
+            this.props.history.push(this.props.path)
+        }else{
+            this.props.history.goBack()
+        }
     }
 
     render(){
@@ -117,7 +121,8 @@ class NavBar extends Component{
 
 function mapStateToProps(state, props){
     return{
-        showBackButtom: state.backButtom.activate
+        showBackButtom: state.backButtom.activate,
+        path: state.backButtom.path
     }
 }
 

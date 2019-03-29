@@ -5,6 +5,7 @@ import 'firebase/auth'
 import { formatPhone, randomColor } from './utilities'
 
 
+
 const CLIENTS = 'clients'
 
 
@@ -31,18 +32,60 @@ export function createCliente(client, cb){
 }
 
 
-export function getAllClients(cb){
-    const clientsList = {}
-    firebase.firestore().collection(CLIENTS).orderBy('name','asc').get()
-            .then(querySnapshot =>{
-                querySnapshot.forEach(doc => {
-                    clientsList[doc.id] = {id: doc.id, ...doc.data()}
-                })
-                cb(null, clientsList)
+export function updateClient(id, client, cb){
+    const database = firebase.firestore();
+
+    const newPhone = formatPhone(client.phone, client.country.callingCodes[0])
+
+    const newClient = {
+        ...client,
+        phone: newPhone,
+        updatedAt: new Date()
+    }
+
+    database.collection(CLIENTS).doc(id).update(newClient)
+        .then(()=>{
+            cb()
+        })
+        .catch(err => {
+        cb(err) 
+        })
+}
+
+export function createUpdateClient(client, id){
+    return new Promise((res, rej)=>{
+        if(id){
+            updateClient(id, client, (err)=>{
+                if(err){
+                    rej(err)
+                }else{
+                    res()
+                }
             })
-            .catch(err => {
-                cb(err)
+        }else{
+            createCliente(client, (err)=>{
+                if(err){
+                    rej(err)
+                }else{
+                    res()
+                }
             })
+        }
+    })
+}
+
+
+
+
+export function getAllClients(cb){   
+    firebase.firestore().collection(CLIENTS).orderBy('name','asc')
+        .onSnapshot(querySnapshot => {
+            const clientsList = {}
+            querySnapshot.forEach(doc => {
+                clientsList[doc.id] = {id: doc.id, ...doc.data()}
+            })
+            cb(null, clientsList)
+    })
 }
 
 

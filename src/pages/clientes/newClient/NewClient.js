@@ -7,7 +7,7 @@ import NewClientFromGeneral from "./NewClientFromGeneral";
 import NewClientResume from "./NewClientResume";
 import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom } from '../../../actions'
-import { createCliente } from '../../../lib/firebaseService'
+import { createCliente, updateClient, createUpdateClient } from '../../../lib/firebaseService'
 import Loader from '../../../componets/loader/Loader'
 import { withRouter } from 'react-router-dom'
 import { setTimeout } from "timers";
@@ -39,7 +39,8 @@ class NewClient extends Component {
         saving: false,
         loading: false,
         success: false,
-        from: null
+        noRender: true,
+        isEditing: false
     }
 
     submitFunctions = []
@@ -57,33 +58,40 @@ class NewClient extends Component {
         return
     }
 
-    componentDidMount() {
-        const { state } = this.props.location
-        
-        this.props.showBackButtom()
+    componentDidMount() {    
+        this.props.showBackButtom("clientes")
         this.getAllConuntries()
-            .then(() => {
-                if (state) {
-                    this.getEditData(state)
-                }
+            .then(()=>{
+                this.getEditInfo()
             })
     }
 
-    getEditData = (routerState) => {
+    getEditInfo = ()=>{
         const { options } = this.state
-        const { from, client } = routerState
-        const countryIndex = options.find((country) => {
-            return (country.label === client.country.name) || (country.label === client.country.translations.es)
-        })
-        this.setState({
-            info:{
-                ...client,
-                country: countryIndex
-            },
-            from
-        })
-        console.log("lo hicimos")
+        const {client} = this.props
+        if(client){
+            const countryIndex = options.find(country => {
+                return (country.label === client.country.translations.es ) || (country.label === client.country.name)
+            })
+            this.setState({
+                info:{
+                    name: client.name,
+                    email: client.email,
+                    phone: client.phone,
+                    city: client.city,
+                    address: client.address,
+                    zipCode: client.zipCode,
+                    country: countryIndex
+                },
+                noRender: false,
+                isEditing: true,
+
+            })
+        }else{
+            this.setState({noRender: false, isEditing: false})
+        }
     }
+
 
     componentWillUnmount() {
         this.props.hideBackButtom()
@@ -103,11 +111,13 @@ class NewClient extends Component {
         actions.setSubmitting(false)
     }
 
+
     handleNext = () => {
         this.setState(state => ({
             activeStep: state.activeStep + 1,
         }));
-    };
+    }
+
 
     handleBack = () => {
         this.setState(state => ({
@@ -129,23 +139,23 @@ class NewClient extends Component {
     handleSave = () => {
         const { country } = this.state.info
         const { countries } = this.state
+        const { clientId, from } = this.props
         const client = {
             ...this.state.info,
             country: countries[country.value]
         }
 
         this.setState({ saving: true, loading: true, success: false })
-
-        createCliente(client, (err) => {
-            if (err) {
+        createUpdateClient(client, clientId )
+            .then(()=>{
+                this.setState({ success: true, loading: false })
+                setTimeout(() => {
+                    this.props.history.push(from || '/clientes')
+                }, 600)
+            })
+            .catch(err=>{
                 console.log(err)
-                return
-            }
-            this.setState({ success: true, loading: false })
-            setTimeout(() => {
-                this.props.history.push('/clientes')
-            }, 600)
-        })
+            })
     }
 
     render() {
@@ -156,48 +166,53 @@ class NewClient extends Component {
             success,
             loading,
             saving,
-            info
+            noRender
         } = this.state
 
         return (
             <div>
                 {
-                    saving ?
-                        <Loader
-                            success={success}
-                            loading={loading} />
-                        :
-                        <MyStepper
-                            activeStep={activeStep}
-                            handleNext={this.sumbitForm}
-                            handleBack={this.handleBack}
-                            onComplete={this.handleComplete}>
-                            <MyStep title="Informacion General" >
-                                <NewClientFromGeneral
-                                    initialValues={info}
-                                    getSubmitRef={this.getSubmitRefGeneral}
-                                    getRef={this.getFormRef}
-                                    handleSubmit={this.handleSubmit}
-                                    {...this.state.info} />
+                    !noRender &&
+                    <div>
+                        {
+                            saving ?
+                                <Loader
+                                    success={success}
+                                    loading={loading} />
+                                :
+                                <MyStepper
+                                    activeStep={activeStep}
+                                    handleNext={this.sumbitForm}
+                                    handleBack={this.handleBack}
+                                    onComplete={this.handleComplete}>
+                                    <MyStep title="Informacion General" >
+                                        <NewClientFromGeneral
+                                            getSubmitRef={this.getSubmitRefGeneral}
+                                            getRef={this.getFormRef}
+                                            handleSubmit={this.handleSubmit}
+                                            {...this.state.info} />
 
-                            </MyStep>
-                            <MyStep title="Ubicacion" >
-                                <NewClientFormLocation
-                                    initialValues={info}
-                                    options={options}
-                                    getSubmitRef={this.getSubmitRefLocation}
-                                    getRef={this.getFormRef}
-                                    handleSubmit={this.handleSubmit}
-                                    {...this.state.info} />
-                            </MyStep>
-                            <MyStep onFinish={this.handleSave} title="Resumen" >
-                                <NewClientResume
-                                    {...this.state.info}
-                                    country={countries && this.state.info.country && countries[this.state.info.country.value]}
-                                />
-                            </MyStep>
-                        </MyStepper>
+                                    </MyStep>
+                                    <MyStep title="Ubicacion" >
+                                        <NewClientFormLocation
+                                            options={options}
+                                            getSubmitRef={this.getSubmitRefLocation}
+                                            getRef={this.getFormRef}
+                                            handleSubmit={this.handleSubmit}
+                                            {...this.state.info} />
+                                    </MyStep>
+                                    <MyStep onFinish={this.handleSave} title="Resumen" >
+                                        <NewClientResume
+                                            {...this.state.info}
+                                            country={countries && this.state.info.country && countries[this.state.info.country.value]}
+                                        />
+                                    </MyStep>
+                                </MyStepper>
+                        }
+                    </div>
+
                 }
+
             </div>
         )
     }
@@ -209,4 +224,19 @@ const mapDispatchToProps = {
     hideBackButtom
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(withStyles(styles)(NewClient)));
+function mapStateToProps(state, props){
+    const routerState = props.location.state;
+    let id = 0;
+    let from = null
+    if(routerState){
+        id = routerState.clientId
+        from = routerState.from
+    }
+    return{
+        client: state.clients[id],
+        from,
+        clientId: id
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter((withStyles(styles)(NewClient))));

@@ -17,7 +17,7 @@ const styles = theme => ({
          position: 'relative',
          zIndex: 2,
          color: '#FFF',
-         width: '300px'
+         //width: '300px'
     },
     header:{
         display: 'flex',
@@ -71,7 +71,8 @@ function ClientDetailHeader(props){
             <div className={ classes.headerContent }>
                 <img className={classes.img} src={client.country.flag}/>
                 <Typography className={classes.title} component="h2" variant="h2">{client.name}</Typography>
-                <Typography className={classes.subTitle} component="span" variant="subtitle1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, nesciunt?</Typography>
+                <Typography className={classes.subTitle} component="span" variant="subtitle1">Estado: Pedido pendiente</Typography>
+                <Typography style={{marginTop: 0}} className={classes.subTitle} component="span" variant="subtitle1">ultima actualización: 20/05/18</Typography>
             </div>
             <div className={classes.headerActions}>
                 <Button
