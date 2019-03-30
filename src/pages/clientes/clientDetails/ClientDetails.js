@@ -51,7 +51,7 @@ class ClientDetail extends Component {
 
     handleEdit = (client) => () => {
         const from = this.props.location.pathname
-        const { clientId } = this.props
+        //const { clientId } = this.props
         this.props.history.push({
             pathname: '/clientes/nuevo',
             state: {

@@ -1,6 +1,3 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import { UpdateSharp } from '@material-ui/icons';
 import { getAllClients } from '../lib/firebaseService';
 
 

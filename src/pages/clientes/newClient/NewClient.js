@@ -7,16 +7,26 @@ import NewClientFromGeneral from "./NewClientFromGeneral";
 import NewClientResume from "./NewClientResume";
 import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom } from '../../../actions'
-import { createCliente, updateClient, createUpdateClient } from '../../../lib/firebaseService'
+import { createUpdateClient, deleteClient } from '../../../lib/firebaseService'
 import Loader from '../../../componets/loader/Loader'
 import { withRouter } from 'react-router-dom'
 import { setTimeout } from "timers";
+import Button from '@material-ui/core/Button'
+import {    
+    Save as SaveIcon,
+    Delete as DeleteIcon
+ } from '@material-ui/icons'
 
 
 
 const styles = theme => ({
     formContainer: {
         margin: `${theme.spacing.unit * 2}px 0`
+    },
+    deleteButton: {
+        position: 'absolute',
+        right: `${theme.spacing.unit * 2}px`,
+        top: `${theme.spacing.unit * 2}px`
     }
 })
 
@@ -40,7 +50,10 @@ class NewClient extends Component {
         loading: false,
         success: false,
         noRender: true,
-        isEditing: false
+        isEditing: false,
+        Icon: null,
+        loadingText: '',
+        successText: ''
     }
 
     submitFunctions = []
@@ -58,23 +71,23 @@ class NewClient extends Component {
         return
     }
 
-    componentDidMount() {    
+    componentDidMount() {
         this.props.showBackButtom()
         this.getAllConuntries()
-            .then(()=>{
+            .then(() => {
                 this.getEditInfo()
             })
     }
 
-    getEditInfo = ()=>{
+    getEditInfo = () => {
         const { options } = this.state
-        const {client} = this.props
-        if(client){
+        const { client } = this.props
+        if (client) {
             const countryIndex = options.find(country => {
-                return (country.label === client.country.translations.es ) || (country.label === client.country.name)
+                return (country.label === client.country.translations.es) || (country.label === client.country.name)
             })
             this.setState({
-                info:{
+                info: {
                     name: client.name,
                     email: client.email,
                     phone: client.phone,
@@ -87,8 +100,8 @@ class NewClient extends Component {
                 isEditing: true,
 
             })
-        }else{
-            this.setState({noRender: false, isEditing: false})
+        } else {
+            this.setState({ noRender: false, isEditing: false })
         }
     }
 
@@ -136,6 +149,23 @@ class NewClient extends Component {
         this.submitFunctions[this.state.activeStep]()
     }
 
+    handleDeleteClient = async () => {
+        const { clientId } = this.props
+        this.setState({ 
+            saving: true, 
+            loading: true, 
+            success: false, 
+            Icon: DeleteIcon,
+            loadingText: 'Estamos borrando el cliente',
+            successText: 'El cliente se borro correctamente!'
+        })
+        await deleteClient(clientId).catch(err => console.log(err))
+        this.setState({ success: true, loading: false })
+        setTimeout(() => {
+            this.props.history.push('/clientes')
+        }, 700)
+    }
+
     handleSave = () => {
         const { country } = this.state.info
         const { countries } = this.state
@@ -145,15 +175,22 @@ class NewClient extends Component {
             country: countries[country.value]
         }
 
-        this.setState({ saving: true, loading: true, success: false })
-        createUpdateClient(client, clientId )
-            .then(()=>{
+        this.setState({ 
+            saving: true, 
+            loading: true, 
+            success: false, 
+            Icon: SaveIcon,
+            loadingText: 'Se estan guardado los datos',
+            successText: 'Los datos se guardaron correctamente!'
+        })
+        createUpdateClient(client, clientId)
+            .then(() => {
                 this.setState({ success: true, loading: false })
                 setTimeout(() => {
                     this.props.history.push(from || '/clientes')
-                }, 600)
+                }, 700)
             })
-            .catch(err=>{
+            .catch(err => {
                 console.log(err)
             })
     }
@@ -166,17 +203,26 @@ class NewClient extends Component {
             success,
             loading,
             saving,
-            noRender
+            noRender,
+            isEditing,
+            Icon,
+            loadingText,
+            successText
         } = this.state
+        const { classes } = this.props
+
 
         return (
             <div>
                 {
                     !noRender &&
-                    <div>
+                    <div style={{ position: 'relative' }}>
                         {
                             saving ?
                                 <Loader
+                                    loadingText={loadingText}
+                                    successText={successText}
+                                    Icon={Icon}
                                     success={success}
                                     loading={loading} />
                                 :
@@ -186,6 +232,18 @@ class NewClient extends Component {
                                     handleBack={this.handleBack}
                                     onComplete={this.handleComplete}>
                                     <MyStep title="Informacion General" >
+                                        <div>
+                                            {
+                                                isEditing &&
+                                                <Button
+                                                onClick={this.handleDeleteClient}
+                                                className={classes.deleteButton}
+                                                color="secondary"
+                                                variant="outlined">
+                                                Eliminar
+                                                </Button>
+                                            }
+                                        </div>
                                         <NewClientFromGeneral
                                             getSubmitRef={this.getSubmitRefGeneral}
                                             getRef={this.getFormRef}
@@ -224,15 +282,15 @@ const mapDispatchToProps = {
     hideBackButtom
 }
 
-function mapStateToProps(state, props){
+function mapStateToProps(state, props) {
     const routerState = props.location.state;
     let id = 0;
     let from = null
-    if(routerState){
+    if (routerState) {
         id = routerState.clientId
         from = routerState.from
     }
-    return{
+    return {
         client: state.clients[id],
         from,
         clientId: id

@@ -6,14 +6,18 @@ import { connect } from 'react-redux'
 import { asyncUpdateClients } from '../../actions'
 
 
-
-
-const mySellerId = 1;
-
-
 const styles = theme =>({
     input:{
         width: '100%'
+    },
+    header:{
+        background: theme.palette.secondary.light,
+        height: '200px',
+        marginLeft: `-${theme.spacing.unit*3}px`,
+        marginRight: `-${theme.spacing.unit*3}px`,
+        marginTop: `-${theme.spacing.unit*3}px`,
+        marginBottom: `-${theme.spacing.unit*5}px`,
+        padding: `${theme.spacing.unit*7}px ${theme.spacing.unit*3}px 0px`,
     }
 })
 
@@ -58,18 +62,21 @@ class Clientes extends Component{
 
     render(){
         const { checkValue, textValue } = this.state
-        const { clients } = this.props
+        const { clients, classes } = this.props
         const clientList = Object.values(clients)
         return(
             <div>
-                <ClientSearch  
-                    handleChangeCheckbox={ this.handleChangeCheckbox }
-                    handleChangeInput={ this.handleChangeInput }
-                    handleSubmit={ this.handleSubmit }
-                    handleAddClient= {this.handleAddClient}
-                    checkValue={ checkValue }
-                    textValue={ textValue }
-                    />
+                <div className={classes.header}>
+                    <ClientSearch  
+                        handleChangeCheckbox={ this.handleChangeCheckbox }
+                        handleChangeInput={ this.handleChangeInput }
+                        handleSubmit={ this.handleSubmit }
+                        handleAddClient= {this.handleAddClient}
+                        checkValue={ checkValue }
+                        textValue={ textValue }
+                        />
+                </div>
+                <div className={classes.separador}/>
                 <ClientList
                     handleClickVerMas={this.handleClickVerMas} 
                     clients={clientList} />

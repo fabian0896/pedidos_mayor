@@ -5,8 +5,7 @@ import green from '@material-ui/core/colors/green';
 import classNames from 'classnames';
 import Fab from '@material-ui/core/Fab';
 import CheckIcon from '@material-ui/icons/Check';
-import SaveIcon from '@material-ui/icons/Save';
-
+import Typography from '@material-ui/core/Typography'
 
 const styles = theme => ({
     wrapper: {
@@ -18,6 +17,7 @@ const styles = theme => ({
         width: '100%',
         height: 'calc(100vh - 64px)',
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -26,6 +26,9 @@ const styles = theme => ({
         '&:hover': {
             backgroundColor: green[700],
         },
+    },
+    stateText:{
+        marginTop: `${theme.spacing.unit*2}px`
     },
     button:{
         height: '100px',
@@ -42,7 +45,14 @@ const styles = theme => ({
 
 
 function Loader(props) {
-    const { loading, success, classes } = props
+    const { 
+        loading, 
+        success, 
+        classes, 
+        Icon,
+        successText,
+        loadingText
+    } = props
     const buttonClassname = classNames({
         [classes.buttonSuccess]: success,
       });
@@ -50,10 +60,17 @@ function Loader(props) {
         <div className={classes.container}>
             <div className={classes.wrapper}>
                 <Fab size="large" color="primary" className={classNames(buttonClassname, classes.button)} >
-                    {success ? <CheckIcon /> : <SaveIcon />}
+                    {success ? <CheckIcon /> : <Icon />}
                 </Fab>
                 {loading && <CircularProgress size={112} className={classes.fabProgress} />}
             </div>
+            {
+                success?
+                <Typography className={classes.stateText} component="span" variant="subtitle1">{successText}</Typography>
+                :
+                <Typography className={classes.stateText} component="span" variant="subtitle1">{loadingText}</Typography>
+            }
+            
         </div>
     )
 }

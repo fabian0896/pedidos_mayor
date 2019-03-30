@@ -17,7 +17,7 @@ class ClientList extends Component{
         const { expanded } = this.state
 
         return(
-        <div style={{marginTop: '20px'}}>
+        <div style={{marginTop: '0'}}>
         {
             clients.map((client, index) =>(
                 <ListClientItem
