@@ -100,7 +100,7 @@ class ClienteSearch extends Component {
                 <Fab 
                     size="medium" 
                     className={classes.fab} 
-                    color="primary"
+                    color="secondary"
                     onClick={this.props.handleAddClient}>
                    <Add/>
                 </Fab>                       

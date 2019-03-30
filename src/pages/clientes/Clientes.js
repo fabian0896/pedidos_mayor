@@ -11,7 +11,7 @@ const styles = theme =>({
         width: '100%'
     },
     header:{
-        background: theme.palette.secondary.light,
+        background: theme.palette.primary.light,
         height: '200px',
         marginLeft: `-${theme.spacing.unit*3}px`,
         marginRight: `-${theme.spacing.unit*3}px`,
