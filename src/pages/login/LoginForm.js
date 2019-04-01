@@ -66,7 +66,8 @@ function LoinForm(props) {
         SignUpSchema = Yup.object().shape({
             email: Yup.string().email('Correo invalido').required('El Correo es necesario para entrar ;)'),
             password: Yup.string().min(4, 'La contraseña es muy corta').required('La contraseña es necesaria baby ;)'),
-            name: Yup.string("Valor invalido").min(5, "El nombre debe ser de minimo 5 letras")
+            name: Yup.string("Valor invalido").min(5, "El nombre debe ser de minimo 5 letras"),
+            code: Yup.string("el codigo no es valido")
         })
     }else{
         SignUpSchema = Yup.object().shape({

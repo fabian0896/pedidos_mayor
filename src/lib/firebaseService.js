@@ -8,6 +8,11 @@ import * as algolia from './algoliaService'
 
 
 const CLIENTS = 'clients'
+const CODES = 'codes'
+const SELLERS = 'sellers'
+
+
+//---------------------------------------------CLients -------------------------------------------
 
 
 export function createCliente(client){
@@ -40,11 +45,12 @@ export function createCliente(client){
     return new Promise( async (res,rej)=>{
         const myHandleError = handleError(rej)
         const documentSnapshot = await databaseRef.add(newClient).catch(myHandleError)
-        algoliaObject['id'] = documentSnapshot.id
+        algoliaObject['objectID'] = documentSnapshot.id
         const algoliaAdd = await algolia.addClient(algoliaObject).catch(myHandleError)
-        const algoliaId = algoliaAdd.objectID
-        await documentSnapshot.update({algoliaId}).catch(myHandleError)
+        //const algoliaId = algoliaAdd.objectID
+        //await documentSnapshot.update({algoliaId}).catch(myHandleError)
         res('created')
+        return
     })
 }
 
@@ -52,7 +58,7 @@ export function createCliente(client){
 
 
 
-export function updateClient(id, client, cb){
+export function updateClient(id, client){
     const databaseRef = firebase.firestore().collection(CLIENTS);
 
     const phone = formatPhone(client.phone, client.country.callingCodes[0])
@@ -75,12 +81,11 @@ export function updateClient(id, client, cb){
 
     return new Promise(async (res, rej)=>{
         const myHandleError = handleError(rej)
-        const documentSnapshot = await databaseRef.doc(id).get().catch(myHandleError)
-        const {algoliaId, seller} = documentSnapshot.data()
-        algoliaObject['seller'] = seller
-        await algolia.updateClient(algoliaId ,algoliaObject).catch(myHandleError)
-        await documentSnapshot.ref.update(newClient).catch(myHandleError)
+        //const documentSnapshot = await databaseRef.doc(id).get().catch(myHandleError)
+        await databaseRef.doc(id).update(newClient).catch(myHandleError)
+        await algolia.updateClient(id ,algoliaObject).catch(myHandleError)
         res('updated')
+        return
     })
 }
 
@@ -89,26 +94,25 @@ export function deleteClient(id){
     const databaseRef = firebase.firestore().collection(CLIENTS)
     return new Promise(async (res, rej) => {
         const myHandleError = handleError(rej)
-        const documentSnapshot = await databaseRef.doc(id).get().catch(myHandleError)
-        const {algoliaId} = documentSnapshot.data()
-        await algolia.deleteUser(algoliaId).catch(myHandleError)
-        await documentSnapshot.ref.delete().catch(myHandleError)
+        await databaseRef.doc(id).delete().catch(myHandleError)
+        await algolia.deleteUser(id).catch(myHandleError)
         res('deleted')
+        return
     })
 }
 
 
 export function createUpdateClient(client, id){
-    return new Promise((res, rej) => {
+    return new Promise(async (res, rej) => {
         const myHandleError = handleError(rej)
         if(id){
-            updateClient(id, client)
-                .then((data)=> res(data))
-                .catch(myHandleError)
+            const updateRes = await updateClient(id, client).catch(myHandleError)
+            res(updateRes)
+            return
         }else{
-            createCliente(client)
-                .then((data)=> res(data))
-                .catch(myHandleError)
+            const createRes = await createCliente(client).catch(myHandleError)
+            res(createRes)
+            return
         }
     })
 }
@@ -128,21 +132,62 @@ export function getAllClients(cb){
 }
 
 
-export function getClientById(id, callback){
-    return firebase.firestore().collection(CLIENTS).doc(id).get()
-        .then(doc=>{
-            if(doc.exists){
-                callback(null, {id: doc.id,...doc.data()})
-            } else{
-                callback(null, null)
-            }
-        }) 
-        .catch(err =>{
-            callback(err, null)
-        })   
+export async function getClientById(id, callback){
+    const snap = await firebase.firestore().collection(CLIENTS).doc(id).get().catch(err =>{throw  Error(err)})
+    if(snap.exists){
+        return {id: snap.id, ...snap.data()}
+    }else{
+        return null
+    }
+}
+
+//------------------------------------------ SELLERS-------------------------------------------------------
+
+
+export async function registerUSer(email, password){
+    const snap = await firebase.auth().createUserWithEmailAndPassword(email, password)
+    return snap.user.uid
 }
 
 
+export function createSeller({email, password, code, name}){
+    return new Promise(async (res, rej)=>{
+        const codes = await getCodes()
+        const matchCode = codes.find(actualCode => actualCode.value === code)
+        if(!matchCode){
+            rej("El codigo de registro es invalido")
+            return
+        }
+        const uid = await registerUSer(email, password).catch(()=>{
+            rej("no se pudo crear el usuario con el correo espesificado")
+            return
+        })
+        if(uid){
+            await firebase.firestore().collection(SELLERS).doc(uid).set({
+                name,
+                email,
+            })
+            res("se creo el usuario correctamente")
+        }
+        return
+    })
+}
+
+
+export function getCodes(){
+    return new Promise(async (res, rej)=>{
+       const myHandleError = handleError(rej)
+       const codes = [] 
+       const snap = await firebase.firestore().collection(CODES).get().catch(myHandleError)
+       snap.forEach(code => {
+           codes.push(code.data())
+       })
+       res(codes)
+       return
+    })
+}
+
+//-------------------------------------------- Handle Error ----------------------------------------------
 
 const handleError = (cb) => (err) =>{
     if(cb){

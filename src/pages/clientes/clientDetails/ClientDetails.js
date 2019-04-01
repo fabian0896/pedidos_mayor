@@ -34,14 +34,10 @@ class ClientDetail extends Component {
     }
 
 
-    getClient = (id) => {
-        getClientById(id, (err, client) => {
-            if (err) {
-                console.log(err)
-                return;
-            }
-            this.setState({ loading: false, client })
-        })
+    getClient = async (id) => {
+        const client = await getClientById(id).catch(err => console.log(err))
+        this.setState({ loading: false, client })
+        return
     }
 
     componentWillUnmount() {

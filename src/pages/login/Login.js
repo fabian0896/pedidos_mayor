@@ -6,7 +6,7 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import { connect } from 'react-redux'
 import { showAlert, hideAlert } from '../../actions'
-
+import { createSeller } from '../../lib/firebaseService.js'
  
 
 class Login extends Component{
@@ -24,16 +24,19 @@ class Login extends Component{
         return user;
      }
     
-      handelSubmint = (values, actions) =>{ 
-        this.login(values.email, values.password).then(user =>{
-            console.log("se conecto correctamente");actions.resetForm();
-            actions.setSubmitting(false);
-        })
-        .catch(err =>{
-            console.log("Usuario o clave incorrecta");
-            this.props.showAlert('error', 'Usuario o clave incorrectas');
-            actions.setSubmitting(false)
-        }) 
+    handelSubmint = (values, actions) =>{ 
+        const { register } = this.state
+        if(register){
+            createSeller(values).catch(errMesaje=>{
+                this.props.showAlert('error', errMesaje);
+            })
+        }else{
+            this.login(values.email, values.password).catch(err =>{
+                this.props.showAlert('error', 'Usuario o clave incorrectas');
+            }) 
+        }
+        actions.resetForm();
+        actions.setSubmitting(false);  
       }
     
 

@@ -2,6 +2,7 @@ import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
+import * as moment from 'moment'
 
 const styles = theme => ({
     title:{
@@ -66,13 +67,15 @@ const styles = theme => ({
 
 function ClientDetailHeader(props){
     const { classes, client, handleEdit } = props
+    const timeStamp = client.createdAt.seconds
+    const date = moment(timeStamp*1000).format("DD/MM/YYYY")
     return(
         <div className={classes.header}>
             <div className={ classes.headerContent }>
                 <img alt={client.country.name} className={classes.img} src={client.country.flag}/>
                 <Typography className={classes.title} component="h2" variant="h2">{client.name}</Typography>
                 <Typography className={classes.subTitle} component="span" variant="subtitle1">Estado: Pedido pendiente</Typography>
-                <Typography style={{marginTop: 0}} className={classes.subTitle} component="span" variant="subtitle1">ultima actualización: 20/05/18</Typography>
+                <Typography style={{marginTop: 0}} className={classes.subTitle} component="span" variant="subtitle1">ultima actualización: { date }</Typography>
             </div>
             <div className={classes.headerActions}>
                 <Button
