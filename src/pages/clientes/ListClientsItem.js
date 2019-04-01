@@ -45,8 +45,8 @@ const styles = theme => ({
         alignItems: 'center'
      },
      avatar: {
-         height: '56px',
-         width: '56px',
+         //height: '56px',
+         //width: '56px',
          background: `rgb(200,200,200)`
      },
 })

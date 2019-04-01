@@ -4,7 +4,8 @@ import ClientSearch from './ClientSearch'
 import ClientList from './ClientList'
 import { connect } from 'react-redux'
 import { asyncUpdateClients } from '../../actions'
-
+import { Grid} from '@material-ui/core'
+import TopClients from './TopClients';
 
 const styles = theme =>({
     input:{
@@ -76,10 +77,17 @@ class Clientes extends Component{
                         textValue={ textValue }
                         />
                 </div>
-                <div className={classes.separador}/>
-                <ClientList
-                    handleClickVerMas={this.handleClickVerMas} 
-                    clients={clientList} />
+                <Grid container spacing={24}>
+                    <Grid item md={9}>
+                        <ClientList
+                            handleClickVerMas={this.handleClickVerMas} 
+                            clients={clientList} />
+                    
+                    </Grid>
+                    <Grid item md={3}>
+                        <TopClients />
+                    </Grid>
+                </Grid>
             </div>
         )
     }
