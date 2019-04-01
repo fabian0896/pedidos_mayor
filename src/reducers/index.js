@@ -3,12 +3,14 @@ import user from './user.js'
 import alert from './alert.js'
 import backButtom from './backButtom.js'
 import clients from './clients'
+import sellers from './sellers'
 
 const rootReducer = combineReducers({
     user,
     alert,
     backButtom,
-    clients
+    clients,
+    sellers
 });
 
 export default rootReducer;

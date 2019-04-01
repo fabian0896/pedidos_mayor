@@ -1,4 +1,4 @@
-import { getAllClients } from '../lib/firebaseService';
+import { getAllClients, getAllSellers } from '../lib/firebaseService';
 
 
 // -------------------------- User -----------------------------
@@ -88,6 +88,25 @@ export const asyncUpdateClients = ()=>{
     }
 }
 
+//-------------------------- SEllers ------------------
 
+export function addSellers(sellers){
+    return{
+        type: 'ADD_SELLERS',
+        payload:{
+            data: sellers
+        }
+    }
+}
+
+
+export function asyncAddSellers(){
+    return dispatch =>{
+        getAllSellers().then(sellers =>{
+            dispatch(addSellers(sellers))
+        })
+        .catch(err => console.log(err))
+    }
+}
 
 

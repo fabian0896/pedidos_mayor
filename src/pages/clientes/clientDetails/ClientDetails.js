@@ -59,7 +59,7 @@ class ClientDetail extends Component {
 
 
     render() {
-        const { classes } = this.props
+        const { classes, sellers } = this.props
         const { loading, client } = this.state
         return (
             <div>
@@ -74,7 +74,7 @@ class ClientDetail extends Component {
                     <Fragment>
                         <ClientDetailHeader handleEdit={this.handleEdit(client)} client={client} />
                         <div className={classes.content}>
-                            <ClientDetailInfo client={client} />
+                            <ClientDetailInfo client={{...client, seller: sellers[client.seller]}} />
                         </div>
                     </Fragment>
                 }
@@ -91,9 +91,11 @@ const mapDispatchToProps = {
 
 function mapStateToProps(state, props) {
     const id = props.match.params.id
+
     return {
         client: state.clients[id],
-        clientId: id
+        clientId: id,
+        sellers: state.sellers
     }
 }
 

@@ -144,6 +144,24 @@ export async function getClientById(id, callback){
 //------------------------------------------ SELLERS-------------------------------------------------------
 
 
+export async function getAllSellers(){
+    const snap = await firebase.firestore().collection(SELLERS).get()
+    const sellers = {}
+    snap.forEach(seller=>{
+        sellers[seller.id] = seller.data()
+    })
+    return sellers;
+}
+
+
+export async function getSellerById(id){
+    const seller = await firebase.firestore().collection(SELLERS).doc(id).get()
+    if(seller.exists){
+        return seller.data()
+    }
+    return null
+}
+
 export async function registerUSer(email, password){
     const snap = await firebase.auth().createUserWithEmailAndPassword(email, password)
     return snap.user.uid

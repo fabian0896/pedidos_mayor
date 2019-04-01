@@ -5,7 +5,7 @@ import { Switch, Redirect, withRouter } from 'react-router-dom'
 import firebase from 'firebase/app';
 import 'firebase/auth'
 import { connect } from 'react-redux';
-import {updateUser, deleteUser, asyncUpdateClients } from './actions'
+import {updateUser, deleteUser, asyncUpdateClients, asyncAddSellers } from './actions'
 
 
 import PrivateRoute from './componets/privateRoute/PrivateRoute';
@@ -53,6 +53,7 @@ class App extends Component {
   componentDidMount() {
     this.getUser();
     this.props.asyncUpdateClients()
+    this.props.asyncAddSellers()
     this.ruta = this.props.location.pathname;
   }
 
@@ -95,7 +96,8 @@ function mapStateToProps(state, props) {
 const mapDispatchToProps = {
   updateUser,
   deleteUser,
-  asyncUpdateClients
+  asyncUpdateClients,
+  asyncAddSellers
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
