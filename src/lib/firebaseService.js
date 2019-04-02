@@ -46,9 +46,7 @@ export function createCliente(client){
         const myHandleError = handleError(rej)
         const documentSnapshot = await databaseRef.add(newClient).catch(myHandleError)
         algoliaObject['objectID'] = documentSnapshot.id
-        const algoliaAdd = await algolia.addClient(algoliaObject).catch(myHandleError)
-        //const algoliaId = algoliaAdd.objectID
-        //await documentSnapshot.update({algoliaId}).catch(myHandleError)
+        await algolia.addClient(algoliaObject).catch(myHandleError)
         res('created')
         return
     })
@@ -139,6 +137,15 @@ export async function getClientById(id, callback){
     }else{
         return null
     }
+}
+
+export async function getLastClients(){
+    const snap = await firebase.firestore().collection(CLIENTS).orderBy('createdAt', 'desc').limit(5).get()
+    const res = {}
+    snap.forEach(doc => {
+        res[doc.id] = {...doc.data(), id: doc.id}
+    })
+    return res
 }
 
 //------------------------------------------ SELLERS-------------------------------------------------------

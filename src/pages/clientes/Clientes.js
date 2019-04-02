@@ -3,9 +3,10 @@ import { withStyles } from '@material-ui/core/styles';
 import ClientSearch from './ClientSearch'
 import ClientList from './ClientList'
 import { connect } from 'react-redux'
-import { asyncUpdateClients } from '../../actions'
+import { asyncUpdateClients, addRecentClients } from '../../actions'
 import { Grid} from '@material-ui/core'
 import TopClients from './TopClients';
+import { searchClient } from '../../lib/searchService'
 
 const styles = theme =>({
     input:{
@@ -27,12 +28,18 @@ class Clientes extends Component{
     
     state = {
         checkValue: false,
-        textValue: ''
+        textValue: '',
+        results: [],
+        isSearching: false
     }
     
     handleChangeCheckbox = event => {
         const value = event.target.checked
-        this.setState({ checkValue: value })
+        this.setState({ checkValue: value }, ()=>{
+            this.handleSubmit()
+        })
+
+        
     }
 
     handleChangeInput = event =>{
@@ -43,12 +50,20 @@ class Clientes extends Component{
         this.props.history.push('/clientes/nuevo')
     }
 
-    handleSubmit = event => {
-        event.preventDefault();
-        this.props.history.push({
-            pathname: "/clientes",
-            search: `?name=${ this.state.textValue }&all=${ !this.state.checkValue }`,
-        })
+    handleSubmit = async event => {
+        event && event.preventDefault();
+        const { textValue, checkValue } = this.state
+        const { userId } = this.props
+        const uid = checkValue? userId: null;
+
+        if(!textValue && !uid){
+            this.setState({results: [], isSearching: false})
+            return
+        }
+
+        const data = await searchClient(uid, textValue)
+        this.setState({results: data, isSearching: true})
+        return
     }
 
     handleClickVerMas = id => () => {
@@ -57,14 +72,21 @@ class Clientes extends Component{
 
     
     componentDidMount(){
+        this.props.addRecentClients()
         //getAllClients()
         //this.props.asyncUpdateClients()
     }
 
     render(){
-        const { checkValue, textValue } = this.state
-        const { clients, classes } = this.props
-        const clientList = Object.values(clients)
+        const { checkValue, textValue, isSearching, results } = this.state
+        const { clients, classes, recent } = this.props
+        let clientList
+        if(isSearching){
+            clientList = results
+        }else{
+            clientList = Object.values(clients)
+        }        
+
         return(
             <div>
                 <div className={classes.header}>
@@ -85,7 +107,10 @@ class Clientes extends Component{
                     
                     </Grid>
                     <Grid item md={3}>
-                        <TopClients />
+                        <TopClients
+                            handleClick={this.handleClickVerMas} 
+                            recent={recent} 
+                            top={{}}/>
                     </Grid>
                 </Grid>
             </div>
@@ -93,13 +118,18 @@ class Clientes extends Component{
     }
 }
 
+
+
 const mapDispatchToProps = {
-    asyncUpdateClients
+    asyncUpdateClients,
+    addRecentClients
 }
 
 const mapStateToProps = (state, props) => {
     return {
-        clients: state.clients
+        userId: state.user.uid,
+        clients: state.clients.all,
+        recent: state.clients.recent
     }
 } 
 

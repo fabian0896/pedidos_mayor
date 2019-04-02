@@ -1,4 +1,8 @@
-import { getAllClients, getAllSellers } from '../lib/firebaseService';
+import { 
+    getAllClients, 
+    getAllSellers,
+    getLastClients
+} from '../lib/firebaseService';
 
 
 // -------------------------- User -----------------------------
@@ -85,6 +89,19 @@ export const asyncUpdateClients = ()=>{
             dispatch(updateClients(data))
         })
         
+    }
+}
+
+export function addRecentClients(){
+    return dispatch => {
+        getLastClients().then(data =>{
+            dispatch({
+                type: 'ADD_RECENT_CLIENTS',
+                payload:{
+                    data
+                }
+            })
+        })
     }
 }
 

@@ -77,6 +77,7 @@ class ClienteSearch extends Component {
                                 </IconButton>
 
                                 <InputBase
+                                    type="search"
                                     className={classes.input}
                                     placeholder="Busqueda..."
                                     onChange={handleChangeInput}

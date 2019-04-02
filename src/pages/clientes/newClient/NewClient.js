@@ -291,7 +291,7 @@ function mapStateToProps(state, props) {
         from = routerState.from
     }
     return {
-        client: state.clients[id],
+        client: state.clients.all[id],
         from,
         clientId: id
     }

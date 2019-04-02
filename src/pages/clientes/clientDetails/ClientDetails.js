@@ -93,7 +93,7 @@ function mapStateToProps(state, props) {
     const id = props.match.params.id
 
     return {
-        client: state.clients[id],
+        client: state.clients.all[id],
         clientId: id,
         sellers: state.sellers
     }

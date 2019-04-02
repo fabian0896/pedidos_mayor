@@ -16,3 +16,4 @@ export function updateClient(objectID, client){
 export function deleteUser(objectID){
     return clientsIndex.deleteObject(objectID)
 }
+

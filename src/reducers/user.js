@@ -1,4 +1,4 @@
-const initialState = null
+const initialState = {}
 
 
 function user(state = initialState, action){
