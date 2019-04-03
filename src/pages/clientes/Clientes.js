@@ -7,20 +7,12 @@ import { asyncUpdateClients, addRecentClients } from '../../actions'
 import { Grid} from '@material-ui/core'
 import TopClients from './TopClients';
 import { searchClient } from '../../lib/searchService'
+import HeaderLayout from '../../componets/headerLayout/HeaderLayout'
 
 const styles = theme =>({
     input:{
         width: '100%'
     },
-    header:{
-        background: theme.palette.primary.light,
-        height: '200px',
-        marginLeft: `-${theme.spacing.unit*3}px`,
-        marginRight: `-${theme.spacing.unit*3}px`,
-        marginTop: `-${theme.spacing.unit*3}px`,
-        marginBottom: `-${theme.spacing.unit*5}px`,
-        padding: `${theme.spacing.unit*7}px ${theme.spacing.unit*3}px 0px`,
-    }
 })
 
 
@@ -37,9 +29,7 @@ class Clientes extends Component{
         const value = event.target.checked
         this.setState({ checkValue: value }, ()=>{
             this.handleSubmit()
-        })
-
-        
+        })      
     }
 
     handleChangeInput = event =>{
@@ -89,7 +79,7 @@ class Clientes extends Component{
 
         return(
             <div>
-                <div className={classes.header}>
+                <HeaderLayout >
                     <ClientSearch  
                         handleChangeCheckbox={ this.handleChangeCheckbox }
                         handleChangeInput={ this.handleChangeInput }
@@ -98,7 +88,7 @@ class Clientes extends Component{
                         checkValue={ checkValue }
                         textValue={ textValue }
                         />
-                </div>
+                </HeaderLayout>
                 <Grid container spacing={24}>
                     <Grid item md={9}>
                         <ClientList

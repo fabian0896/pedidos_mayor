@@ -7,7 +7,6 @@ const clientsIndex = agoliaClient.initIndex('clients');
 
 
 export async function searchClient(uid, name=""){
-    console.log("se utilizo algolia")
     const searchOptions ={ 
         query: name,
         hitsPerPage: 30,
