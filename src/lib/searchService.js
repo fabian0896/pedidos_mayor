@@ -42,7 +42,6 @@ export async function searchClientsIds(uid, name=""){
     const clientsIds = hits.map(client => {
         return client.objectID
     })
-    console.log('no hago mas peticiones a firebase', clientsIds)
     return clientsIds
 
 }

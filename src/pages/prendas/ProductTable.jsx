@@ -52,19 +52,22 @@ const rows = [
 
 const panelStyles = theme =>({
     root:{
-      padding: `0 ${theme.spacing.unit * 3}px ${theme.spacing.unit * 4}px`,
+      overflow: 'hidden',
+      padding: `0 ${theme.spacing.unit * 0}px ${theme.spacing.unit * 6}px`,
       marginBottom: `${theme.spacing.unit *2}px`
     },
     container:{
-        padding: '20px 0',
+        padding: `20px ${theme.spacing.unit * 3}px`,
+        background: theme.palette.secondary.dark,
+        color: theme.palette.secondary.contrastText
     }
 })
 
 let Panel = ({classes, children}) =>(
   <Paper className={classes.root}>
           <div className={classes.container}>
-            <Typography component="h6" variant="h4" >Linea Latex</Typography>
-            <Typography component="span" variant="overline">57 Prendas</Typography>
+            <Typography color="inherit" component="h6" variant="h4" >Linea Latex</Typography>
+            <Typography color="inherit" component="span" variant="overline">57 Prendas</Typography>
           </div>
           <div>
             {children}
