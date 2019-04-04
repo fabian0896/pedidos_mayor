@@ -25,3 +25,24 @@ export async function searchClient(uid, name=""){
     return Promise.all(promises)
 
 }
+
+export async function searchClientsIds(uid, name=""){
+    
+    const searchOptions ={ 
+        query: name,
+        hitsPerPage: 30,
+    }
+
+    if(uid){
+        searchOptions['filters'] = `seller:${uid}`
+    }
+    
+    const { hits } = await clientsIndex.search(searchOptions)
+
+    const clientsIds = hits.map(client => {
+        return client.objectID
+    })
+    console.log('no hago mas peticiones a firebase', clientsIds)
+    return clientsIds
+
+}

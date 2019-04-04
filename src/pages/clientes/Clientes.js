@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { asyncUpdateClients, addRecentClients } from '../../actions'
 import { Grid} from '@material-ui/core'
 import TopClients from './TopClients';
-import { searchClient } from '../../lib/searchService'
+import { searchClient, searchClientsIds } from '../../lib/searchService'
 import HeaderLayout from '../../componets/headerLayout/HeaderLayout'
 
 const styles = theme =>({
@@ -43,15 +43,18 @@ class Clientes extends Component{
     handleSubmit = async event => {
         event && event.preventDefault();
         const { textValue, checkValue } = this.state
-        const { userId } = this.props
+        const { userId, clients } = this.props
         const uid = checkValue? userId: null;
 
         if(!textValue && !uid){
             this.setState({results: [], isSearching: false})
             return
         }
-
-        const data = await searchClient(uid, textValue)
+        //const data = await searchClient(uid, textValue)
+        const clientsIds = await searchClientsIds(uid, textValue)
+        const data = clientsIds.map(id =>{
+            return clients[id]
+        })
         this.setState({results: data, isSearching: true})
         return
     }
