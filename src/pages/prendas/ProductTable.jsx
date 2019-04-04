@@ -35,7 +35,7 @@ const panelStyles = theme => ({
   }
 })
 
-let Panel = ({ classes, children }) => (
+let Panel = ({ classes, children, isDeletable}) => (
   <Paper className={classes.root}>
     <div className={classes.container}>
       <div className={classes.info}>
@@ -44,7 +44,12 @@ let Panel = ({ classes, children }) => (
       </div>
       <div className={classes.actions}>
         <IconButton color="inherit">
-          <Edit />
+          {
+            isDeletable?
+            <Delete />
+            :
+            <Edit />
+          }
         </IconButton>
       </div>
     </div>
@@ -92,6 +97,15 @@ class ProductTable extends React.Component {
     }))
   }
 
+  onSelected =()=>{
+    const { values } = this.state
+    const valuesList = Object.values(values)
+    if(valuesList.length){
+      return valuesList.find(value => value) || false
+    }
+    return false
+  }
+
   onCheckAll = (event) => {
     const values = {}
     const check = event.target.checked
@@ -109,15 +123,18 @@ class ProductTable extends React.Component {
 
   render() {
     const { classes, data } = this.props;
+    const { values, checkAll } = this.state
+    const isDeletable = this.onSelected()
+  
     return (
-      <Panel >
+      <Panel isDeletable={isDeletable} >
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox">
                 <Checkbox
                   onChange={this.onCheckAll}
-                  checked={this.state.checkAll}
+                  checked={checkAll}
                 />
               </TableCell>
               <TableCell>Nombre</TableCell>
@@ -131,7 +148,7 @@ class ProductTable extends React.Component {
               <TableRow selected={this.state.values[row.id]} hover key={row.id}>
                 <TableCell padding="checkbox">
                   <Checkbox
-                    checked={this.state.values[row.id] || false}
+                    checked={values[row.id] || false}
                     onChange={this.handleChange(row.id)}
                   />
                 </TableCell>
