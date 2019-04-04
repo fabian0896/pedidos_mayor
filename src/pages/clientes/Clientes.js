@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { asyncUpdateClients, addRecentClients } from '../../actions'
 import { Grid} from '@material-ui/core'
 import TopClients from './TopClients';
-import { searchClient, searchClientsIds } from '../../lib/searchService'
+import { searchClientsIds } from '../../lib/searchService'
 import HeaderLayout from '../../componets/headerLayout/HeaderLayout'
 
 const styles = theme =>({
@@ -72,7 +72,7 @@ class Clientes extends Component{
 
     render(){
         const { checkValue, textValue, isSearching, results } = this.state
-        const { clients, classes, recent } = this.props
+        const { clients, recent } = this.props
         let clientList
         if(isSearching){
             clientList = results
