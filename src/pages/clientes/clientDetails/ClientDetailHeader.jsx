@@ -34,8 +34,12 @@ const styles = theme => ({
              top: '64px',
              left: '0',
              zIndex: 1,
-             background: 'rgba(0,0,0, .7)'
-     }
+             background: 'rgba(0,0,0, .7)',
+             [theme.breakpoints.down('xs')]:{
+                top: 56
+            }
+     },
+     
     },
     headerContent:{
         display: 'flex',
@@ -55,7 +59,10 @@ const styles = theme => ({
          objectFit: 'cover',
          top: '64px',
          left: '0',
-         filter: 'blur(2px)'    
+         filter: 'blur(2px)',
+         [theme.breakpoints.down('xs')]:{
+            top: 56
+        }  
     },
     content:{
         position: 'relative',

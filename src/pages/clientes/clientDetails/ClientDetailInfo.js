@@ -78,7 +78,7 @@ function ClientDetailInfo(props){
     return(
         <Grid container spacing={24}>
 
-            <Grid item sm={4} >
+            <Grid item xs={12} sm={6} md={4} >
                 <Paper className={classes.paper} >
                     <div className={classNames(classes.cardHeader, classes.orange) }>
                         <Place fontSize="large" />
@@ -106,7 +106,7 @@ function ClientDetailInfo(props){
             </Grid>
 
 
-            <Grid item sm={4} >
+            <Grid item xs={12} sm={6} md={4}>
                 <Paper className={classes.paper} >
                     <div className={classNames(classes.cardHeader, classes.green) }>
                         <Phone fontSize="large" />
@@ -130,7 +130,7 @@ function ClientDetailInfo(props){
             </Grid>
 
 
-            <Grid item sm={4} >
+            <Grid item xs={12} sm={6} md={4}>
                 <Paper className={classes.paper} >
                     <div className={classNames(classes.cardHeader, classes.blue) }>
                         <Money fontSize="large" />
