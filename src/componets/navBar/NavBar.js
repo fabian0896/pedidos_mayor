@@ -23,7 +23,7 @@ const styles = theme => ({
         flexGrow: 1
     },
     menuButtom:{
-        [theme.breakpoints.up('md')]: {
+        [theme.breakpoints.up('lg')]: {
            display: 'none'
         }
     }

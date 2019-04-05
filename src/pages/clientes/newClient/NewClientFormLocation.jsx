@@ -18,7 +18,10 @@ const styles = theme => ({
         margin: `${theme.spacing.unit * 2}px 0`
     },
     input:{
-        width: '350px'
+        width: '350px',
+        [theme.breakpoints.down('sm')]:{
+            width: '100%'
+        }
     }
 })
 
@@ -52,10 +55,10 @@ function NewClientFormLocation(props) {
                     return(
                         <form ref={props.getRef} onSubmit={handleSubmit}>
                             <Grid className={classes.formContainer} container spacing={24}>
-                                <Grid item sm={12}>
+                                <Grid item xs={12}>
                                     <Field className={classes.input} name="country" component={MyAutocomplete} optionsList={props.options} />
                                 </Grid>
-                                <Grid item sm={12}>
+                                <Grid item xs={12}>
                                     <TextField
                                         className={classes.input}
                                         error={ (!!errors.city) && (!!touched.city)  }
@@ -67,7 +70,7 @@ function NewClientFormLocation(props) {
                                         value={values.city}
                                     />
                                 </Grid>
-                                <Grid item sm={12}>
+                                <Grid item xs={12}>
                                     <TextField
                                         className={classes.input}
                                         error={ errors.zipCode && touched.zipCode }
@@ -79,7 +82,7 @@ function NewClientFormLocation(props) {
                                         value={values.zipCode}
                                     />
                                 </Grid>
-                                <Grid item sm={12}>
+                                <Grid item xs={12}>
                                     <TextField
                                         className={classes.input}
                                         error={errors.address && touched.address}

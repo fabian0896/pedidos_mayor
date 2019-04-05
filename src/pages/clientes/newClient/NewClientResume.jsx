@@ -55,7 +55,7 @@ function NewClientResume(props){
                 }
             </div>
             <Grid container spacing={24} className={classes.root}>
-                <Grid item md={4}>
+                <Grid item xs={12} sm={6} md={4}>
                     <div className={classes.info}>
                         <Typography component="span" variant="subtitle2" color="textSecondary">Telefono:</Typography>
                         <Typography component="span" variant="subtitle1" color="textPrimary">{formatPhonw}</Typography>
@@ -69,7 +69,7 @@ function NewClientResume(props){
                         <Typography component="span" variant="subtitle1" color="textPrimary">{zipCode}</Typography>
                     </div>
                 </Grid>
-                <Grid item md={4}>
+                <Grid item xs={12} sm={6} md={4}>
                     <div className={classes.info}>
                         <Typography component="span" variant="subtitle2" color="textSecondary">Pais:</Typography>
                         <Typography component="span" variant="subtitle1" color="textPrimary">{countryName}</Typography>

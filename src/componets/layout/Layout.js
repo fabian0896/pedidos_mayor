@@ -30,7 +30,7 @@ const styles = theme => ({
     navBar:{
         width: `calc(100% - ${drawerWidth}px)`,
         //marginLeft: drawerWidth,
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down('md')]: {
             width: '100%',
         }
     },
@@ -48,7 +48,14 @@ const styles = theme => ({
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing.unit * 3,
-        position: 'relative'
+        position: 'relative',
+        [theme.breakpoints.down('sm')]:{
+            padding: theme.spacing.unit * 2,
+        },
+        [theme.breakpoints.down('xs')]:{
+            //padding: theme.spacing.unit,
+            padding: 12,
+        }
       },
     slectedRoute:{
         color: 'red'

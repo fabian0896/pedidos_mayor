@@ -6,7 +6,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemIText from '@material-ui/core/ListItemText'
 import logo from '../../assets/fajas-logo.png'
 import { NavLink } from 'react-router-dom'
-import './SideNavBar.css'
 import Hidden from '@material-ui/core/Hidden';
 
 
@@ -31,6 +30,7 @@ class SideNavBar extends React.Component {
                                     key={text}
                                     style={{ textDecoration: 'none' }}
                                     activeClassName={classes.selectedRoute}
+                                    onClick={handleToggle}
                                 >
                                     <ListItem button >
                                         <ListItemIcon><Icon /></ListItemIcon>
@@ -46,7 +46,7 @@ class SideNavBar extends React.Component {
 
         return (
             <Fragment>
-                <Hidden smDown implementation="css">
+                <Hidden mdDown implementation="css">
                     <Drawer
                         className={classes.drawer}
                         variant="permanent"

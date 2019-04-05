@@ -29,12 +29,23 @@ const styles = theme => ({
     helper: {
         borderLeft: `2px solid ${theme.palette.divider}`,
         padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
+        [theme.breakpoints.down('xs')]:{
+            borderLeft: 'none',
+            padding: 0     
+        }
+
       },
      statsContainer:{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: '100%'
+        width: '100%',
+        [theme.breakpoints.down('xs')]:{
+            flexDirection: 'column',
+            height: '250px',
+            //justifyContent: 'space-between',
+            alignItems: 'start'   
+        }
      },
      stats:{
         width: '100%',
@@ -42,7 +53,15 @@ const styles = theme => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        [theme.breakpoints.down('xs')]:{
+            //flexDirection: 'column',
+            flex: 1,
+            alignItems: 'start',
+            height: 'auto',
+            width: 'auto'
+        }
+        
      },
      avatar: {
          //height: '56px',
@@ -76,16 +95,16 @@ class ListClientesItem extends Component{
                     <ExpansionPanelDetails>
                         <div className={ classes.statsContainer }>
                             <div className={ classes.stats }>
-                                <Typography component="span" variant="subheading" color="textSecondary">Saldo Pendiente</Typography>
-                                <Typography align="center" component="span" variant="headline" color="textPrimary">$1.000.000</Typography>
+                                <Typography inline component="span" variant="subheading" color="textSecondary">Saldo Pendiente:</Typography>
+                                <Typography inline  component="span" variant="headline" color="textPrimary">$1.000.000</Typography>
                             </div>
                             <div className={ classNames(classes.helper, classes.stats) }>
-                                <Typography component="span" variant="subheading" color="textSecondary">Ultimo pago</Typography>
-                                <Typography align="center" component="span" variant="headline" color="textPrimary">5 de Febrero 2018</Typography>
+                                <Typography inline component="span" variant="subheading" color="textSecondary">Ultimo pago:</Typography>
+                                <Typography inline  component="span" variant="headline" color="textPrimary">5 de Febrero 2018</Typography>
                             </div>
                             <div className={ classNames(classes.helper, classes.stats) }>
-                                <Typography component="span" variant="subheading" color="textSecondary">Total de pedidos</Typography>
-                                <Typography align="center" component="span" variant="headline" color="textPrimary">35</Typography>
+                                <Typography inline component="span" variant="subheading" color="textSecondary">Total de pedidos:</Typography>
+                                <Typography inline component="span" variant="headline" color="textPrimary">35</Typography>
                             </div>
                         </div>
                     </ExpansionPanelDetails>

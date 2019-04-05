@@ -13,6 +13,11 @@ const styles = theme =>({
     input:{
         width: '100%'
     },
+    gridPadding:{
+        [theme.breakpoints.down('xs')]:{
+            padding: 0
+        }
+    }
 })
 
 
@@ -72,12 +77,12 @@ class Clientes extends Component{
 
     render(){
         const { checkValue, textValue, isSearching, results } = this.state
-        const { clients, recent } = this.props
+        const { clients, recent, classes } = this.props
         let clientList
         if(isSearching){
             clientList = results
         }else{
-            clientList = Object.values(clients)
+            clientList = Object.keys(clients).map( id => clients[id])
         }        
 
         return(
@@ -92,18 +97,18 @@ class Clientes extends Component{
                         textValue={ textValue }
                         />
                 </HeaderLayout>
-                <Grid container spacing={24}>
-                    <Grid item xs={12} sm={9}>
+                <Grid className={classes.gridPadding} container spacing={24}>
+                    <Grid item xs={12} sm={12} md={9}>
                         <ClientList
                             handleClickVerMas={this.handleClickVerMas} 
                             clients={clientList} />
                     
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} md={3}>
                         <TopClients
                             handleClick={this.handleClickVerMas} 
                             recent={recent} 
-                            top={{}}/>
+                            top={recent}/>
                     </Grid>
                 </Grid>
             </div>

@@ -16,7 +16,10 @@ const styles = theme => ({
         margin: `${theme.spacing.unit * 2}px 0`
     },
     input:{
-        width: '350px'
+        width: '350px',
+        [theme.breakpoints.down('sm')]:{
+            width: '100%'
+        }
     }
 })
 
@@ -48,7 +51,7 @@ function NewClientFormGeneral(props) {
                     return(
                         <form onSubmit={handleSubmit}>
                             <Grid className={classes.formContainer} container spacing={24}>
-                                <Grid item sm={12}>
+                                <Grid item xs={12}>
                                     <TextField
                                         className={classes.input}
                                         error={ (!!errors.name) && (!!touched.name)  }
@@ -60,7 +63,7 @@ function NewClientFormGeneral(props) {
                                         value={values.name}
                                     />
                                 </Grid>
-                                <Grid item sm={12}>
+                                <Grid item xs={12}>
                                     <TextField
                                         className={classes.input}
                                         error={ errors.phone && touched.phone }
@@ -72,7 +75,7 @@ function NewClientFormGeneral(props) {
                                         value={values.phone}
                                     />
                                 </Grid>
-                                <Grid item sm={12}>
+                                <Grid item xs={12}>
                                     <TextField
                                         className={classes.input}
                                         error={errors.email && touched.email}

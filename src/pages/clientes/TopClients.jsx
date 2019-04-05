@@ -113,7 +113,7 @@ const ListClient = withStyles(styles1)((props)=>{
 const ListContainer = ({children}) =>{
     const newChildren = React.Children.map(children, element =>{
         return(
-            <Grid item sm={12}>
+            <Grid item sm={6} xs={12} md={12}>
                 {element}
             </Grid> 
         ) 
@@ -132,8 +132,8 @@ const ListContainer = ({children}) =>{
 
 function TopClients(props) {
     const { recent,top, handleClick } = props
-    const recentList = Object.values(recent)
-    const topList = Object.values(top)
+    const recentList = Object.keys(recent).map(id => recent[id])
+    const topList = Object.keys(top).map(id => top[id])
     return (
         <ListContainer>
             <ListClient 
