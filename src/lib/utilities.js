@@ -40,6 +40,12 @@ export function getNameLetters(name){
 }
 
 
+export function limitName(name){
+    const names = name.split(' ')
+    return `${names[0]} ${names[1] || ''}`
+}
+
+
  
 
 

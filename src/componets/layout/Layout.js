@@ -116,6 +116,7 @@ class Layout extends React.Component{
     }
     
     handleToggleSideNav = () => {
+        
         this.setState(state => ({openNav: !state.openNav }))
     }
 

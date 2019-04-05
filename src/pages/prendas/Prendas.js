@@ -72,12 +72,12 @@ class Prendas extends Component{
                     <SearchBar />
                 </HeaderLayout>
                 <Grid container spacing={24}>
-                    <Grid item sm={12} md={9}>
+                    <Grid item xs={12} sm={12} md={9}>
                         <ProductTable data={rows} />
                         <ProductTable data={rows}/>
                         <ProductTable data={rows}/>
                     </Grid>
-                    <Grid item sm={12} md={3}>
+                    <Grid item xs={12} sm={12} md={3}>
                         <TopList handleClick={(id) => () =>{console.log(id)}}>
                             <TopListItem
                                 title="Prendas Más Vendidas"

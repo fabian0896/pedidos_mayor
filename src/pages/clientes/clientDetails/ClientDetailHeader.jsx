@@ -3,6 +3,8 @@ import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import * as moment from 'moment'
+import { limitName } from '../../../lib/utilities'
+import { Hidden } from '@material-ui/core'
 
 const styles = theme => ({
     title:{
@@ -80,7 +82,12 @@ function ClientDetailHeader(props){
         <div className={classes.header}>
             <div className={ classes.headerContent }>
                 <img alt={client.country.name} className={classes.img} src={client.country.flag}/>
-                <Typography className={classes.title} component="h2" variant="h2">{client.name}</Typography>
+                <Hidden xsDown implementation="js">
+                    <Typography className={classes.title} component="h2" variant="h2">{client.name}</Typography>
+                </Hidden>
+                <Hidden smUp implementation="js">
+                    <Typography className={classes.title} component="h2" variant="h3">{limitName(client.name)}</Typography>
+                </Hidden>
                 <Typography className={classes.subTitle} component="span" variant="subtitle1">Estado: Pedido pendiente</Typography>
                 <Typography style={{marginTop: 0}} className={classes.subTitle} component="span" variant="subtitle1">ultima actualización: { date }</Typography>
             </div>

@@ -11,10 +11,12 @@ import Typography from '@material-ui/core/Typography';
 import { Edit, Delete, Close } from '@material-ui/icons'
 import IconButton from '@material-ui/core/IconButton'
 import Checkbox from '@material-ui/core/Checkbox'
+import classNames from 'classnames'
 
 
 const panelStyles = theme => ({
   root: {
+    width: '100%',
     overflow: 'hidden',
     padding: `0 ${theme.spacing.unit * 0}px ${theme.spacing.unit * 6}px`,
     marginBottom: `${theme.spacing.unit * 2}px`,
@@ -32,6 +34,10 @@ const panelStyles = theme => ({
   },
   actions: {
 
+  },
+  tableContent:{
+    overflowX: 'auto',
+    width: '100%'
   }
 })
 
@@ -59,7 +65,7 @@ let Panel = ({ classes, children, isDeletable, isEditing, toggleEditing}) => (
         </IconButton>
       </div>
     </div>
-    <div>
+    <div className={classes.tableContent}>
       {children}
     </div>
   </Paper>
@@ -76,7 +82,7 @@ const styles = theme => ({
     overflowX: 'auto',
   },
   table: {
-    //minWidth: 700,
+    minWidth: 1000,
     padding: `20px 0`
   },
 });
@@ -104,7 +110,7 @@ class ProductTable extends React.Component {
 
   oneSelected =()=>{
     const { values } = this.state
-    const valuesList = Object.values(values)
+    const valuesList = Object.keys(values).map(id => values[id])
     if(valuesList.length){
       return valuesList.find(value => value) || false
     }
@@ -134,7 +140,7 @@ class ProductTable extends React.Component {
   allSelected = ()=>{
     const { values } = this.state
     const { data } = this.props
-    const valuesList = Object.values(values)
+    const valuesList = Object.keys(values).map(id => values[id])
     if(!(data.length === valuesList.length)){
         return false
     }

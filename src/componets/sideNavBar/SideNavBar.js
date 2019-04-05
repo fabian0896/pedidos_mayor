@@ -46,7 +46,7 @@ class SideNavBar extends React.Component {
 
         return (
             <Fragment>
-                <Hidden mdDown implementation="css">
+                <Hidden smDown implementation="css">
                     <Drawer
                         className={classes.drawer}
                         variant="permanent"
@@ -59,7 +59,7 @@ class SideNavBar extends React.Component {
                         {drawer}
                     </Drawer>
                 </Hidden>
-                <Hidden smUp implementation="css">
+                <Hidden xsUp implementation="css">
                     <Drawer
                         open={open}
                         onClose={handleToggle}
