@@ -93,13 +93,13 @@ class Clientes extends Component{
                         />
                 </HeaderLayout>
                 <Grid container spacing={24}>
-                    <Grid item md={9}>
+                    <Grid item xs={12} sm={9}>
                         <ClientList
                             handleClickVerMas={this.handleClickVerMas} 
                             clients={clientList} />
                     
                     </Grid>
-                    <Grid item md={3}>
+                    <Grid item xs={12} sm={3}>
                         <TopClients
                             handleClick={this.handleClickVerMas} 
                             recent={recent} 

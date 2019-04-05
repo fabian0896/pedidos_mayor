@@ -9,7 +9,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import { ArrowBack } from '@material-ui/icons'
+import { ArrowBack, Menu as MenuIcon } from '@material-ui/icons'
 
 
 import { withRouter } from 'react-router-dom'
@@ -21,6 +21,11 @@ import 'firebase/auth'
 const styles = theme => ({
     grow:{
         flexGrow: 1
+    },
+    menuButtom:{
+        [theme.breakpoints.up('md')]: {
+           display: 'none'
+        }
     }
 })
 
@@ -54,7 +59,7 @@ class NavBar extends Component{
 
     render(){
 
-        const { classes, className, title, showBackButtom } = this.props
+        const { classes, className, title, showBackButtom, handleToggle } = this.props
         const { anchorEl } = this.state
 
         const menuOpen = Boolean(anchorEl)
@@ -78,6 +83,13 @@ class NavBar extends Component{
             <div className={ '' } >
                 <AppBar className={ className } position="fixed">
                     <Toolbar>
+                        <IconButton
+                            onClick={handleToggle}
+                            color="inherit"
+                            className={classes.menuButtom}
+                        >
+                            <MenuIcon />
+                        </IconButton>
                         {
                             showBackButtom &&
                             <IconButton
@@ -87,6 +99,7 @@ class NavBar extends Component{
                                 <ArrowBack/>
                             </IconButton>
                         }
+
                         <Typography variant="h6" color="inherit" >{ title }</Typography>
 
                         <div className={ classes.grow }></div>

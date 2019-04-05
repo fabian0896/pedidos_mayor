@@ -29,7 +29,10 @@ const styles = theme => ({
     },
     navBar:{
         width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
+        //marginLeft: drawerWidth,
+        [theme.breakpoints.down('sm')]: {
+            width: '100%',
+        }
     },
     toolbar: theme.mixins.toolbar,
     logo: {
@@ -49,7 +52,8 @@ const styles = theme => ({
       },
     slectedRoute:{
         color: 'red'
-    }
+    },
+    
 
 })
 
@@ -100,18 +104,28 @@ const links = [
 
 class Layout extends React.Component{
     
+    state = {
+        openNav: false
+    }
     
+    handleToggleSideNav = () => {
+        this.setState(state => ({openNav: !state.openNav }))
+    }
+
     
     render(){
         
         const { classes, children, title } = this.props
-        
+        const { openNav } = this.state
+
         return(
             <div className={ classes.root }>
-                <CssBaseline />
-                <NavBar title={title} className={ classes.navBar } />
+                {/* <CssBaseline /> */}
+                <NavBar handleToggle={this.handleToggleSideNav} title={title} className={ classes.navBar } />
                 
-                <SideNavBar 
+                <SideNavBar
+                    open={openNav} 
+                    handleToggle={this.handleToggleSideNav}
                     links={links}
                     classes={ classes }
                      />

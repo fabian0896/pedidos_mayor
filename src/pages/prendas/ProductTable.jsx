@@ -8,7 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { Edit, Delete } from '@material-ui/icons'
+import { Edit, Delete, Close } from '@material-ui/icons'
 import IconButton from '@material-ui/core/IconButton'
 import Checkbox from '@material-ui/core/Checkbox'
 
@@ -35,18 +35,24 @@ const panelStyles = theme => ({
   }
 })
 
-let Panel = ({ classes, children, isDeletable}) => (
+let Panel = ({ classes, children, isDeletable, isEditing, toggleEditing}) => (
   <Paper className={classes.root}>
     <div className={classes.container}>
       <div className={classes.info}>
         <Typography color="inherit" component="h6" variant="h4" >Linea Latex</Typography>
         <Typography color="inherit" component="span" variant="overline">57 Prendas</Typography>
       </div>
-      <div className={classes.actions}>
-        <IconButton color="inherit">
-          {
-            isDeletable?
+      <div className={classes.actions}> 
+        {
+          isDeletable &&
+          <IconButton color="inherit">
             <Delete />
+          </IconButton>
+        }
+        <IconButton onClick={toggleEditing} color="inherit">
+          {
+            isEditing?
+            <Close />
             :
             <Edit />
           }
@@ -81,8 +87,7 @@ class ProductTable extends React.Component {
 
   state = {
     values: {},
-    checkAll: false,
-
+    isEditing: false
   }
 
   handleChange = (id) => (event) => {
@@ -97,7 +102,7 @@ class ProductTable extends React.Component {
     }))
   }
 
-  onSelected =()=>{
+  oneSelected =()=>{
     const { values } = this.state
     const valuesList = Object.values(values)
     if(valuesList.length){
@@ -120,44 +125,79 @@ class ProductTable extends React.Component {
     }))
   }
 
+  toggleEditing = () => {
+      this.setState(({isEditing}) =>({
+        isEditing: !isEditing
+      }))
+  }
+
+  allSelected = ()=>{
+    const { values } = this.state
+    const { data } = this.props
+    const valuesList = Object.values(values)
+    if(!(data.length === valuesList.length)){
+        return false
+    }
+    return valuesList.reduce((prev, currentValue)=>{
+      return (prev && currentValue)
+    }) 
+  }  
 
   render() {
     const { classes, data } = this.props;
-    const { values, checkAll } = this.state
-    const isDeletable = this.onSelected()
-  
+    const { values, isEditing } = this.state
+    const isDeletable = this.oneSelected()
+    const isAllSelected = this.allSelected()
     return (
-      <Panel isDeletable={isDeletable} >
+      <Panel isEditing={isEditing} toggleEditing={this.toggleEditing} isDeletable={isDeletable} >
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  onChange={this.onCheckAll}
-                  checked={checkAll}
-                />
-              </TableCell>
+              {
+                isEditing &&
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    onChange={this.onCheckAll}
+                    checked={isAllSelected}
+                  />
+                </TableCell>
+              }
               <TableCell>Nombre</TableCell>
               <TableCell align="right">Referencia</TableCell>
               <TableCell align="right">Valor(COP)</TableCell>
               <TableCell align="right">Valor(USD)</TableCell>
+              {
+                isEditing &&
+                <TableCell align="right">Editar</TableCell>
+              }
             </TableRow>
           </TableHead>
           <TableBody>
             {data.map(row => (
               <TableRow selected={this.state.values[row.id]} hover key={row.id}>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={values[row.id] || false}
-                    onChange={this.handleChange(row.id)}
-                  />
-                </TableCell>
+                {
+                  isEditing &&
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={values[row.id] || false}
+                      onChange={this.handleChange(row.id)}
+                    />
+                  </TableCell>
+                }
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
                 <TableCell align="right">{row.reference}</TableCell>
                 <TableCell align="right">{row.cop}</TableCell>
                 <TableCell align="right">{row.usd}</TableCell>
+                {
+                  isEditing &&
+                  <TableCell align="right">
+                    <IconButton>
+                        <Edit fontSize="small"/>
+                    </IconButton>
+                  </TableCell>
+                }
               </TableRow>
             ))}
           </TableBody>

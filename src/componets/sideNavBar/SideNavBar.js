@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -7,40 +7,33 @@ import ListItemIText from '@material-ui/core/ListItemText'
 import logo from '../../assets/fajas-logo.png'
 import { NavLink } from 'react-router-dom'
 import './SideNavBar.css'
+import Hidden from '@material-ui/core/Hidden';
 
 
 
 
-class SideNavBar extends React.Component{
-    render(){
+class SideNavBar extends React.Component {
+    render() {
 
-        const { classes, links, ...rest } = this.props
+        const { classes, links, open, handleToggle, ...rest } = this.props
 
-        return(
-            <Drawer
-                className={ classes.drawer }
-                variant="permanent"
-                classes={{
-                    paper: classes.drawerPaper
-                }}
-                anchor="left"
-                {...rest}
-            >
-                <div className={ classes.logoContainer }>
-                    <img className={ classes.logo }  src={logo} alt="fajas internacionales" />
+        const drawer = (
+            <Fragment>
+                <div className={classes.logoContainer}>
+                    <img className={classes.logo} src={logo} alt="fajas internacionales" />
                 </div>
                 <List>
                     {
                         links.map(({ text, route, Icon }) => {
-                            return(
-                                <NavLink 
-                                    to={route} 
+                            return (
+                                <NavLink
+                                    to={route}
                                     key={text}
-                                    style={{textDecoration: 'none'}}
-                                    activeClassName={ classes.selectedRoute }
-                                    >
+                                    style={{ textDecoration: 'none' }}
+                                    activeClassName={classes.selectedRoute}
+                                >
                                     <ListItem button >
-                                        <ListItemIcon><Icon/></ListItemIcon>
+                                        <ListItemIcon><Icon /></ListItemIcon>
                                         <ListItemIText primary={text} />
                                     </ListItem>
                                 </NavLink>
@@ -48,7 +41,40 @@ class SideNavBar extends React.Component{
                         })
                     }
                 </List>
-            </Drawer>
+            </Fragment>
+        )
+
+        return (
+            <Fragment>
+                <Hidden smDown implementation="css">
+                    <Drawer
+                        className={classes.drawer}
+                        variant="permanent"
+                        classes={{
+                            paper: classes.drawerPaper
+                        }}
+                        anchor="left"
+                        {...rest}
+                    >
+                        {drawer}
+                    </Drawer>
+                </Hidden>
+                <Hidden smUp implementation="css">
+                    <Drawer
+                        open={open}
+                        onClose={handleToggle}
+                        className={classes.drawer}
+                        variant="temporary"
+                        classes={{
+                            paper: classes.drawerPaper
+                        }}
+                        anchor="left"
+                        {...rest}
+                    >
+                        {drawer}
+                    </Drawer>
+                </Hidden>
+            </Fragment>
         )
     }
 }
