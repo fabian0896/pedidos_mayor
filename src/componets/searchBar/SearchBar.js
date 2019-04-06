@@ -108,7 +108,7 @@ class SearchBar extends Component {
                     size="medium" 
                     className={classes.fab} 
                     color="secondary"
-                    onClick={this.props.handleAddClient}>
+                    onClick={this.props.handleAdd}>
                    <Add/>
                 </Fab>                       
             </div>

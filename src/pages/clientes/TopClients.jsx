@@ -8,6 +8,7 @@ import {
     Looks4Rounded,
     Looks5Rounded
  } from '@material-ui/icons'
+ import { limitName } from '../../lib/utilities'
 
 
 
@@ -96,7 +97,7 @@ const ListClient = withStyles(styles1)((props)=>{
                                     handleClick={handleClick(client.id)} 
                                     key={client.id} 
                                     Icon={withNumbers && numbers[index]} 
-                                    name={client.name} 
+                                    name={limitName(client.name)} 
                                     country={client.country} />
                             ))
                         }    

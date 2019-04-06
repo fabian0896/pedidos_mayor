@@ -8,7 +8,7 @@ import { Grid } from '@material-ui/core'
 const ListContainer = ({children, sm, md}) =>{
     const newChildren = React.Children.map(children, element =>{
         return(
-            <Grid item sm={12}>
+            <Grid item xs={12} sm={6} md={12}>
                 {element}
             </Grid> 
         ) 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -12,6 +12,7 @@ import { Edit, Delete, Close } from '@material-ui/icons'
 import IconButton from '@material-ui/core/IconButton'
 import Checkbox from '@material-ui/core/Checkbox'
 import classNames from 'classnames'
+import { Icon } from '@material-ui/core';
 
 
 const panelStyles = theme => ({
@@ -37,11 +38,12 @@ const panelStyles = theme => ({
   },
   tableContent:{
     overflowX: 'auto',
-    width: '100%'
+    //width: '100%'
+    position: 'relative'
   }
 })
 
-let Panel = ({ classes, children, isDeletable, isEditing, toggleEditing}) => (
+let Panel = ({ classes, children, isEditing, toggleEditing}) => (
   <Paper className={classes.root}>
     <div className={classes.container}>
       <div className={classes.info}>
@@ -49,12 +51,6 @@ let Panel = ({ classes, children, isDeletable, isEditing, toggleEditing}) => (
         <Typography color="inherit" component="span" variant="overline">57 Prendas</Typography>
       </div>
       <div className={classes.actions}> 
-        {
-          isDeletable &&
-          <IconButton color="inherit">
-            <Delete />
-          </IconButton>
-        }
         <IconButton onClick={toggleEditing} color="inherit">
           {
             isEditing?
@@ -82,9 +78,12 @@ const styles = theme => ({
     overflowX: 'auto',
   },
   table: {
-    minWidth: 1000,
+    //minWidth: 500,
     padding: `20px 0`
   },
+  deletButton:{
+    color: theme.palette.error.main
+  }
 });
 
 
@@ -92,43 +91,7 @@ const styles = theme => ({
 class ProductTable extends React.Component {
 
   state = {
-    values: {},
     isEditing: false
-  }
-
-  handleChange = (id) => (event) => {
-    //event.persist()
-    const check = event.target.checked
-    this.setState(state => ({
-      checkAll: false,
-      values: {
-        ...state.values,
-        [id]: check,
-      }
-    }))
-  }
-
-  oneSelected =()=>{
-    const { values } = this.state
-    const valuesList = Object.keys(values).map(id => values[id])
-    if(valuesList.length){
-      return valuesList.find(value => value) || false
-    }
-    return false
-  }
-
-  onCheckAll = (event) => {
-    const values = {}
-    const check = event.target.checked
-    const { data } =  this.props
-
-    data.forEach(row => {
-      values[row.id] = check
-    })
-    this.setState(state => ({
-        checkAll: check,
-        values
-    }))
   }
 
   toggleEditing = () => {
@@ -137,58 +100,43 @@ class ProductTable extends React.Component {
       }))
   }
 
-  allSelected = ()=>{
-    const { values } = this.state
-    const { data } = this.props
-    const valuesList = Object.keys(values).map(id => values[id])
-    if(!(data.length === valuesList.length)){
-        return false
-    }
-    return valuesList.reduce((prev, currentValue)=>{
-      return (prev && currentValue)
-    }) 
-  }  
 
   render() {
     const { classes, data } = this.props;
-    const { values, isEditing } = this.state
-    const isDeletable = this.oneSelected()
-    const isAllSelected = this.allSelected()
+    const { isEditing } = this.state
+    let minWidth = 500
+    if(isEditing) minWidth = 600
+
     return (
-      <Panel isEditing={isEditing} toggleEditing={this.toggleEditing} isDeletable={isDeletable} >
-        <Table className={classes.table}>
+      <Panel isEditing={isEditing} toggleEditing={this.toggleEditing} >
+        <Table style={{minWidth}} padding="dense" className={classes.table}>
           <TableHead>
             <TableRow>
               {
                 isEditing &&
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    onChange={this.onCheckAll}
-                    checked={isAllSelected}
-                  />
-                </TableCell>
+                <TableCell align="left">Eliminar/Editar</TableCell>
               }
               <TableCell>Nombre</TableCell>
               <TableCell align="right">Referencia</TableCell>
               <TableCell align="right">Valor(COP)</TableCell>
               <TableCell align="right">Valor(USD)</TableCell>
-              {
-                isEditing &&
-                <TableCell align="right">Editar</TableCell>
-              }
             </TableRow>
           </TableHead>
           <TableBody>
             {data.map(row => (
-              <TableRow selected={this.state.values[row.id]} hover key={row.id}>
+              <TableRow hover key={row.id}>
                 {
                   isEditing &&
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={values[row.id] || false}
-                      onChange={this.handleChange(row.id)}
-                    />
-                  </TableCell>
+                  <TableCell padding="checkbox" align="left">
+                    <div>
+                      <IconButton className={classes.deletButton} color="inherit">
+                          <Delete fontSize="small"/>
+                      </IconButton>
+                      <IconButton>
+                          <Edit fontSize="small"/>
+                      </IconButton>
+                    </div>
+                    </TableCell>
                 }
                 <TableCell component="th" scope="row">
                   {row.name}
@@ -196,14 +144,6 @@ class ProductTable extends React.Component {
                 <TableCell align="right">{row.reference}</TableCell>
                 <TableCell align="right">{row.cop}</TableCell>
                 <TableCell align="right">{row.usd}</TableCell>
-                {
-                  isEditing &&
-                  <TableCell align="right">
-                    <IconButton>
-                        <Edit fontSize="small"/>
-                    </IconButton>
-                  </TableCell>
-                }
               </TableRow>
             ))}
           </TableBody>
