@@ -29,9 +29,10 @@ const styles = theme => ({
     },
     navBar:{
         width: `calc(100% - ${drawerWidth}px)`,
-        //marginLeft: drawerWidth,
+        marginLeft: drawerWidth,
         [theme.breakpoints.down('md')]: {
             width: '100%',
+            marginLeft: 0
         }
     },
     toolbar: theme.mixins.toolbar,
@@ -128,7 +129,7 @@ class Layout extends React.Component{
 
         return(
             <div className={ classes.root }>
-                {/* <CssBaseline /> */}
+                <CssBaseline />
                 <NavBar handleToggle={this.handleToggleSideNav} title={title} className={ classes.navBar } />
                 
                 <SideNavBar
