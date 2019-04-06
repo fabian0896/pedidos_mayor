@@ -8,7 +8,8 @@ import {
     FormControl,
     RadioGroup,
     FormControlLabel,
-    Radio
+    Radio,
+    InputAdornment
  } from '@material-ui/core'
 
 const styles = theme => ({
@@ -84,7 +85,10 @@ class NewProductForm extends React.Component{
                                 <TextField 
                                     label="Linea"
                                     variant="outlined"
-                                    fullWidth  
+                                    fullWidth
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position="start">Linea</InputAdornment>,
+                                    }}  
                                 />
                             </Grid>
                             <Grid item xs={6}>
