@@ -53,7 +53,7 @@ const styles = theme => ({
 
 class NewProductForm extends React.Component{
     render(){
-        const { classes, handleSubmit } = this.props
+        const { classes, handleSubmit, linesOptions } = this.props
 
 
         const validationSchema = Yup.object().shape({
@@ -155,7 +155,7 @@ class NewProductForm extends React.Component{
                                     className={classes.input} 
                                     name="line" 
                                     component={MyAutocomplete} 
-                                    optionsList={[{label: 'hola', value: 'hola'}, {label: 'mundo', value: 'mundo'}]} />
+                                    optionsList={linesOptions} />
                                     :
                                     <TextField
                                         name='line'

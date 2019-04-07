@@ -4,7 +4,7 @@ import { getClientById } from './firebaseService'
 const agoliaClient = algoliasearch('AKE68Y9274', 'f8604ef41d20eb78f752a3f55d935700')
 
 const clientsIndex = agoliaClient.initIndex('clients');
-//const productsIndex = agoliaClient.initIndex('products');
+const productsIndex = agoliaClient.initIndex('products');
 
 
 
@@ -53,3 +53,15 @@ export async function searchClientsIds(uid, name=""){
 
 //-------------------------------------- Products ---------------------------
 
+export async function getProductLines(){
+    const snap = await productsIndex.searchForFacetValues({
+        facetName: 'line',
+        facetQuery: ''
+    })
+    const result = snap.facetHits.map(hit => {
+        const name = hit.value
+        const formatName = name.charAt(0).toUpperCase() + name.substring(1)
+        return formatName
+    })
+    return result
+}

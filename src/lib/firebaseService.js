@@ -218,11 +218,12 @@ export function getCodes(){
 export async function addProduct(product){
     const ref =  firebase.firestore().collection(PRODUCTS)
     const uid = firebase.auth().currentUser.uid
+    const lineName = product.line.value || product.line
     const newProduct = {
         ...product,
         createdAt: new Date(),
         createdBy: uid,
-        line: product.line.value || product.line
+        line: lineName.toLowerCase()
     }
 
     delete newProduct.value

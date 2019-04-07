@@ -14,6 +14,8 @@ import {
     Delete as DeleteIcon
  } from '@material-ui/icons'
 
+ import { getProductLines } from '../../lib/searchService'
+
 
 const dataTest = [
     {
@@ -78,7 +80,8 @@ class Prendas extends Component{
         successModal: false,
         savingModal: false,
         loadingText: '',
-        successText: ''
+        successText: '',
+        linesOptions: []
     }
 
     handleOpenModal= ()=>{
@@ -114,6 +117,12 @@ class Prendas extends Component{
         //actions.resetForm()
     }
     
+    async componentDidMount(){
+        const lines = await getProductLines()
+        const linesOptions = lines.map(line =>({label: line, value: line}))
+        this.setState({linesOptions})
+    }
+
     render(){
 
         const { 
@@ -121,7 +130,8 @@ class Prendas extends Component{
             loadingModal, 
             successModal,
             loadingText,
-            successText 
+            successText,
+            linesOptions
         } = this.state
 
         return(
@@ -142,7 +152,7 @@ class Prendas extends Component{
                                 success={successModal}
                                 loading={loadingModal} />
                             :
-                            <NewProductForm handleSubmit={this.handleSubmit} />
+                            <NewProductForm linesOptions={linesOptions} handleSubmit={this.handleSubmit} />
                         }
                     </div>
                 </MyModal>
