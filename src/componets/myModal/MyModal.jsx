@@ -27,6 +27,10 @@ const styles = theme => ({
     },
     title:{
         fontWeight: 500
+    },
+    content:{
+        position: 'relative',
+        minHeight: '200px'
     }
   });
 

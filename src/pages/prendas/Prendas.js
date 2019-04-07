@@ -7,6 +7,12 @@ import TopList from '../../componets/topList/TopList.jsx'
 import TopListItem from '../../componets/topList/TopListItem'
 import MyModal from '../../componets/myModal/MyModal'
 import NewProductForm from './NewProductForm'
+import { addProduct } from '../../lib/firebaseService'
+import Loader from '../../componets/loader/Loader'
+import {    
+    Save as SaveIcon,
+    Delete as DeleteIcon
+ } from '@material-ui/icons'
 
 
 const dataTest = [
@@ -67,7 +73,12 @@ const rows = [
 class Prendas extends Component{    
     
     state={
-        modalOpen: false
+        modalOpen: false,
+        loadingModal: false,
+        successModal: false,
+        savingModal: false,
+        loadingText: '',
+        successText: ''
     }
 
     handleOpenModal= ()=>{
@@ -77,8 +88,42 @@ class Prendas extends Component{
     handleCloseModal = ()=>{
         this.setState({modalOpen: false})
     }
+
+    handleSubmit = async (values, actions)=>{
+        this.setState({
+            loadingText: 'Agregando prenda',
+            successText: 'la prenda se agrego correctamente',
+            savingModal: true,
+            loadingModal: true,
+            successModal: false
+        })
+        await addProduct(values)
+
+        this.setState({
+            loadingModal: false,
+            successModal: true
+        })
+
+        setTimeout(()=>{
+            this.setState({
+                savingModal:false
+            })
+            this.handleCloseModal()
+        }, 700)
+        //actions.setSubmitting(false)
+        //actions.resetForm()
+    }
     
     render(){
+
+        const { 
+            savingModal, 
+            loadingModal, 
+            successModal,
+            loadingText,
+            successText 
+        } = this.state
+
         return(
             <div>
                 <MyModal  
@@ -87,7 +132,18 @@ class Prendas extends Component{
                     title="Agregar Prenda"
                 >
                     <div>
-                        <NewProductForm />
+                        {
+                            savingModal?
+                            <Loader
+                                floating 
+                                loadingText={loadingText}
+                                successText={successText}
+                                Icon={SaveIcon}
+                                success={successModal}
+                                loading={loadingModal} />
+                            :
+                            <NewProductForm handleSubmit={this.handleSubmit} />
+                        }
                     </div>
                 </MyModal>
                 <HeaderLayout>

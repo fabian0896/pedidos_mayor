@@ -51,13 +51,25 @@ function Loader(props) {
         classes, 
         Icon,
         successText,
-        loadingText
+        loadingText,
+        floating
     } = props
     const buttonClassname = classNames({
         [classes.buttonSuccess]: success,
       });
+
+     const styles = {}
+     if(floating){
+         //styles['position'] = 'absolute'
+         //styles['width'] = 'auto'
+         styles['height'] = '300px'
+         //styles['top'] = '50%'
+         //styles['left'] = '50%'
+         //styles['transform'] = 'translate(-50%, -50%)'
+     } 
+
     return (
-        <div className={classes.container}>
+        <div style={styles} className={classes.container}>
             <div className={classes.wrapper}>
                 <Fab size="large" color="primary" className={classNames(buttonClassname, classes.button)} >
                     {success ? <CheckIcon /> : <Icon />}
@@ -69,8 +81,7 @@ function Loader(props) {
                 <Typography className={classes.stateText} component="span" variant="subtitle1">{successText}</Typography>
                 :
                 <Typography className={classes.stateText} component="span" variant="subtitle1">{loadingText}</Typography>
-            }
-            
+            }  
         </div>
     )
 }

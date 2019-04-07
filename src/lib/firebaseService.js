@@ -10,6 +10,7 @@ import * as algolia from './algoliaService'
 const CLIENTS = 'clients'
 const CODES = 'codes'
 const SELLERS = 'sellers'
+const PRODUCTS = 'products'
 
 
 //---------------------------------------------CLients -------------------------------------------
@@ -211,6 +212,38 @@ export function getCodes(){
        return
     })
 }
+
+//---------------------------------------------Products ---------------------------------------------
+
+export async function addProduct(product){
+    const ref =  firebase.firestore().collection(PRODUCTS)
+    const uid = firebase.auth().currentUser.uid
+    const newProduct = {
+        ...product,
+        createdAt: new Date(),
+        createdBy: uid,
+        line: product.line.value || product.line
+    }
+
+    delete newProduct.value
+
+    const snap = await ref.add(newProduct)
+    
+    const algoliaObject = {
+        ...newProduct,
+        objectID: snap.id
+    }
+
+    delete algoliaObject.createdAt
+
+    await algolia.addProduct(algoliaObject)
+
+    return snap.id
+
+}
+
+
+
 
 //-------------------------------------------- Handle Error ----------------------------------------------
 

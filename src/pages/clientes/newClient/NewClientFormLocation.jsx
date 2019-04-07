@@ -56,7 +56,12 @@ function NewClientFormLocation(props) {
                         <form ref={props.getRef} onSubmit={handleSubmit}>
                             <Grid className={classes.formContainer} container spacing={24}>
                                 <Grid item xs={12}>
-                                    <Field className={classes.input} name="country" component={MyAutocomplete} optionsList={props.options} />
+                                    <Field
+                                        myPlaceholder="Pais" 
+                                        className={classes.input} 
+                                        name="country" 
+                                        component={MyAutocomplete} 
+                                        optionsList={props.options} />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField

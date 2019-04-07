@@ -4,7 +4,11 @@ import { getClientById } from './firebaseService'
 const agoliaClient = algoliasearch('AKE68Y9274', 'f8604ef41d20eb78f752a3f55d935700')
 
 const clientsIndex = agoliaClient.initIndex('clients');
+//const productsIndex = agoliaClient.initIndex('products');
 
+
+
+//------------------- Clients --------------------------------------------------
 
 export async function searchClient(uid, name=""){
     const searchOptions ={ 
@@ -45,3 +49,7 @@ export async function searchClientsIds(uid, name=""){
     return clientsIds
 
 }
+
+
+//-------------------------------------- Products ---------------------------
+
