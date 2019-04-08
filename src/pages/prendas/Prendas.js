@@ -1,7 +1,7 @@
-import React, { Component,Fragment } from 'react';
+import React, { Component } from 'react';
 import ProductTable from './ProductTable.jsx';
 import HeaderLayout from '../../componets/headerLayout/HeaderLayout'
-import { Grid, Typography } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import SearchBar from '../../componets/searchBar/SearchBar.js';
 import TopList from '../../componets/topList/TopList.jsx'
 import TopListItem from '../../componets/topList/TopListItem'
@@ -11,64 +11,40 @@ import { addProduct } from '../../lib/firebaseService'
 import Loader from '../../componets/loader/Loader'
 import {    
     Save as SaveIcon,
-    Delete as DeleteIcon
+    Delete as DeleteIcon,
  } from '@material-ui/icons'
 
  import { getProductLines } from '../../lib/searchService'
-
+ import { connect } from 'react-redux' 
+ import { addAllProducts } from '../../actions'
 
 const dataTest = [
     {
         primary: 'prueba',
         secondary: 'secondary',
-        id: 'gasjdhafsdfasdfasga'
+        id: '1'
     },
     {
         primary: 'prueba',
         secondary: 'secondary',
-        id: 'gagsdfgsdhasgjdhga'
+        id: '2'
     },
     {
         primary: 'prueba',
         secondary: 'secondary',
-        id: 'gdhasgjdhga'
+        id: '3'
     },
     {
         primary: 'prueba',
         secondary: 'secondary',
-        id: 'gasjdgjdhga'
+        id: '4'
     },
     {
         primary: 'prueba',
         secondary: 'secondary',
-        id: 'gasjdhasgj'
+        id: '5'
     },
 ]
-
-
-
-let id = 0;
-function createData(name, reference, cop, usd) {
-  id += 1;
-  return { id, name, reference, cop, usd };
-}
-
-const rows = [
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-  createData('Faja Latex Clasica 4 Hileras', '1934-4', '$34.000', '$24'),
-];
-
 
 
 
@@ -81,7 +57,7 @@ class Prendas extends Component{
         savingModal: false,
         loadingText: '',
         successText: '',
-        linesOptions: []
+        linesOptions: [],
     }
 
     handleOpenModal= ()=>{
@@ -111,6 +87,7 @@ class Prendas extends Component{
             this.setState({
                 savingModal:false
             })
+            this.props.addAllProducts()
             this.handleCloseModal()
         }, 700)
         //actions.setSubmitting(false)
@@ -118,13 +95,22 @@ class Prendas extends Component{
     }
     
     async componentDidMount(){
-        const lines = await getProductLines()
-        const linesOptions = lines.map(line =>({label: line, value: line}))
-        this.setState({linesOptions})
+        this.props.addAllProducts()
+        await this.getLines()
+        return
     }
 
-    render(){
+  
+    getLines = async ()=>{
+        const lines = await getProductLines()
+        const linesOptions = lines.map(line =>({label: line.name, value: line.name}))
+        this.setState({linesOptions})
+        return
+    }
 
+
+
+    render(){
         const { 
             savingModal, 
             loadingModal, 
@@ -133,6 +119,8 @@ class Prendas extends Component{
             successText,
             linesOptions
         } = this.state
+
+        const { formatedProducts } = this.props
 
         return(
             <div>
@@ -162,9 +150,15 @@ class Prendas extends Component{
                 </HeaderLayout>
                 <Grid container spacing={24}>
                     <Grid zeroMinWidth item xs={12} sm={12} md={9}>
-                        <ProductTable data={rows} />
-                        <ProductTable data={rows}/>
-                        <ProductTable data={rows}/>
+                    {
+                        formatedProducts.map((line, index)=>{
+                            return <ProductTable
+                                        count={line.count}  
+                                        name={line.name} 
+                                        key={index} 
+                                        data={line.products} />
+                        })
+                    }
                     </Grid>
                     <Grid item xs={12} sm={12} md={3}>
                         <TopList handleClick={(id) => () =>{console.log(id)}}>
@@ -186,5 +180,39 @@ class Prendas extends Component{
 }
 
 
+const mapDispatchToProps = {
+    addAllProducts
+}
 
-export default Prendas;
+function mapStateToProps(state, props){
+    
+    const allProducts = state.products.all
+    const productList = Object.keys(allProducts).map(id => allProducts[id])
+    const lines  = []
+
+    productList.forEach(product => {
+        const matchLine = lines.find(line => line === product.line)
+        if(!matchLine){
+            lines.push(product.line)
+        }
+    })
+    const formatedProducts = lines.map((lineValue)=>{
+        const _products = productList.filter(({line})=> line === lineValue)
+        return {
+            name: lineValue,
+            count: _products.length,
+            products: _products
+        }
+    })
+
+
+    
+    return{
+        formatedProducts,
+        allProducts: state.products.all,
+        lines
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Prendas);

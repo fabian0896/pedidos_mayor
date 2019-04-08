@@ -1,7 +1,8 @@
 import { 
     getAllClients, 
     getAllSellers,
-    getLastClients
+    getLastClients,
+    getAllProducts
 } from '../lib/firebaseService';
 
 
@@ -123,6 +124,24 @@ export function asyncAddSellers(){
             dispatch(addSellers(sellers))
         })
         .catch(err => console.log(err))
+    }
+}
+
+//-----------------Products -----------------
+
+export function addAllProducts(){
+    return dispatch => {
+        getAllProducts().then(data => {
+            dispatch({
+                type: 'ADD_PRODUCTS',
+                payload:{
+                    data
+                }
+            })
+        })
+        .catch(err =>{
+            console.log(err)
+        })
     }
 }
 

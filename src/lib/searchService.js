@@ -60,8 +60,9 @@ export async function getProductLines(){
     })
     const result = snap.facetHits.map(hit => {
         const name = hit.value
+        const count = hit.count
         const formatName = name.charAt(0).toUpperCase() + name.substring(1)
-        return formatName
+        return { name: formatName, count }
     })
     return result
 }

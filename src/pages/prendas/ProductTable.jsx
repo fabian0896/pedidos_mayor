@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -10,9 +10,9 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { Edit, Delete, Close } from '@material-ui/icons'
 import IconButton from '@material-ui/core/IconButton'
-import Checkbox from '@material-ui/core/Checkbox'
-import classNames from 'classnames'
-import { Icon } from '@material-ui/core';
+import { capitalize } from '../../lib/utilities' 
+import NumberFormat from 'react-number-format';
+
 
 
 const panelStyles = theme => ({
@@ -43,12 +43,12 @@ const panelStyles = theme => ({
   }
 })
 
-let Panel = ({ classes, children, isEditing, toggleEditing}) => (
+let Panel = ({ classes, children, isEditing, toggleEditing, name, count}) => (
   <Paper className={classes.root}>
     <div className={classes.container}>
       <div className={classes.info}>
-        <Typography color="inherit" component="h6" variant="h4" >Linea Latex</Typography>
-        <Typography color="inherit" component="span" variant="overline">57 Prendas</Typography>
+        <Typography color="inherit" component="h6" variant="h4" >Linea {capitalize(name)}</Typography>
+        <Typography color="inherit" component="span" variant="overline">{count} Prendas</Typography>
       </div>
       <div className={classes.actions}> 
         <IconButton onClick={toggleEditing} color="inherit">
@@ -102,13 +102,13 @@ class ProductTable extends React.Component {
 
 
   render() {
-    const { classes, data } = this.props;
+    const { classes, data, name, count } = this.props;
     const { isEditing } = this.state
     let minWidth = 500
     if(isEditing) minWidth = 600
 
     return (
-      <Panel isEditing={isEditing} toggleEditing={this.toggleEditing} >
+      <Panel count={count} name={name} isEditing={isEditing} toggleEditing={this.toggleEditing} >
         <Table style={{minWidth}} padding="dense" className={classes.table}>
           <TableHead>
             <TableRow>
@@ -142,8 +142,10 @@ class ProductTable extends React.Component {
                   {row.name}
                 </TableCell>
                 <TableCell align="right">{row.reference}</TableCell>
-                <TableCell align="right">{row.cop}</TableCell>
-                <TableCell align="right">{row.usd}</TableCell>
+                <NumberFormat value={row.cop} displayType={'text'} thousandSeparator={true} prefix={'$'} renderText={value => <TableCell align="right">{value}</TableCell>} />
+                <NumberFormat value={row.usd} displayType={'text'} thousandSeparator={true} prefix={'$'} renderText={value => <TableCell align="right">{value}</TableCell>} />
+                {/* <TableCell align="right">{row.cop}</TableCell> */}
+                {/* <TableCell align="right">{row.usd}</TableCell> */}
               </TableRow>
             ))}
           </TableBody>

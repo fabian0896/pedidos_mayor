@@ -243,6 +243,15 @@ export async function addProduct(product){
 
 }
 
+export async function getAllProducts(){
+    const snap = await firebase.firestore().collection(PRODUCTS).get()
+    const data = {}
+    snap.forEach(doc =>{
+        data[doc.id] = {...doc.data(), id: doc.id}
+    })
+    return data
+}
+
 
 
 
