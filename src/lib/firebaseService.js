@@ -243,6 +243,31 @@ export async function addProduct(product){
 
 }
 
+export async function updateProduct(product, id){
+    const snap = await firebase.firestore().collection(PRODUCTS).doc(id)
+    const lineName = product.line.value || product.line
+    const newProduct ={
+        ...product,
+        line: lineName.toLowerCase()
+    }
+
+    delete newProduct.value
+
+    await snap.update(newProduct)
+    await algolia.updateProduct(id, newProduct)
+    return id
+}
+
+export async function addOrUpdateProduct(product, id){
+    if(id){
+        await updateProduct(product, id)
+        return 'updated'
+    }else{
+        await addProduct(product)
+        return 'created'
+    }
+}
+
 export async function getAllProducts(){
     const snap = await firebase.firestore().collection(PRODUCTS).get()
     const data = {}
@@ -252,6 +277,28 @@ export async function getAllProducts(){
     return data
 }
 
+export async function getProductByReference(ref){
+    const snap = await firebase.firestore().collection(PRODUCTS).where('reference','==', ref).get()
+    const results = []
+    snap.forEach(product =>{
+        if(product.exists){
+            results.push({...product.data(), id: product.id})
+        }
+    })
+    if(results.length){
+        return results
+    }else{
+        return null
+    }
+}
+
+
+export async function deletProduct(id){
+    const ref = firebase.firestore().collection(PRODUCTS).doc(id)
+    await ref.delete()
+    await algolia.deleteProduct(id)
+    return
+}
 
 
 

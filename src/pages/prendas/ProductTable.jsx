@@ -102,7 +102,7 @@ class ProductTable extends React.Component {
 
 
   render() {
-    const { classes, data, name, count } = this.props;
+    const { classes, data, name, count, handleEdit, handleDelete } = this.props;
     const { isEditing } = this.state
     let minWidth = 500
     if(isEditing) minWidth = 600
@@ -129,10 +129,10 @@ class ProductTable extends React.Component {
                   isEditing &&
                   <TableCell padding="checkbox" align="left">
                     <div>
-                      <IconButton className={classes.deletButton} color="inherit">
+                      <IconButton onClick={handleDelete(row.id)} className={classes.deletButton} color="inherit">
                           <Delete fontSize="small"/>
                       </IconButton>
-                      <IconButton>
+                      <IconButton onClick={handleEdit(row.id)}>
                           <Edit fontSize="small"/>
                       </IconButton>
                     </div>

@@ -7,16 +7,18 @@ import TopList from '../../componets/topList/TopList.jsx'
 import TopListItem from '../../componets/topList/TopListItem'
 import MyModal from '../../componets/myModal/MyModal'
 import NewProductForm from './NewProductForm'
-import { addProduct } from '../../lib/firebaseService'
+import { deletProduct, addOrUpdateProduct } from '../../lib/firebaseService'
 import Loader from '../../componets/loader/Loader'
 import {    
     Save as SaveIcon,
     Delete as DeleteIcon,
  } from '@material-ui/icons'
-
  import { getProductLines } from '../../lib/searchService'
  import { connect } from 'react-redux' 
  import { addAllProducts } from '../../actions'
+ import ModalAlert from '../../componets/modalAlert/ModalAlert'
+ import withWidth from '@material-ui/core/withWidth';
+
 
 const dataTest = [
     {
@@ -58,17 +60,31 @@ class Prendas extends Component{
         loadingText: '',
         successText: '',
         linesOptions: [],
+        isEditing: false,
+        editingValues: {},
+        alertOpen: false,
+        deleteId: null
     }
 
     handleOpenModal= ()=>{
-        this.setState({modalOpen: true})
+        const { width } = this.props
+        if(width !== 'xs'){
+            this.setState({modalOpen: true})
+            return
+        }
+        this.props.history.push('/prendas/nueva')
     }
 
     handleCloseModal = ()=>{
-        this.setState({modalOpen: false})
+        this.setState({
+            modalOpen: false,
+            isEditing: false,
+            editingValues: {}
+        })
     }
 
     handleSubmit = async (values, actions)=>{
+        const { isEditing, editingValues } = this.state
         this.setState({
             loadingText: 'Agregando prenda',
             successText: 'la prenda se agrego correctamente',
@@ -76,7 +92,13 @@ class Prendas extends Component{
             loadingModal: true,
             successModal: false
         })
-        await addProduct(values)
+        let id = null
+        if(isEditing){
+            id = editingValues.id
+        }
+        
+        await addOrUpdateProduct(values, id)
+        //await addProduct(values)
 
         this.setState({
             loadingModal: false,
@@ -100,7 +122,15 @@ class Prendas extends Component{
         return
     }
 
+    handleOpenAlert = (id)=>()=>{
+        this.setState({alertOpen: true, deleteId: id})
+    }
   
+
+    handleCloseAlert = ()=>{
+        this.setState({alertOpen: false})
+    }
+
     getLines = async ()=>{
         const lines = await getProductLines()
         const linesOptions = lines.map(line =>({label: line.name, value: line.name}))
@@ -108,6 +138,25 @@ class Prendas extends Component{
         return
     }
 
+    handleDelete = async ()=>{
+        const { deleteId } = this.state
+        console.log("Se Borro la prendaaa!", deleteId)
+        await deletProduct(deleteId)
+        this.props.addAllProducts()
+        this.setState({deleteId: null})
+    }
+
+
+    handleEdit = (id)=>(event)=>{
+        const {allProducts} = this.props
+        const values = allProducts[id]
+        this.setState({
+            editingValues: {...values, id},
+            isEditing: true
+        }, ()=>{
+            this.handleOpenModal()
+        })
+    }
 
 
     render(){
@@ -117,14 +166,29 @@ class Prendas extends Component{
             successModal,
             loadingText,
             successText,
-            linesOptions
+            linesOptions,
+            isEditing,
+            editingValues,
+            alertOpen,
+            deleteId,
         } = this.state
 
+        const { allProducts, width } = this.props
         const { formatedProducts } = this.props
+        const deletingProduct = allProducts[deleteId] || {name: ''}
 
         return(
             <div>
-                <MyModal  
+                <ModalAlert
+                    onConfirm={this.handleDelete}
+                    onClose={this.handleCloseAlert}
+                    type="warning"
+                    title="Atención!!" 
+                    message={`seguro que quieres borrar ${deletingProduct.name} ?`}
+                    open={alertOpen}/>
+                
+                <MyModal
+                      
                     open={ this.state.modalOpen }
                     onClose={this.handleCloseModal}
                     title="Agregar Prenda"
@@ -140,7 +204,12 @@ class Prendas extends Component{
                                 success={successModal}
                                 loading={loadingModal} />
                             :
-                            <NewProductForm linesOptions={linesOptions} handleSubmit={this.handleSubmit} />
+                            <NewProductForm
+                                isEditing={isEditing}
+                                editingValues={editingValues} 
+                                linesOptions={linesOptions} 
+                                handleSubmit={this.handleSubmit} 
+                                closeModal={this.handleCloseModal}/>
                         }
                     </div>
                 </MyModal>
@@ -153,6 +222,8 @@ class Prendas extends Component{
                     {
                         formatedProducts.map((line, index)=>{
                             return <ProductTable
+                                        handleDelete={this.handleOpenAlert}
+                                        handleEdit={this.handleEdit}
                                         count={line.count}  
                                         name={line.name} 
                                         key={index} 
@@ -191,13 +262,13 @@ function mapStateToProps(state, props){
     const lines  = []
 
     productList.forEach(product => {
-        const matchLine = lines.find(line => line === product.line)
+        const matchLine = lines.find(line => line.toLowerCase() === product.line.toLowerCase())
         if(!matchLine){
             lines.push(product.line)
         }
     })
     const formatedProducts = lines.map((lineValue)=>{
-        const _products = productList.filter(({line})=> line === lineValue)
+        const _products = productList.filter(({line})=> line.toLowerCase() === lineValue.toLowerCase())
         return {
             name: lineValue,
             count: _products.length,
@@ -215,4 +286,4 @@ function mapStateToProps(state, props){
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Prendas);
+export default connect(mapStateToProps, mapDispatchToProps)(withWidth()(Prendas));

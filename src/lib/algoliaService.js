@@ -27,5 +27,12 @@ export function addProduct(product){
     return productsIndex.addObject(product)
 }
 
+export function updateProduct(objectID, product){
+    return productsIndex.partialUpdateObject({...product, objectID})
+}
+
+export function deleteProduct(objectID){
+    return productsIndex.deleteObject(objectID)
+}
 
 

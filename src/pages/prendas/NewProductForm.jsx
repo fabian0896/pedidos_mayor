@@ -14,6 +14,8 @@ import {
  import * as Yup from 'yup'
  import NumberFormat from 'react-number-format';
  import MyAutocomplete from '../../componets/myAutocomplete/MyAutocomplete'
+ import { getProductByReference } from '../../lib/firebaseService'
+ import { capitalize } from '../../lib/utilities'
 
 
  function NumberFormatCustom(props) {
@@ -41,7 +43,19 @@ import {
 
 
 
-
+const validate = (values)=>{
+    return new Promise(async (res, rej)=>{
+        const errors = {} 
+        const products = await getProductByReference(values.reference)
+        if(products){
+            errors.asyncReference = "No puede haber 2 referencias iguales"
+            rej(errors)
+            return
+        }
+        res()
+        return
+    })
+}
 
 
 
@@ -53,8 +67,16 @@ const styles = theme => ({
 
 class NewProductForm extends React.Component{
     render(){
-        const { classes, handleSubmit, linesOptions } = this.props
+        const { 
+            classes, 
+            handleSubmit, 
+            linesOptions, 
+            closeModal,
+            editingValues,
+            isEditing 
+        } = this.props
 
+        const LineName = linesOptions.find(line => line.value === capitalize(editingValues.line) )
 
         const validationSchema = Yup.object().shape({
             name: Yup.string("Valor invalido").required("Este valor es necesario"),
@@ -67,13 +89,14 @@ class NewProductForm extends React.Component{
         return(
         <Formik
             validationSchema={validationSchema}
+            validate={!isEditing && validate}
             initialValues={{
-                name: '',
-                reference: '',
-                cop: '',
-                usd: '',
+                name: editingValues.name || '',
+                reference: editingValues.reference || '',
+                cop: editingValues.cop || '',
+                usd: editingValues.usd || '',
                 value: 'old',
-                line: ''
+                line: LineName || ''
             }}
             onSubmit={handleSubmit}
         >
@@ -104,10 +127,12 @@ class NewProductForm extends React.Component{
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
+                                    disabled={isEditing} 
                                     name="reference"
-                                    error={ (!!errors.reference) && (!!touched.reference)  } 
+                                    error={ ((!!errors.reference) && (!!touched.reference)) || !!errors.asyncReference   } 
                                     label="Referencia"
                                     variant="outlined"
+                                    helperText={errors.asyncReference}
                                     fullWidth
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -185,6 +210,7 @@ class NewProductForm extends React.Component{
                             </Grid>
                             <Grid item xs={6}>
                                 <Button
+                                    onClick={closeModal}
                                     fullWidth 
                                     color="secondary" 
                                     size="large">
