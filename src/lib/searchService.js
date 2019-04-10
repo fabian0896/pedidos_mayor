@@ -53,6 +53,7 @@ export async function searchClientsIds(uid, name=""){
 
 //-------------------------------------- Products ---------------------------
 
+
 export async function getProductLines(){
     const snap = await productsIndex.searchForFacetValues({
         facetName: 'line',
@@ -65,4 +66,29 @@ export async function getProductLines(){
         return { name: formatName, count }
     })
     return result
+}
+
+
+export async function searchProduct(query,{formated}){
+    const snap = await productsIndex.search({query})
+    const results = snap.hits
+    if(!formated){
+        return results
+    }
+    const lines = []
+    results.forEach(product => {
+        const matchLine = lines.find(line => line.toLowerCase() === product.line.toLowerCase())
+        if(!matchLine){
+            lines.push(product.line)
+        }
+    })
+    const formatedProducts = lines.map((lineValue)=>{
+        const _products = results.filter(({line})=> line.toLowerCase() === lineValue.toLowerCase())
+        return {
+            name: lineValue,
+            count: _products.length,
+            products: _products.map(prod => ({...prod, id: prod.objectID}))
+        }
+    })
+    return formatedProducts
 }

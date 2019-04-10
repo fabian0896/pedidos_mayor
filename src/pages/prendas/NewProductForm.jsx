@@ -73,9 +73,11 @@ class NewProductForm extends React.Component{
             linesOptions, 
             closeModal,
             editingValues,
-            isEditing 
+            isEditing,
+            withOutButtons,
+            getSubmitRef
         } = this.props
-
+        
         const LineName = linesOptions.find(line => line.value === capitalize(editingValues.line) )
 
         const validationSchema = Yup.object().shape({
@@ -108,8 +110,9 @@ class NewProductForm extends React.Component{
                     handleBlur,
                     values,
                     handleSubmit,
+                    submitForm,
                 })=>{
-
+                    getSubmitRef && getSubmitRef(submitForm)
                     return(
                     <form onSubmit={handleSubmit}>
                         <Grid container spacing={24}>
@@ -209,6 +212,8 @@ class NewProductForm extends React.Component{
                                 </FormControl>
                             </Grid>
                             <Grid item xs={6}>
+                            {
+                                !withOutButtons &&
                                 <Button
                                     onClick={closeModal}
                                     fullWidth 
@@ -216,8 +221,11 @@ class NewProductForm extends React.Component{
                                     size="large">
                                         Cancelar
                                 </Button>
+                            }
                             </Grid>
                             <Grid item xs={6}>
+                            {
+                                !withOutButtons &&
                                 <Button
                                     type="submit"
                                     fullWidth 
@@ -226,6 +234,7 @@ class NewProductForm extends React.Component{
                                     size="large">
                                         Guardar
                                 </Button>
+                            }
                             </Grid>
                         </Grid>
                     </form>

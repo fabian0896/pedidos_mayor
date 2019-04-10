@@ -18,6 +18,7 @@ import {
  import { addAllProducts } from '../../actions'
  import ModalAlert from '../../componets/modalAlert/ModalAlert'
  import withWidth from '@material-ui/core/withWidth';
+ import { searchProduct } from '../../lib/searchService'
 
 
 const dataTest = [
@@ -68,11 +69,17 @@ class Prendas extends Component{
 
     handleOpenModal= ()=>{
         const { width } = this.props
-        if(width !== 'xs'){
+        const { editingValues } = this.state
+        if(width !== 'xs' && width !== 'sm'){
             this.setState({modalOpen: true})
             return
         }
-        this.props.history.push('/prendas/nueva')
+        this.props.history.push({
+            pathname: '/prendas/nueva',
+            state: {
+                id: editingValues.id
+            }
+        })
     }
 
     handleCloseModal = ()=>{
@@ -119,6 +126,8 @@ class Prendas extends Component{
     async componentDidMount(){
         this.props.addAllProducts()
         await this.getLines()
+        const res = await searchProduct('2 Hileras', {formated: true})
+        console.log(res)
         return
     }
 
