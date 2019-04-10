@@ -53,6 +53,21 @@ const styles = theme => ({
 
 class SearchBar extends Component {
 
+    state = {
+        textValue: ''
+    }
+
+    handleChange = (event)=>{
+        const textValue = event.target.value
+        this.setState({textValue})
+    }
+
+
+    handleSubmit = (cb) => (event) => {
+        event.preventDefault()
+        cb(event,this.state.textValue)
+    }
+
     render() {
         const {
             classes,
@@ -66,7 +81,7 @@ class SearchBar extends Component {
 
         return (
             <div className={classes.container}>
-                <form className={classes.helper} onSubmit={handleSubmit}>
+                <form className={classes.helper} onSubmit={this.handleSubmit(handleSubmit)}>
                     <Paper elevation={1} className={classes.root}>
                         <IconButton
                             color="primary"
@@ -81,8 +96,8 @@ class SearchBar extends Component {
                             type="search"
                             className={classes.input}
                             placeholder="Busqueda..."
-                            onChange={handleChangeInput}
-                            value={textValue}
+                            onChange={handleChangeInput || this.handleChange}
+                            value={(handleChangeInput && textValue) || this.state.value}
                         />
                         {
                             withCheck &&

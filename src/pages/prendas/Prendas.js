@@ -64,7 +64,8 @@ class Prendas extends Component{
         isEditing: false,
         editingValues: {},
         alertOpen: false,
-        deleteId: null
+        deleteId: null,
+        searchresults: null
     }
 
     handleOpenModal= ()=>{
@@ -126,8 +127,7 @@ class Prendas extends Component{
     async componentDidMount(){
         this.props.addAllProducts()
         await this.getLines()
-        const res = await searchProduct('2 Hileras', {formated: true})
-        console.log(res)
+        
         return
     }
 
@@ -167,6 +167,16 @@ class Prendas extends Component{
         })
     }
 
+    handleSubmitSeach = async (event, value)=>{
+        const res = await searchProduct(value, {formated: true})
+        if(value){
+            this.setState({searchresults: res})
+        }else{
+            this.setState({searchresults: null})
+        }
+        return
+    }
+
 
     render(){
         const { 
@@ -180,11 +190,14 @@ class Prendas extends Component{
             editingValues,
             alertOpen,
             deleteId,
+            searchresults
         } = this.state
 
         const { allProducts, width } = this.props
         const { formatedProducts } = this.props
         const deletingProduct = allProducts[deleteId] || {name: ''}
+
+        const productsToShow = searchresults || formatedProducts
 
         return(
             <div>
@@ -224,12 +237,12 @@ class Prendas extends Component{
                 </MyModal>
                 <HeaderLayout>
                     {/* <Typography style={{fontWeight: 500}} color="inherit" component="h2" variant="h2">Lista De Prendas</Typography> */}
-                    <SearchBar handleAdd={this.handleOpenModal} />
+                    <SearchBar handleSubmit={this.handleSubmitSeach} handleAdd={this.handleOpenModal} />
                 </HeaderLayout>
                 <Grid container spacing={24}>
                     <Grid zeroMinWidth item xs={12} sm={12} md={9}>
                     {
-                        formatedProducts.map((line, index)=>{
+                        productsToShow.map((line, index)=>{
                             return <ProductTable
                                         handleDelete={this.handleOpenAlert}
                                         handleEdit={this.handleEdit}
