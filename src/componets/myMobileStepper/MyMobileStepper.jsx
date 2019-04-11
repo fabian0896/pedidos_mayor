@@ -62,6 +62,7 @@ class MyMobileStepper extends Component{
             return {
                 title: child.props.title,
                 handleNext: child.props.handleNext,
+                handleBack: child.props.handleBack,
                 buttonTitle: child.props.buttonTitle,
                 backButtonTitle: child.props.backButtonTitle
             } 
@@ -70,7 +71,7 @@ class MyMobileStepper extends Component{
     }
     
     render(){
-        const { classes, children, handleInitialBack,initialBackTitle } = this.props
+        const { classes, children, handleInitialBack,initialBackTitle, step } = this.props
         const { childrenPros, activeStep } = this.state
 
         const steps = React.Children.count(children)
@@ -85,22 +86,22 @@ class MyMobileStepper extends Component{
                         component="h2" 
                         variant="h4" 
                         color="inherit">
-                        {childrenPros[activeStep] && childrenPros[activeStep].title}
+                        {childrenPros[step || activeStep] && childrenPros[step || activeStep].title}
                     </Typography>
                 </div>
                 <div>
-                    {stepContent[activeStep]}
+                    {stepContent[step || activeStep]}
                 </div>
 
                 <MobileStepper 
                     steps={steps}
                     position="bottom"
-                    activeStep={this.state.activeStep}
+                    activeStep={step || this.state.activeStep}
                     nextButton={
                         <Button 
                             size="medium" 
                             onClick={(childrenPros[activeStep] && childrenPros[activeStep].handleNext) || this.handleNext} >
-                            {(childrenPros[activeStep] && childrenPros[activeStep].buttonTitle) || 'Siguiente'}
+                            {(childrenPros[step || activeStep] && childrenPros[step || activeStep].buttonTitle) || 'Siguiente'}
                             <KeyboardArrowRight/>
                         </Button>
                     }
@@ -109,9 +110,9 @@ class MyMobileStepper extends Component{
                             <Button
                                 color="secondary" 
                                  size="medium"
-                                onClick={(activeStep === 0)? handleInitialBack : this.handleBack} >
+                                onClick={((step || activeStep) === 0)? handleInitialBack : (childrenPros[step || activeStep]? childrenPros[step || activeStep].handleBack : this.handleBack)} >
                                 <KeyboardArrowLeft/>
-                                {initialBackTitle || 'Atras'}
+                                { ((step || activeStep) === 0)? initialBackTitle || 'Atras' : 'Atras'}
                             </Button>
                         </div>
                     }

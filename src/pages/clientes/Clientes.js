@@ -54,7 +54,7 @@ class Clientes extends Component{
         const { textValue, checkValue } = this.state
         const { userId, clients } = this.props
         const uid = checkValue? userId: null;
-
+        this.setState({loadingSearch: false})
         if(!textValue && !uid){
             this.setState({results: [], isSearching: false})
             return

@@ -3,6 +3,15 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step'
 import StepContent from '@material-ui/core/StepContent'
 import StepLabel from '@material-ui/core/StepLabel'
+import { withStyles } from '@material-ui/core';
+
+
+const styles = theme =>({
+  root:{
+    borderRadius: theme.shape.borderRadius,
+    boxShadow: theme.shadows[2]
+  }
+})
 
 
 class MyStepper extends Component{
@@ -30,7 +39,7 @@ class MyStepper extends Component{
       };
 
     render(){
-        const { children } = this.props 
+        const { children, classes } = this.props 
         const { activeStep } = this.state
         const steps = React.Children.count(children)
         const newChildren = React.Children.map(children, element =>{
@@ -53,6 +62,9 @@ class MyStepper extends Component{
  
         return(
             <Stepper
+                classes={{
+                  root: classes.root
+                }}           
                 activeStep={this.props.activeStep || activeStep}
                 orientation="vertical"
             >
@@ -63,4 +75,4 @@ class MyStepper extends Component{
 }
 
 
-export default MyStepper;
+export default withStyles(styles)(MyStepper);

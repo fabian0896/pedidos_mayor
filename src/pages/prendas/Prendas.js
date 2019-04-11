@@ -153,7 +153,6 @@ class Prendas extends Component{
 
     handleDelete = async ()=>{
         const { deleteId } = this.state
-        console.log("Se Borro la prendaaa!", deleteId)
         await deletProduct(deleteId)
         this.props.addAllProducts()
         this.setState({deleteId: null})

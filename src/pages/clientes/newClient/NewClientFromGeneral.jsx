@@ -16,7 +16,7 @@ const styles = theme => ({
         margin: `${theme.spacing.unit * 2}px 0`
     },
     input:{
-        width: '350px',
+        width: '400px',
         [theme.breakpoints.down('sm')]:{
             width: '100%'
         }

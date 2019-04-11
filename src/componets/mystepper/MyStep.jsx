@@ -43,7 +43,7 @@ class MyStep extends Component {
                       onClick={handleBack}
                       className={classes.button}
                     >
-                      Back
+                      Atras
                     </Button>
                     <Button
                       onClick={ onFinish || handleNext}

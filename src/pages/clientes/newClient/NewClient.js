@@ -1,10 +1,12 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import MyStep from '../../../componets/mystepper/MyStep'
 import MyStepper from '../../../componets/mystepper/MyStepper'
 import { withStyles } from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
 import NewClientFormLocation from './NewClientFormLocation'
 import NewClientFromGeneral from "./NewClientFromGeneral";
 import NewClientResume from "./NewClientResume";
+import HeaderLayout from '../../../componets/headerLayout/HeaderLayout'
 import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom } from '../../../actions'
 import { createUpdateClient, deleteClient } from '../../../lib/firebaseService'
@@ -12,10 +14,12 @@ import Loader from '../../../componets/loader/Loader'
 import { withRouter } from 'react-router-dom'
 import { setTimeout } from "timers";
 import Button from '@material-ui/core/Button'
-import {    
+import {
     Save as SaveIcon,
     Delete as DeleteIcon
- } from '@material-ui/icons'
+} from '@material-ui/icons'
+import MyMobileStepper from '../../../componets/myMobileStepper/MyMobileStepper'
+import MyMobileStep from '../../../componets/myMobileStepper/MyMobileStep'
 
 
 
@@ -133,6 +137,7 @@ class NewClient extends Component {
 
 
     handleBack = () => {
+        console.log("baaack")
         this.setState(state => ({
             activeStep: state.activeStep - 1,
         }));
@@ -151,10 +156,10 @@ class NewClient extends Component {
 
     handleDeleteClient = async () => {
         const { clientId } = this.props
-        this.setState({ 
-            saving: true, 
-            loading: true, 
-            success: false, 
+        this.setState({
+            saving: true,
+            loading: true,
+            success: false,
             Icon: DeleteIcon,
             loadingText: 'Estamos borrando el cliente',
             successText: 'El cliente se borro correctamente!'
@@ -175,10 +180,10 @@ class NewClient extends Component {
             country: countries[country.value]
         }
 
-        this.setState({ 
-            saving: true, 
-            loading: true, 
-            success: false, 
+        this.setState({
+            saving: true,
+            loading: true,
+            success: false,
             Icon: SaveIcon,
             loadingText: 'Se estan guardado los datos',
             successText: 'Los datos se guardaron correctamente!'
@@ -226,46 +231,93 @@ class NewClient extends Component {
                                     success={success}
                                     loading={loading} />
                                 :
-                                <MyStepper
-                                    activeStep={activeStep}
-                                    handleNext={this.sumbitForm}
-                                    handleBack={this.handleBack}
-                                    onComplete={this.handleComplete}>
-                                    <MyStep title="Informacion General" >
-                                        <div>
-                                            {
-                                                isEditing &&
-                                                <Button
-                                                onClick={this.handleDeleteClient}
-                                                className={classes.deleteButton}
-                                                color="secondary"
-                                                variant="outlined">
-                                                Eliminar
-                                                </Button>
-                                            }
-                                        </div>
-                                        <NewClientFromGeneral
-                                            getSubmitRef={this.getSubmitRefGeneral}
-                                            getRef={this.getFormRef}
-                                            handleSubmit={this.handleSubmit}
-                                            {...this.state.info} />
+                                <Fragment>
+                                    {
+                                        (false) ?
+                                            <Fragment>
+                                                <HeaderLayout >
+                                                    <Typography color="inherit" component="h2" variant="h2">Agregar Cliente</Typography>
+                                                </HeaderLayout>
+                                                <MyStepper
+                                                    activeStep={activeStep}
+                                                    handleNext={this.sumbitForm}
+                                                    handleBack={this.handleBack}
+                                                    onComplete={this.handleComplete}>
+                                                    <MyStep title="Informacion General" >
+                                                        <div>
+                                                            {
+                                                                isEditing &&
+                                                                <Button
+                                                                    onClick={this.handleDeleteClient}
+                                                                    className={classes.deleteButton}
+                                                                    color="secondary"
+                                                                    variant="outlined">
+                                                                    Eliminar
+                                                            </Button>
+                                                            }
+                                                        </div>
+                                                        <NewClientFromGeneral
+                                                            getSubmitRef={this.getSubmitRefGeneral}
+                                                            getRef={this.getFormRef}
+                                                            handleSubmit={this.handleSubmit}
+                                                            {...this.state.info} />
 
-                                    </MyStep>
-                                    <MyStep title="Ubicacion" >
-                                        <NewClientFormLocation
-                                            options={options}
-                                            getSubmitRef={this.getSubmitRefLocation}
-                                            getRef={this.getFormRef}
-                                            handleSubmit={this.handleSubmit}
-                                            {...this.state.info} />
-                                    </MyStep>
-                                    <MyStep onFinish={this.handleSave} title="Resumen" >
-                                        <NewClientResume
-                                            {...this.state.info}
-                                            country={countries && this.state.info.country && countries[this.state.info.country.value]}
-                                        />
-                                    </MyStep>
-                                </MyStepper>
+                                                    </MyStep>
+                                                    <MyStep title="Ubicacion" >
+                                                        <NewClientFormLocation
+                                                            options={options}
+                                                            getSubmitRef={this.getSubmitRefLocation}
+                                                            getRef={this.getFormRef}
+                                                            handleSubmit={this.handleSubmit}
+                                                            {...this.state.info} />
+                                                    </MyStep>
+                                                    <MyStep onFinish={this.handleSave} title="Resumen" >
+                                                        <NewClientResume
+                                                            {...this.state.info}
+                                                            country={countries && this.state.info.country && countries[this.state.info.country.value]}
+                                                        />
+                                                    </MyStep>
+                                                </MyStepper>
+                                            </Fragment>
+                                            :
+                                            <MyMobileStepper
+                                                step={activeStep}
+                                                handleInitialBack={this.handleGoBack}
+                                                initialBackTitle="Cancelar"
+                                                submit={this.submitRef}>
+                                                <MyMobileStep
+                                                    handleNext={this.sumbitForm}
+                                                    title="Informacion General">
+                                                    <NewClientFromGeneral
+                                                            getSubmitRef={this.getSubmitRefGeneral}
+                                                            getRef={this.getFormRef}
+                                                            handleSubmit={this.handleSubmit}
+                                                            {...this.state.info} />
+                                                </MyMobileStep>
+                                                <MyMobileStep
+                                                    handleBack={this.handleBack}
+                                                    handleNext={this.sumbitForm}
+                                                    title='Ubicacion'>
+                                                    <NewClientFormLocation
+                                                            options={options}
+                                                            getSubmitRef={this.getSubmitRefLocation}
+                                                            getRef={this.getFormRef}
+                                                            handleSubmit={this.handleSubmit}
+                                                            {...this.state.info} />
+                                                </MyMobileStep>
+                                                <MyMobileStep
+                                                    handleBack={this.handleBack}
+                                                    buttonTitle="Guardar"
+                                                    handleNext={this.handleSave}
+                                                    title='Resumen'>
+                                                    <NewClientResume
+                                                            {...this.state.info}
+                                                            country={countries && this.state.info.country && countries[this.state.info.country.value]}
+                                                        />
+                                                </MyMobileStep>
+                                            </MyMobileStepper>
+                                    }
+                                </Fragment>
                         }
                     </div>
 
