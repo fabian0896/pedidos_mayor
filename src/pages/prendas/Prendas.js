@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import ProductTable from './ProductTable.jsx';
 import HeaderLayout from '../../componets/headerLayout/HeaderLayout'
 import { Grid, Paper } from '@material-ui/core'
@@ -265,23 +265,28 @@ class Prendas extends Component{
                         </Paper>
                     }
                     {
-                        (isSearching && !productsToShow.length)?
-                        <NoFindMessage
-                            message="No se encotro la prenda"
-                            subMessage="Pero no dudes en agregarla !"
-                            callToAction="Agregar prenda!"
-                            cta={this.handleOpenModal}
-                        />
-                        :
-                        productsToShow.map((line, index)=>{
-                            return <ProductTable
-                                        handleDelete={this.handleOpenAlert}
-                                        handleEdit={this.handleEdit}
-                                        count={line.count}  
-                                        name={line.name} 
-                                        key={index} 
-                                        data={line.products} />
-                        })
+                        !loadingSearch &&
+                        <Fragment>
+                            {
+                                (isSearching && !productsToShow.length)?
+                                <NoFindMessage
+                                    message="No se encotro la prenda"
+                                    subMessage="Pero no dudes en agregarla !"
+                                    callToAction="Agregar prenda!"
+                                    cta={this.handleOpenModal}
+                                />
+                                :
+                                productsToShow.map((line, index)=>{
+                                    return <ProductTable
+                                                handleDelete={this.handleOpenAlert}
+                                                handleEdit={this.handleEdit}
+                                                count={line.count}  
+                                                name={line.name} 
+                                                key={index} 
+                                                data={line.products} />
+                                })
+                            }   
+                        </Fragment>
                     }
                     </Grid>
                     <Grid item xs={12} sm={12} md={3}>
