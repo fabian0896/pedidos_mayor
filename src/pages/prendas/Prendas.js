@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ProductTable from './ProductTable.jsx';
 import HeaderLayout from '../../componets/headerLayout/HeaderLayout'
-import { Grid, Paper, Typography } from '@material-ui/core'
+import { Grid, Paper } from '@material-ui/core'
 import SearchBar from '../../componets/searchBar/SearchBar.js';
 import TopList from '../../componets/topList/TopList.jsx'
 import TopListItem from '../../componets/topList/TopListItem'
@@ -16,41 +16,11 @@ import {
  } from '@material-ui/icons'
  import { getProductLines } from '../../lib/searchService'
  import { connect } from 'react-redux' 
- import { addAllProducts } from '../../actions'
+ import { addAllProducts, addRecentProducts } from '../../actions'
  import ModalAlert from '../../componets/modalAlert/ModalAlert'
  import withWidth from '@material-ui/core/withWidth';
  import { searchProduct } from '../../lib/searchService'
 import NoFindMessage from '../../componets/noFindMessage/NoFindMessage.jsx';
-
-
-const dataTest = [
-    {
-        primary: 'prueba',
-        secondary: 'secondary',
-        id: '1'
-    },
-    {
-        primary: 'prueba',
-        secondary: 'secondary',
-        id: '2'
-    },
-    {
-        primary: 'prueba',
-        secondary: 'secondary',
-        id: '3'
-    },
-    {
-        primary: 'prueba',
-        secondary: 'secondary',
-        id: '4'
-    },
-    {
-        primary: 'prueba',
-        secondary: 'secondary',
-        id: '5'
-    },
-]
-
 
 
 class Prendas extends Component{    
@@ -122,6 +92,7 @@ class Prendas extends Component{
                 savingModal:false
             })
             this.props.addAllProducts()
+            this.props.addRecentProducts()
             this.handleCloseModal()
         }, 700)
         //actions.setSubmitting(false)
@@ -130,6 +101,7 @@ class Prendas extends Component{
     
     async componentDidMount(){
         this.props.addAllProducts()
+        this.props.addRecentProducts()
         await this.getLines()
         
         return
@@ -153,9 +125,29 @@ class Prendas extends Component{
 
     handleDelete = async ()=>{
         const { deleteId } = this.state
+        this.setState({
+            loadingText: 'Borrando Prenda',
+            successText: 'La prenda se borro correctamente',
+            savingModal: true,
+            loadingModal: true,
+            successModal: false
+        })
         await deletProduct(deleteId)
-        this.props.addAllProducts()
-        this.setState({deleteId: null})
+
+        this.setState({
+            loadingModal: false,
+            successModal: true
+        })
+
+        setTimeout(()=>{
+            this.setState({
+                savingModal:false,
+                deleteId: null
+            })
+            this.props.addAllProducts()
+            this.props.addRecentProducts()
+            this.handleCloseAlert()
+        }, 700)
     }
 
 
@@ -200,7 +192,7 @@ class Prendas extends Component{
             loadingSearch
         } = this.state
 
-        const { allProducts, width } = this.props
+        const { allProducts, recentProducts } = this.props
         const { formatedProducts } = this.props
         const deletingProduct = allProducts[deleteId] || {name: ''}
 
@@ -211,10 +203,22 @@ class Prendas extends Component{
                 <ModalAlert
                     onConfirm={this.handleDelete}
                     onClose={this.handleCloseAlert}
+                    hideContent={savingModal}
                     type="warning"
                     title="Atención!!" 
                     message={`seguro que quieres borrar ${deletingProduct.name} ?`}
-                    open={alertOpen}/>
+                    open={alertOpen}>
+                        {
+                            savingModal &&
+                            <Loader
+                                floating 
+                                loadingText={loadingText}
+                                successText={successText}
+                                Icon={DeleteIcon}
+                                success={successModal}
+                                loading={loadingModal} />
+                        }
+                    </ModalAlert>
                 
                 <MyModal
                       
@@ -289,7 +293,7 @@ class Prendas extends Component{
                             />   
                             <TopListItem
                                 title="Ultimas Añadidas"
-                                data={dataTest}
+                                data={recentProducts}
                             />   
                         </TopList>
                     </Grid>
@@ -301,7 +305,8 @@ class Prendas extends Component{
 
 
 const mapDispatchToProps = {
-    addAllProducts
+    addAllProducts,
+    addRecentProducts
 }
 
 function mapStateToProps(state, props){
@@ -326,11 +331,22 @@ function mapStateToProps(state, props){
     })
 
 
+    const recentProducts = Object.keys(state.products.recent).map(id => {
+        const actualProduct = state.products.recent[id]
+        return{
+            primary: actualProduct.name,
+            secondary: actualProduct.line,
+            id
+        }
+    })
+    
+    
     
     return{
         formatedProducts,
         allProducts: state.products.all,
-        lines
+        lines,
+        recentProducts
     }
 }
 

@@ -63,7 +63,9 @@ function ModalAlert(props){
         title, 
         message, 
         type,
-        onConfirm
+        onConfirm,
+        hideContent,
+        children
     } = props
     
     return(
@@ -77,8 +79,14 @@ function ModalAlert(props){
                 <div className={classNames(classes.header, classes[type])}>
                     <Typography className={classes.title} color="inherit" component="h3" variant="h5" >{title}</Typography>
                 </div>
-                <div className={classes.content}>
-                    <Typography component="p" variant="subtitle1" color="textSecondary" >{ message }</Typography>
+                {
+                    !hideContent &&
+                    <div className={classes.content}>
+                        <Typography component="p" variant="subtitle1" color="textSecondary" >{ message }</Typography>
+                    </div>
+                }
+                <div>
+                    {children}  
                 </div>
                 <div className={classes.actions}>
                     <Button
@@ -87,7 +95,7 @@ function ModalAlert(props){
                         >Cancelar
                     </Button>
                     <Button
-                        onClick={()=>{onConfirm() ; onClose()}}
+                        onClick={()=>{onConfirm()}}
                         style={{marginLeft: 10}}
                         variant="contained"
                         color="primary"

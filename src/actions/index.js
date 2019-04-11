@@ -2,7 +2,8 @@ import {
     getAllClients, 
     getAllSellers,
     getLastClients,
-    getAllProducts
+    getAllProducts,
+    getLastProducts
 } from '../lib/firebaseService';
 
 
@@ -140,6 +141,22 @@ export function addAllProducts(){
             })
         })
         .catch(err =>{
+            console.log(err)
+        })
+    }
+}
+
+export function addRecentProducts(){
+    return dispatch =>{
+        getLastProducts().then(data=>{
+            dispatch({
+                type: 'ADD_RECENT_PRODUCTS',
+                payload:{
+                    data
+                }
+            })
+        })
+        .catch(err=>{
             console.log(err)
         })
     }

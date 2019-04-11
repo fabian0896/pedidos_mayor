@@ -9,7 +9,8 @@ import { withStyles } from '@material-ui/core';
 const styles = theme =>({
   root:{
     borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[2]
+    boxShadow: theme.shadows[2],
+    position: 'relative'
   }
 })
 

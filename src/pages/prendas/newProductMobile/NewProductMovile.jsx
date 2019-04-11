@@ -6,7 +6,6 @@ import MyMobileStep from '../../../componets/myMobileStepper/MyMobileStep';
 import { addOrUpdateProduct } from '../../../lib/firebaseService'
 import {
     Save as SaveIcon,
-    Delete as DeleteIcon,
 } from '@material-ui/icons'
 import Loader from '../../../componets/loader/Loader';
 import { connect } from 'react-redux'

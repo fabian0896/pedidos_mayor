@@ -201,6 +201,10 @@ class NewClient extends Component {
             })
     }
 
+    handleGoBack = () =>{
+        this.props.history.goBack()
+    }
+
     render() {
         const {
             countries,

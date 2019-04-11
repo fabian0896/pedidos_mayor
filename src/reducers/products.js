@@ -1,5 +1,6 @@
 const initialState = {
-    all: {}
+    all: {},
+    recent: {}
 }
 
 function products(state = initialState, action){
@@ -8,6 +9,12 @@ function products(state = initialState, action){
             return {
                 ...state,
                 all: action.payload.data
+            }
+        }
+        case 'ADD_RECENT_PRODUCTS':{
+            return{
+                ...state,
+                recent: action.payload.data
             }
         }
         default:{

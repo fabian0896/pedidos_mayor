@@ -301,6 +301,16 @@ export async function deletProduct(id){
 }
 
 
+export async function getLastProducts(){
+    const ref = firebase.firestore().collection(PRODUCTS).orderBy('createdAt', 'desc').limit(5)
+    const res = await ref.get()
+    const result = {}
+    res.forEach(doc =>{
+        result[doc.id] = { ...doc.data(), id: doc.id }
+    })
+    return result
+}
+
 
 //-------------------------------------------- Handle Error ----------------------------------------------
 
