@@ -20,6 +20,7 @@ import {
 } from '@material-ui/icons'
 import MyMobileStepper from '../../../componets/myMobileStepper/MyMobileStepper'
 import MyMobileStep from '../../../componets/myMobileStepper/MyMobileStep'
+import { withWidth } from "@material-ui/core";
 
 
 
@@ -214,7 +215,7 @@ class NewClient extends Component {
             loadingText,
             successText
         } = this.state
-        const { classes } = this.props
+        const { classes, width } = this.props
 
 
         return (
@@ -233,7 +234,7 @@ class NewClient extends Component {
                                 :
                                 <Fragment>
                                     {
-                                        (false) ?
+                                        (width !== 'sm' && width !== 'xs') ?
                                             <Fragment>
                                                 <HeaderLayout >
                                                     <Typography color="inherit" component="h2" variant="h2">Agregar Cliente</Typography>
@@ -349,4 +350,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter((withStyles(styles)(NewClient))));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter((withStyles(styles)(withWidth()(NewClient)))));

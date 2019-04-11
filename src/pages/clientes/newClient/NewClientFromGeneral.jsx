@@ -13,7 +13,7 @@ const signupSchema = Yup.object().shape({
 
 const styles = theme => ({
     formContainer: {
-        margin: `${theme.spacing.unit * 2}px 0`
+        marginTop: `${theme.spacing.unit * 2}px`
     },
     input:{
         width: '400px',

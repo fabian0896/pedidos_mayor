@@ -100,7 +100,7 @@ class MyMobileStepper extends Component{
                     nextButton={
                         <Button 
                             size="medium" 
-                            onClick={(childrenPros[activeStep] && childrenPros[activeStep].handleNext) || this.handleNext} >
+                            onClick={(childrenPros[step || activeStep] && childrenPros[step || activeStep].handleNext) || this.handleNext} >
                             {(childrenPros[step || activeStep] && childrenPros[step || activeStep].buttonTitle) || 'Siguiente'}
                             <KeyboardArrowRight/>
                         </Button>
