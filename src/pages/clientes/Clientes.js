@@ -4,10 +4,13 @@ import ClientSearch from './ClientSearch'
 import ClientList from './ClientList'
 import { connect } from 'react-redux'
 import { asyncUpdateClients, addRecentClients } from '../../actions'
-import { Grid} from '@material-ui/core'
+import { Grid, Paper} from '@material-ui/core'
 import TopClients from './TopClients';
 import { searchClientsIds } from '../../lib/searchService'
 import HeaderLayout from '../../componets/headerLayout/HeaderLayout'
+import NoFindMessage from '../../componets/noFindMessage/NoFindMessage'
+import Loader from '../../componets/loader/Loader'
+import { Search as SearchIcon } from '@material-ui/icons'
 
 const styles = theme =>({
     input:{
@@ -27,7 +30,8 @@ class Clientes extends Component{
         checkValue: false,
         textValue: '',
         results: [],
-        isSearching: false
+        isSearching: false,
+        loadingSearch: false
     }
     
     handleChangeCheckbox = event => {
@@ -56,11 +60,12 @@ class Clientes extends Component{
             return
         }
         //const data = await searchClient(uid, textValue)
+        this.setState({loadingSearch: true})
         const clientsIds = await searchClientsIds(uid, textValue)
         const data = clientsIds.map(id =>{
             return clients[id]
         })
-        this.setState({results: data, isSearching: true})
+        this.setState({results: data, isSearching: true, loadingSearch: false})
         return
     }
 
@@ -76,7 +81,7 @@ class Clientes extends Component{
     }
 
     render(){
-        const { checkValue, textValue, isSearching, results } = this.state
+        const { checkValue, textValue, isSearching, results, loadingSearch } = this.state
         const { clients, recent, classes } = this.props
         let clientList
         if(isSearching){
@@ -98,12 +103,39 @@ class Clientes extends Component{
                         />
                 </HeaderLayout>
                 <Grid className={classes.gridPadding} container spacing={24}>
-                    <Grid item xs={12} sm={12} md={9}>
-                        <ClientList
-                            handleClickVerMas={this.handleClickVerMas} 
-                            clients={clientList} />
-                    
-                    </Grid>
+                    {   
+                        loadingSearch &&
+                         <Grid item xs={12} sm={12} md={9}>
+                            <Paper>
+                                <Loader
+                                    floating 
+                                    loadingText="Buscando Cliente"
+                                    successText="estos son los resultados..."
+                                    Icon={SearchIcon}
+                                    success={false}
+                                    loading={true} />
+                            </Paper>
+                         </Grid>
+                    }
+                    {
+                        !loadingSearch &&
+                        <Grid item xs={12} sm={12} md={9}>
+                            {
+                                (isSearching && !clientList.length) ?
+                                <NoFindMessage
+                                    message="No se encontro el clinete"
+                                    subMessage="Pero no dudes en agragarlo"
+                                    callToAction="Agragar Cliente"
+                                    cta={this.handleAddClient}
+                                />
+                                :
+                                <ClientList
+                                    handleClickVerMas={this.handleClickVerMas} 
+                                    clients={clientList} />
+                            }
+                        
+                        </Grid>
+                    }
                     <Grid item xs={12} md={3}>
                         <TopClients
                             handleClick={this.handleClickVerMas} 

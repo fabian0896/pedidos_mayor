@@ -76,6 +76,10 @@ class NewProductMobile extends Component {
         this.submitRef = ref
     }
 
+    handleGoBack = ()=>{
+        this.props.history.goBack()
+    }
+
      async componentDidMount() {
         await this.getLines()
         this.props.showBackButtom('/prendas')
@@ -130,7 +134,10 @@ class NewProductMobile extends Component {
                                     loading={loadingModal}
                                 />
                                 :
-                                <MyMobileStepper submit={this.submitRef}>
+                                <MyMobileStepper
+                                    handleInitialBack={this.handleGoBack}
+                                    initialBackTitle="Cancelar" 
+                                    submit={this.submitRef}>
                                     <MyMobileStep
                                         buttonTitle="Guardar"
                                         handleNext={this.submit}

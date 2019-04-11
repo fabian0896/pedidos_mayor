@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ProductTable from './ProductTable.jsx';
 import HeaderLayout from '../../componets/headerLayout/HeaderLayout'
-import { Grid } from '@material-ui/core'
+import { Grid, Paper, Typography } from '@material-ui/core'
 import SearchBar from '../../componets/searchBar/SearchBar.js';
 import TopList from '../../componets/topList/TopList.jsx'
 import TopListItem from '../../componets/topList/TopListItem'
@@ -12,6 +12,7 @@ import Loader from '../../componets/loader/Loader'
 import {    
     Save as SaveIcon,
     Delete as DeleteIcon,
+    Search as SearchIcon
  } from '@material-ui/icons'
  import { getProductLines } from '../../lib/searchService'
  import { connect } from 'react-redux' 
@@ -19,6 +20,7 @@ import {
  import ModalAlert from '../../componets/modalAlert/ModalAlert'
  import withWidth from '@material-ui/core/withWidth';
  import { searchProduct } from '../../lib/searchService'
+import NoFindMessage from '../../componets/noFindMessage/NoFindMessage.jsx';
 
 
 const dataTest = [
@@ -65,7 +67,9 @@ class Prendas extends Component{
         editingValues: {},
         alertOpen: false,
         deleteId: null,
-        searchresults: null
+        searchresults: null,
+        isSearching: false,
+        loadingSearch: false
     }
 
     handleOpenModal= ()=>{
@@ -168,11 +172,13 @@ class Prendas extends Component{
     }
 
     handleSubmitSeach = async (event, value)=>{
+        event.preventDefault()
+        this.setState({loadingSearch: true})
         const res = await searchProduct(value, {formated: true})
         if(value){
-            this.setState({searchresults: res})
+            this.setState({searchresults: res, loadingSearch: false, isSearching: true})
         }else{
-            this.setState({searchresults: null})
+            this.setState({searchresults: null, loadingSearch: false, isSearching: false})
         }
         return
     }
@@ -190,7 +196,9 @@ class Prendas extends Component{
             editingValues,
             alertOpen,
             deleteId,
-            searchresults
+            searchresults,
+            isSearching,
+            loadingSearch
         } = this.state
 
         const { allProducts, width } = this.props
@@ -242,6 +250,26 @@ class Prendas extends Component{
                 <Grid container spacing={24}>
                     <Grid zeroMinWidth item xs={12} sm={12} md={9}>
                     {
+                        loadingSearch &&
+                        <Paper>
+                            <Loader
+                                    floating 
+                                    loadingText="Buscando Prenda"
+                                    successText="estos son los resultados..."
+                                    Icon={SearchIcon}
+                                    success={false}
+                                    loading={true} />
+                        </Paper>
+                    }
+                    {
+                        (isSearching && !productsToShow.length)?
+                        <NoFindMessage
+                            message="No se encotro la prenda"
+                            subMessage="Pero no dudes en agregarla !"
+                            callToAction="Agregar prenda!"
+                            cta={this.handleOpenModal}
+                        />
+                        :
                         productsToShow.map((line, index)=>{
                             return <ProductTable
                                         handleDelete={this.handleOpenAlert}

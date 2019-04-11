@@ -62,14 +62,15 @@ class MyMobileStepper extends Component{
             return {
                 title: child.props.title,
                 handleNext: child.props.handleNext,
-                buttonTitle: child.props.buttonTitle
+                buttonTitle: child.props.buttonTitle,
+                backButtonTitle: child.props.backButtonTitle
             } 
         })
         this.setState({childrenPros})
     }
     
     render(){
-        const { classes, children } = this.props
+        const { classes, children, handleInitialBack,initialBackTitle } = this.props
         const { childrenPros, activeStep } = this.state
 
         const steps = React.Children.count(children)
@@ -105,16 +106,13 @@ class MyMobileStepper extends Component{
                     }
                     backButton={
                         <div>
-                        {
-                            (activeStep > 0) &&
                             <Button
                                 color="secondary" 
                                  size="medium"
-                                onClick={this.handleBack} >
+                                onClick={(activeStep === 0)? handleInitialBack : this.handleBack} >
                                 <KeyboardArrowLeft/>
-                                Atras
+                                {initialBackTitle || 'Atras'}
                             </Button>
-                        }
                         </div>
                     }
                 />
