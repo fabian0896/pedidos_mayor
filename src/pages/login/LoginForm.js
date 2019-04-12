@@ -13,10 +13,17 @@ import green from '@material-ui/core/colors/green';
 
 
 
-const styles = {
+const styles = theme => ({
     root:{
         width: '300px',
-        padding: '20px'
+        padding: '20px',
+        [theme.breakpoints.down('sm')]:{
+            width: '100%',
+            minHeight: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }
         
     },
     formulario:{
@@ -54,7 +61,7 @@ const styles = {
         marginTop: -12,
         marginLeft: -12,
       },
-}
+})
 
 
 function LoinForm(props) {

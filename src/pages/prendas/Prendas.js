@@ -102,6 +102,7 @@ class Prendas extends Component{
     async componentDidMount(){
         this.props.addAllProducts()
         this.props.addRecentProducts()
+        this.getLines()
         await this.getLines()
         
         return
@@ -146,6 +147,7 @@ class Prendas extends Component{
             })
             this.props.addAllProducts()
             this.props.addRecentProducts()
+            this.getLines()
             this.handleCloseAlert()
         }, 700)
     }
