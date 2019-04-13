@@ -65,7 +65,7 @@ class SearchBar extends Component {
 
     handleSubmit = (cb) => (event) => {
         event.preventDefault()
-        cb(event,this.state.textValue)
+        cb && cb(event,this.state.textValue)
     }
 
     render() {
