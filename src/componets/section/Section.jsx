@@ -4,7 +4,8 @@ import { withStyles } from '@material-ui/core';
 
 const styles = theme =>({
     root:{
-        width: '100%',
+        //minWidth: 0,
+        //width: '100%',
         marginLeft: `-${theme.spacing.unit*3}px`,
         marginRight: `-${theme.spacing.unit*3}px`,
         marginTop: `${theme.spacing.unit*5}px`,

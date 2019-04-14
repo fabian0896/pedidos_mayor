@@ -22,9 +22,14 @@ import OrderSlideList from '../../componets/orderResume/OrderSlideList';
 
 
 class Pedidos extends Component {
+    
+    
+
+
+    
     render() {
         return (
-            <div style={{width: '100%'}}>
+            <div>
                 <HeaderLayout>
                     <SearchBar />
                 </HeaderLayout>
@@ -54,16 +59,17 @@ class Pedidos extends Component {
                 </StatsCardList>
                 
 
-               
-                    <OrderSlideList title="Pedidos Pendientes">
-                        <OrderResume width={300}/>
-                        <OrderResume width={300}/>
-                        <OrderResume width={300}/>
-                        <OrderResume width={300}/>
-                        <OrderResume width={300}/>
-                        <OrderResume width={300}/>
-                        <OrderResume width={300}/>
+                <Section background='#E9E9E9'>
+                    <OrderSlideList title="Pendientes">
+                        <OrderResume width={360}/>
+                        <OrderResume width={360}/>
+                        <OrderResume width={360}/>
+                        <OrderResume width={360}/>
+                        <OrderResume width={360}/>
+                        <OrderResume width={360}/>
+                        <OrderResume width={360}/>
                     </OrderSlideList> 
+                </Section>
        
 
                 <OrederGrid title="Pedidos">

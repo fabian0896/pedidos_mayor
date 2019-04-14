@@ -51,6 +51,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing.unit * 3,
         position: 'relative',
+        minWidth: 0,
         [theme.breakpoints.down('sm')]:{
             padding: theme.spacing.unit * 2,
         },

@@ -12,17 +12,24 @@ const styles = theme =>({
         boxSizing: 'border-box',
         width: '100%',
         whiteSpace: 'nowrap',
+        //padding: `${theme.spacing.unit*3}px 0px` 
     },
     slide:{
        //height: '250px',
        //width: '100%',
        whiteSpace: 'nowrap',
        overflowY: 'auto',
+       padding: `${theme.spacing.unit}px 0px` 
        //display: 'flex'
-       
     },
     item:{
-       
+        display: 'inline',
+       '&:nth-child(n + 2)':{
+           marginLeft: 15
+       },
+       '&:last-child':{
+           marginRight: 5
+       }
     }
 })
 
@@ -32,7 +39,15 @@ function OrderSlideList({children, title, classes}){
             <Typography gutterBottom variant="h3">{title}</Typography>
             <Divider style={{marginBottom: 20}} />
             <div className={classes.slide}>
-                {children} 
+                {
+                    React.Children.map(children, (child)=>{
+                        return(
+                            <div className={classes.item}>
+                                {child}  
+                            </div>
+                        )
+                    })
+                }
             </div>
         </div>
     )
