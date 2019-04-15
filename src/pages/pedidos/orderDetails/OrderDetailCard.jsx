@@ -5,7 +5,8 @@ import { Paper, withStyles, Avatar, Typography, Divider } from '@material-ui/cor
 const styles = theme =>({
     root:{
         width: '100%',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        marginBottom: theme.spacing.unit*2
     },
     flagContainer:{
         width: '100%',

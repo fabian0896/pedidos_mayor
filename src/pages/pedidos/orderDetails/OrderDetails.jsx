@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import {
     Paper,
-    Grid
+    Grid,
+    Typography
 } from '@material-ui/core'
 import HeaderLayout from '../../../componets/headerLayout/HeaderLayout';
 import OrderDetailCard from './OrderDetailCard';
@@ -13,11 +14,11 @@ class OrderDetails extends Component{
         return(
             <div>
                 <HeaderLayout>
-
+                    <Typography color="inherit" component="h2" variant="h1">A0042</Typography>
                 </HeaderLayout>
                 <Grid container spacing={16}>
                     <Grid item xs={9}>
-                        <Paper>
+                        <Paper style={{padding: 16}}>
                             <p>Hola mundo</p>
                             <p>Hola mundo</p>
                             <p>Hola mundo</p>
@@ -26,13 +27,13 @@ class OrderDetails extends Component{
                             <p>Hola mundo</p>
                         </Paper>
                     </Grid>
-                    <Grid container spacing={16} item xs={3}>
-                        <Grid item xs={12}>
+                    <Grid item xs={3}>
+                       
                             <OrderDetailCard />
-                        </Grid>
-                        <Grid item xs={12}>
+                       
+                        
                             <ShippingInfoCard />
-                        </Grid>
+                       
                     </Grid>
                 </Grid>
             </div>
