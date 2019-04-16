@@ -7,6 +7,7 @@ import {
 import HeaderLayout from '../../../componets/headerLayout/HeaderLayout';
 import OrderDetailCard from './OrderDetailCard';
 import ShippingInfoCard from './ShippingInfoCard';
+import PaymentSummary from './PaymentSummary'
 
 
 class OrderDetails extends Component{
@@ -33,6 +34,8 @@ class OrderDetails extends Component{
                        
                         
                             <ShippingInfoCard />
+
+                            <PaymentSummary/>
                        
                     </Grid>
                 </Grid>
