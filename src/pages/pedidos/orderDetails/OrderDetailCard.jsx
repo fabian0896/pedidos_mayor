@@ -24,7 +24,11 @@ const styles = theme =>({
         }
     },
     flag:{
-        width: '100%',  
+        width: '100%',
+        [theme.breakpoints.down('md')]:{
+            height: 200,
+            objectFit: 'cover'
+        }  
     },
     avatarContainer:{
         marginTop: '-55px',

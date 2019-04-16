@@ -1,8 +1,9 @@
-import React, {Component} from 'react'
+import React, {Component, Fragment} from 'react'
 import {
     Paper,
     Grid,
-    Typography
+    Typography,
+    withWidth
 } from '@material-ui/core'
 import HeaderLayout from '../../../componets/headerLayout/HeaderLayout';
 import OrderDetailCard from './OrderDetailCard';
@@ -17,25 +18,43 @@ class OrderDetails extends Component{
     }
 
     render(){
+        const { width } = this.props
         return(
             <div>
                 <HeaderLayout>
                     <Typography color="inherit" component="h2" variant="h1">A0042</Typography>
                 </HeaderLayout>
-                <Grid container spacing={16}>
-                    <Grid item xs={12} sm={12} md={9}>
-                        <OrderProductTable />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={3}>
+                {
+                    width === 'xs' || width === 'sm'?
+                    <Fragment>
                         <OrderDetailCard />
-                        <ShippingInfoCard />
-                        <PaymentSummary/>
+                        <OrderProductTable />
+                        <Grid container spacing={16}>
+                            <Grid item sm={6} xs={12}>
+                                <ShippingInfoCard />
+                            </Grid>
+                            <Grid item sm={6} xs={12}>
+                                <PaymentSummary/>
+                            </Grid>
+                        </Grid>
+                    </Fragment>
+                    :
+                    <Grid container spacing={16}>
+                        <Grid item xs={12} sm={12} md={9}>
+                            <OrderProductTable />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={3}>
+                            <OrderDetailCard />
+                            <ShippingInfoCard />
+                            <PaymentSummary/>
+                        </Grid>
                     </Grid>
-                </Grid>
+
+                }
             </div>
         )
     }
 }
 
 
-export default OrderDetails
+export default withWidth()(OrderDetails)

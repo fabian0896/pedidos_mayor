@@ -11,7 +11,8 @@ import { withStyles, Paper, Typography, Table, TableHead, TableBody, TableRow, T
 
 const styles = theme =>({
     root:{
-        overflow: 'hidden'
+        overflow: 'hidden',
+        marginBottom: theme.spacing.unit*2
     },
     header:{
         background: theme.palette.secondary.dark,
@@ -20,10 +21,11 @@ const styles = theme =>({
         marginBottom: theme.spacing.unit*3
     },
     tableContainer:{
-        overflowY: 'auto'
+        overflowX: 'auto',
+        position: 'realtive'
     },
     table:{
-        minWidth: 700
+        minWidth: 650
     },
     totalRow:{
         background: theme.palette.grey[300]
