@@ -25,13 +25,17 @@ class Pedidos extends Component {
     
     
 
-
+    handleNewOrder = ()=>{
+        this.props.history.push('pedidos/nuevo')
+    }
     
     render() {
         return (
             <div>
                 <HeaderLayout>
-                    <SearchBar />
+                    <SearchBar 
+                        handleAdd={this.handleNewOrder}
+                    />
                 </HeaderLayout>
 
                 

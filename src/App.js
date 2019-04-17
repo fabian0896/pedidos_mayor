@@ -24,6 +24,7 @@ import ClientDetail from "./pages/clientes/clientDetails/ClientDetails"
 import NewClient from './pages/clientes/newClient/NewClient'
 import NewProductMobile from './pages/prendas/newProductMobile/NewProductMovile';
 import OrderDetails from './pages/pedidos/orderDetails/OrderDetails';
+import NewOrder from './pages/pedidos/newOrder/NewOrder';
 
 
 
@@ -73,6 +74,7 @@ class App extends Component {
                 <PrivateRoute title="Clientes" exact path="/clientes" component={Clientes}/>      
                 <PrivateRoute title="Estadisticas" exact path="/estadisticas" component={Estadisticas}/>      
                 <PrivateRoute title="Pagos" exact path="/pagos" component={Pagos}/>      
+                <PrivateRoute title="Pedidos" exact path="/pedidos/nuevo" component={NewOrder}/>      
                 <PrivateRoute title="Pedidos" exact path="/pedidos/:id" component={OrderDetails}/>      
                 <PrivateRoute title="Pedidos" exact path="/pedidos" component={Pedidos}/>      
                 <PrivateRoute title="Prendas" exact path="/prendas/nueva" component={NewProductMobile}/>

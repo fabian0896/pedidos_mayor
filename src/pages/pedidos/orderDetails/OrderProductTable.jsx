@@ -27,6 +27,9 @@ const styles = theme =>({
     table:{
         minWidth: 650
     },
+    tableTotal:{
+        background: theme.palette.grey[100]
+    },
     totalRow:{
         background: theme.palette.grey[300]
     }
@@ -122,17 +125,16 @@ class OrderProductTable extends Component{
                             </TableRow>
 
 
-                            <TableRow>
-                                <TableCell colSpan={3}></TableCell>
+                            <TableRow className={classes.tableTotal}>
                                 <TableCell colSpan={3}>
                                     <Typography variant="subtitle2">Sub Total</Typography>
                                 </TableCell>
                                 <TableCell>
                                     <Typography variant="subtitle2">$1.000</Typography>
                                 </TableCell>
-                            </TableRow>
-                            <TableRow>
                                 <TableCell colSpan={3}></TableCell>
+                            </TableRow>
+                            <TableRow className={classes.tableTotal}>
                                 <TableCell colSpan={2}>
                                     <Typography variant="subtitle2">Descuento</Typography>
                                 </TableCell>
@@ -142,15 +144,16 @@ class OrderProductTable extends Component{
                                 <TableCell>
                                     <Typography variant="subtitle2">$1.000</Typography>
                                 </TableCell>
+                                <TableCell colSpan={3}></TableCell>
                             </TableRow>
                             <TableRow className={classes.totalRow}>
-                                <TableCell colSpan={3}></TableCell>
                                 <TableCell colSpan={3}>
                                     <Typography variant="subtitle2">Total</Typography>
                                 </TableCell>
                                 <TableCell>
                                     <Typography variant="subtitle2">$1.000</Typography>
                                 </TableCell>
+                                <TableCell colSpan={3}></TableCell>
                             </TableRow>
                             
                         </TableBody>
