@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Select from 'react-select';
+import Select from 'react-select/lib/Async';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import NoSsr from '@material-ui/core/NoSsr';
@@ -107,7 +107,10 @@ function Option(props) {
       }}
       {...props.innerProps}
     >
-      {props.children}
+      <div style={{paddingTop: 8}}>
+        <Typography variant="subtitle2">{props.children}</Typography>
+        <Typography style={{marginTop:-8}} component="span" variant="overline" color="textSecondary">{props.data.secondary}</Typography>
+      </div>
     </MenuItem>
   );
 }
@@ -184,7 +187,7 @@ class MyAutocompleat extends React.Component {
   ha
 
   render() {
-    const { classes, theme, form, field, optionsList, myPlaceholder } = this.props;
+    const { classes, theme, form, field, optionsList, myPlaceholder, promiseOptions } = this.props;
 
     const selectStyles = {
       input: base => ({
@@ -201,6 +204,9 @@ class MyAutocompleat extends React.Component {
     return (
         <NoSsr>
           <Select
+            cacheOptions
+            defaultOptions
+            loadOptions={promiseOptions}
             className={this.props.className}
             classes={classes}
             styles={selectStyles}

@@ -5,7 +5,7 @@ import MyAutocomplete from '../../../componets/myAutocomplete/MyAutocomplete'
 
 const styles = theme =>({
     form:{
-        width: '420px',
+        width: '450px',
         padding: theme.spacing.unit*2
     },
     input:{
@@ -16,18 +16,19 @@ const styles = theme =>({
 
 
 function ClientForm(props){
-    const { classes } = props
+    const { classes, saveSubmitRef, handleSubmit, iniValues} = props
     return(
         <Formik
             initialValues={{
-                client: null
+                client: iniValues.client || null
             }}
+            onSubmit={handleSubmit}
         >
             {
-                ({})=>{
-
+                ({submitForm, handleSubmit})=>{
+                    saveSubmitRef(submitForm)
                     return(
-                        <form className={classes.form}>
+                        <form onSubmit={handleSubmit} className={classes.form}>
                             <Field
                                 myPlaceholder="Cliente" 
                                 className={classes.input} 

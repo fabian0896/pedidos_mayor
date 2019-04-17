@@ -92,3 +92,16 @@ export async function searchProduct(query,{formated}){
     })
     return formatedProducts
 }
+
+export async function selectSearch(query){
+    const res = await searchProduct(query,{formated: false})
+
+    const formated = res.map(item =>{
+        return{
+            label: `${item.name}` ,
+            value: item.objectID,
+            secondary: `${item.line} (${item.reference})`
+        }
+    })
+    return formated
+}
