@@ -8,6 +8,7 @@ const initialState = {
     show: false
 }
 
+
 function alert(state = initialState, action){
     switch(action.type){
         case 'SHOW_ALERT':{

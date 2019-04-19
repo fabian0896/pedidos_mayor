@@ -1,9 +1,4 @@
 import React, { Component } from 'react';
-import {
-    Typography,
-    Grid,
-    Divider
-} from '@material-ui/core'
 import HeaderLayout from '../../componets/headerLayout/HeaderLayout'
 import StatsCard from '../../componets/statsCard/StatsCard';
 import {

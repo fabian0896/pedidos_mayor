@@ -178,16 +178,14 @@ class MyAutocompleat extends React.Component {
     multi: null,
   };
 
-  handleChange = name => value => {
-    this.setState({
-      [name]: value,
-    });
-  };
-
-  ha
+  handleChange = (option) => {
+      const { onChange, form, field } = this.props
+      form.setFieldValue(field.name, option)
+      onChange && onChange(option)
+  } 
 
   render() {
-    const { classes, theme, form, field, optionsList, myPlaceholder, promiseOptions } = this.props;
+    const { classes, theme, field, myPlaceholder, promiseOptions } = this.props;
 
     const selectStyles = {
       input: base => ({
@@ -210,10 +208,9 @@ class MyAutocompleat extends React.Component {
             className={this.props.className}
             classes={classes}
             styles={selectStyles}
-            options={optionsList}
             components={components}
             value={ field.value }
-            onChange={(option)=> form.setFieldValue(field.name, option)}
+            onChange={this.handleChange}
             placeholder={myPlaceholder}
             isClearable
           />

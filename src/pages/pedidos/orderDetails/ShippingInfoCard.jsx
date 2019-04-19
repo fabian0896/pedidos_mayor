@@ -3,15 +3,13 @@ import {
     withStyles,
     Paper,
     Typography,
-    Divider,
-    IconButton,
     Button,
     Collapse,
     List,
     ListItem,
     ListItemText
 } from '@material-ui/core';
-import { FileCopy as FileCopyIcon } from '@material-ui/icons'
+
 
 
 

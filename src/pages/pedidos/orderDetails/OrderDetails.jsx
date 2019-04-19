@@ -1,6 +1,5 @@
 import React, {Component, Fragment} from 'react'
 import {
-    Paper,
     Grid,
     Typography,
     withWidth

@@ -5,9 +5,11 @@ import MyStepper from '../../../componets/mystepper/MyStepper';
 import MyStep from '../../../componets/mystepper/MyStep';
 import ClientForm from './ClientForm';
 import { connect } from 'react-redux'
-import { showBackButtom, hideBackButtom } from '../../../actions'
+import { showBackButtom, hideBackButtom, addAllProducts } from '../../../actions'
 import ShippingForm from './ShippingForm';
 import ProductsForm from './ProductsForm'
+
+
 
 
 
@@ -25,6 +27,7 @@ class NewOrder extends Component{
     submit = Array(4).fill(null)
 
     componentDidMount(){
+        this.props.addAllProducts()
         this.props.showBackButtom()
     }
 
@@ -89,7 +92,7 @@ class NewOrder extends Component{
 
 
     render(){
-        const { clientsList } = this.props
+        const { clientsList, products } = this.props
         const { activeStep, formValues } = this.state
         return(
             <div>
@@ -117,7 +120,7 @@ class NewOrder extends Component{
                             iniValues={formValues.shipping}/>
                     </MyStep>
                     <MyStep title="Prendas">
-                        <ProductsForm/>
+                        <ProductsForm customPrices={{'6RlzAuoMKsCqyMEVoCtn':{cop: 840000}}} allProducts={products}/>
                     </MyStep>
                     <MyStep title="Cobro">
 
@@ -133,7 +136,8 @@ class NewOrder extends Component{
 
 const mapDispatchToProps ={
     showBackButtom,
-    hideBackButtom
+    hideBackButtom,
+    addAllProducts
 }
 
 function mapStateToProps(state, props){
@@ -148,7 +152,8 @@ function mapStateToProps(state, props){
 
     return{
         clientsList,
-        clients
+        clients,
+        products: state.products.all
     }
 }
 
