@@ -120,7 +120,7 @@ class NewOrder extends Component{
                             iniValues={formValues.shipping}/>
                     </MyStep>
                     <MyStep title="Prendas">
-                        <ProductsForm customPrices={{'6RlzAuoMKsCqyMEVoCtn':{cop: 840000}}} allProducts={products}/>
+                        <ProductsForm customPrices={{'6RlzAuoMKsCqyMEVoCtn':{cop: 84000}}} allProducts={products}/>
                     </MyStep>
                     <MyStep title="Cobro">
 

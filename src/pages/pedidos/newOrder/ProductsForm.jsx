@@ -2,10 +2,10 @@ import React from 'react';
 import { Formik, Field } from 'formik'
 import { selectSearch } from '../../../lib/searchService'
 import MyAsyncAutomoplete from '../../../componets/myAutocomplete/MyAsyncAutocomplete'
-import { withStyles, Grid, TextField } from '@material-ui/core';
+import { withStyles, Grid, TextField, Button, MenuItem } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
-
-
+import { SIZES } from '../../../lib/enviroment.js'
+import * as Yup from 'yup'
 
 
 function NumberFormatCustom(props) {
@@ -29,6 +29,9 @@ function NumberFormatCustom(props) {
   }
 
 
+//-----------------------------------------------------------------------------------------------------------
+
+
 const styles = theme =>({
     input:{
 
@@ -39,7 +42,17 @@ const styles = theme =>({
     }
 })
 
-class ProductForm extends React.Component{
+
+const validationFormInfoSchema = Yup.object().shape({
+    product: Yup.object().required('La prenda es requerida'),
+    size: Yup.number().required('valor requerido'),
+    quantity: Yup.number().required('valor requerido'),
+    color: Yup.string().required('valor requerido'),
+    price: Yup.number().required('valor Requerido')
+})
+
+
+class ProductFormInfo extends React.Component{
 
     state={
         labelText: '',
@@ -74,27 +87,27 @@ class ProductForm extends React.Component{
                 this.setState({labelText: '', productId: ''})
             }
         }
-        setValues({
-            price
-        })
+       setValues('price', price) 
     }
     
     
     
     render(){
-        const { classes } = this.props
+        const { classes, handleSubmit } = this.props
         return(
             <Formik
                 initialValues={{
                     product: null,
-                    size: null,
-                    color: 'Negro',
-                    quantity: 0,
-                    price: 0
+                    size: 28,
+                    color: '',
+                    quantity: '',
+                    price: ''
                 }}
+                validationSchema={validationFormInfoSchema}
+                onSubmit={handleSubmit}
             >
                 {
-                    ({handleSubmit, setValues, values, handleChange, handleBlur})=>{
+                    ({handleSubmit, values, handleChange, handleBlur, setFieldValue, errors, touched, isSubmitting})=>{
                         if(values.product){
                             
                         }
@@ -103,7 +116,8 @@ class ProductForm extends React.Component{
                                <Grid container spacing={16}>
                                     <Grid item md={12}>
                                         <Field
-                                            onChange={this.handleProductChange(setValues)}
+                                            error={errors.product && touched.product}
+                                            onChange={this.handleProductChange(setFieldValue)}
                                             myPlaceholder="Prenda" 
                                             className={classes.input} 
                                             name="product" 
@@ -113,24 +127,51 @@ class ProductForm extends React.Component{
                                     
                                     <Grid item md={3}>
                                         <TextField
-    
+                                            disabled={!values.price}
+                                            error={errors.size && touched.size}
+                                            name="size"
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            value={values.size}
+                                            select
                                             fullWidth
                                             label="talla"
                                             variant='outlined'
-                                        />
+                                        >
+                                            {
+                                                SIZES.map(size=>(
+                                                    <MenuItem 
+                                                        key={size.number} 
+                                                        value={size.number}>
+                                                            { size.letter }
+                                                    </MenuItem>
+                                                ))
+                                            }
+                                        </TextField>
                                     </Grid>
     
                                     <Grid item md={3}>
                                         <TextField
-                                                fullWidth
-                                                label="Color"
-                                                variant='outlined'
+                                            disabled={!values.price}
+                                            error={errors.color && touched.color}
+                                            name="color"
+                                            value={values.color}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            fullWidth
+                                            label="Color"
+                                            variant='outlined'
                                             />
                                     </Grid>
     
                                     <Grid item md={3}>
                                         <TextField
-
+                                            disabled={!values.price}
+                                            error={errors.quantity && touched.quantity}
+                                            value={values.quantity}
+                                            name="quantity"
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
                                             fullWidth
                                             label="Cantidad"
                                             variant='outlined'
@@ -139,20 +180,34 @@ class ProductForm extends React.Component{
     
                                     <Grid item md={3}>
                                         <TextField
-                                                helperText={this.state.labelText}
-                                                value={values.price}
-                                                onChange={this.myCustomHandleChange(handleChange('price'))}
-                                                onBlur={handleBlur('price')}
-                                                name="price"
-                                                fullWidth
-                                                label="Valor"
-                                                variant='outlined'
-                                                InputProps={{
-                                                    inputComponent: NumberFormatCustom,
-                                                    //onChange: this.myCustomHandleChange(handleChange('price')),
-                                                    //onBlur: handleBlur('price')
-                                                }}   
+                                            disabled={!values.price}
+                                            error={errors.price && touched.price}
+                                            helperText={this.state.labelText}
+                                            value={values.price}
+                                            onChange={this.myCustomHandleChange(handleChange('price'))}
+                                            onBlur={handleBlur('price')}
+                                            name="price"
+                                            fullWidth
+                                            label="Valor"
+                                            variant='outlined'
+                                            InputProps={{
+                                                inputComponent: NumberFormatCustom,
+                                                //onChange: this.myCustomHandleChange(handleChange('price')),
+                                                //onBlur: handleBlur('price')
+                                            }}   
                                             />
+                                    </Grid>
+
+                                    <Grid item md={12}>
+                                        <Button
+                                            disabled={isSubmitting}
+                                            variant="contained"
+                                            color="primary"
+                                            type="submit"
+                                            fullWidth
+                                        >
+                                            Agregar
+                                        </Button>
                                     </Grid>
                                </Grid>
                             </form>
@@ -164,6 +219,37 @@ class ProductForm extends React.Component{
     }
 }
 
+ProductFormInfo = withStyles(styles)(ProductFormInfo)
 
 
-export default withStyles(styles)(ProductForm)
+
+//-----------------------------------------------------------------------------------------------
+
+
+
+class ProductFrom extends React.Component{
+    
+    handleSubmit = (values, actions)=>{
+        console.log(values)
+        actions.setSubmitting(false)
+        actions.resetForm()
+    }
+
+    
+    render(){
+        const { customPrices, allProducts } = this.props
+        return(
+            <div>
+                <ProductFormInfo
+                    handleSubmit={this.handleSubmit} 
+                    customPrices={customPrices} 
+                    allProducts={allProducts} />
+
+
+            </div>
+        )
+    }
+}
+
+
+export default ProductFrom
