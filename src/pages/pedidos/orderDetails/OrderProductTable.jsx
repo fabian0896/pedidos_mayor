@@ -1,5 +1,19 @@
-import React, {Component} from 'react'
-import { withStyles, Paper, Typography, Table, TableHead, TableBody, TableRow, TableCell } from '@material-ui/core';
+import React, {Component, Fragment} from 'react'
+import { 
+    withStyles, 
+    Paper, 
+    Typography, 
+    Table, 
+    TableHead, 
+    TableBody, 
+    TableRow, 
+    TableCell, 
+    IconButton } from '@material-ui/core';
+import {
+    Delete as DeleteIcon,
+    Edit as EditIcon
+ } from '@material-ui/icons'
+import NumberFormat from 'react-number-format';
 
 
 
@@ -39,10 +53,27 @@ const styles = theme =>({
 
 
 class OrderProductTable extends Component{
+    
+    getTotal(data){   
+        if(!data.length) return 0
+        const total = data.map(({price, quantity})=>(parseFloat(price)*parseInt(quantity)))
+            .reduce((prev, current)=> prev + current)
+        return total
+    }
+    
     render(){
-        const { classes } = this.props
+        const { 
+            classes, 
+            data, 
+            withDetails, 
+            withEdittingButtons, 
+            handleDelete, 
+            handleEdit,
+            withTotal,
+            ...rest
+         } = this.props
         return(
-            <Paper className={classes.root}>
+            <Paper {...rest} className={classes.root}>
                 <div className={classes.header}>
                     <Typography color="inherit" variant="h4">Prendas</Typography>
                 </div>
@@ -50,6 +81,10 @@ class OrderProductTable extends Component{
                     <Table padding="dense" className={classes.table}>
                         <TableHead>
                             <TableRow>
+                                {
+                                    withEdittingButtons &&
+                                    <TableCell>Editar/Eliminar</TableCell>
+                                }
                                 <TableCell>Nombre</TableCell>
                                 <TableCell>Referencia</TableCell>
                                 <TableCell>Talla</TableCell>
@@ -60,102 +95,88 @@ class OrderProductTable extends Component{
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow hover>
-                                <TableCell>Faja Latex Clasica 3 Hileras</TableCell>
-                                <TableCell>1934-3</TableCell>
-                                <TableCell>32</TableCell>
-                                <TableCell>Negro</TableCell>
-                                <TableCell>20</TableCell>
-                                <TableCell>$10</TableCell>
-                                <TableCell>$200</TableCell>
-                            </TableRow>
-                            <TableRow hover>
-                                <TableCell>Faja Latex Clasica 3 Hileras</TableCell>
-                                <TableCell>1934-3</TableCell>
-                                <TableCell>32</TableCell>
-                                <TableCell>Negro</TableCell>
-                                <TableCell>20</TableCell>
-                                <TableCell>$10</TableCell>
-                                <TableCell>$200</TableCell>
-                            </TableRow>
-                            <TableRow hover>
-                                <TableCell>Faja Latex Clasica 3 Hileras</TableCell>
-                                <TableCell>1934-3</TableCell>
-                                <TableCell>32</TableCell>
-                                <TableCell>Negro</TableCell>
-                                <TableCell>20</TableCell>
-                                <TableCell>$10</TableCell>
-                                <TableCell>$200</TableCell>
-                            </TableRow>
-                            <TableRow hover>
-                                <TableCell>Faja Latex Clasica 3 Hileras</TableCell>
-                                <TableCell>1934-3</TableCell>
-                                <TableCell>32</TableCell>
-                                <TableCell>Negro</TableCell>
-                                <TableCell>20</TableCell>
-                                <TableCell>$10</TableCell>
-                                <TableCell>$200</TableCell>
-                            </TableRow>
-                            <TableRow hover>
-                                <TableCell>Faja Latex Clasica 3 Hileras</TableCell>
-                                <TableCell>1934-3</TableCell>
-                                <TableCell>32</TableCell>
-                                <TableCell>Negro</TableCell>
-                                <TableCell>20</TableCell>
-                                <TableCell>$10</TableCell>
-                                <TableCell>$200</TableCell>
-                            </TableRow>
-                            <TableRow hover>
-                                <TableCell>Faja Latex Clasica 3 Hileras</TableCell>
-                                <TableCell>1934-3</TableCell>
-                                <TableCell>32</TableCell>
-                                <TableCell>Negro</TableCell>
-                                <TableCell>20</TableCell>
-                                <TableCell>$10</TableCell>
-                                <TableCell>$200</TableCell>
-                            </TableRow>
-                            <TableRow hover>
-                                <TableCell>Faja Latex Clasica 3 Hileras</TableCell>
-                                <TableCell>1934-3</TableCell>
-                                <TableCell>32</TableCell>
-                                <TableCell>Negro</TableCell>
-                                <TableCell>20</TableCell>
-                                <TableCell>$10</TableCell>
-                                <TableCell>$200</TableCell>
-                            </TableRow>
+                            {
+                                data.map((product, index)=>{
+                                    return(
+                                        <TableRow key={index} hover>
+                                            {
+                                                withEdittingButtons &&
+                                                <TableCell padding="checkbox">
+                                                    <IconButton onClick={handleEdit(index)} >
+                                                        <EditIcon fontFamily="small" />
+                                                    </IconButton>
+                                                    <IconButton onClick={handleDelete(index)}>
+                                                        <DeleteIcon color="error" fontSize="small" />
+                                                    </IconButton>
+                                                </TableCell>
+                                            }
+                                            <TableCell>{product.name}</TableCell>
+                                            <TableCell>{product.reference}</TableCell>
+                                            <TableCell>{product.size}</TableCell>
+                                            <TableCell>{product.color}</TableCell>
+                                            <TableCell>{product.quantity}</TableCell>
+                                            <NumberFormat 
+                                                value={product.price} 
+                                                displayType={'text'} 
+                                                thousandSeparator={true} 
+                                                prefix={'$'} 
+                                                renderText={value => <TableCell>{value}</TableCell>} />
+                                            <NumberFormat 
+                                                value={product.quantity * product.price} 
+                                                displayType={'text'} 
+                                                thousandSeparator={true} 
+                                                prefix={'$'} 
+                                                renderText={value => <TableCell>{value}</TableCell>} />
+                                        </TableRow>
+                                    )
+                                })
+                            }
+                            {
+                                withDetails &&
+                                <Fragment>
 
-
-                            <TableRow className={classes.tableTotal}>
-                                <TableCell colSpan={3}>
-                                    <Typography variant="subtitle2">Sub Total</Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle2">$1.000</Typography>
-                                </TableCell>
-                                <TableCell colSpan={3}></TableCell>
-                            </TableRow>
-                            <TableRow className={classes.tableTotal}>
-                                <TableCell colSpan={2}>
-                                    <Typography variant="subtitle2">Descuento</Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle2">15%</Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle2">$1.000</Typography>
-                                </TableCell>
-                                <TableCell colSpan={3}></TableCell>
-                            </TableRow>
-                            <TableRow className={classes.totalRow}>
-                                <TableCell colSpan={3}>
-                                    <Typography variant="subtitle2">Total</Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle2">$1.000</Typography>
-                                </TableCell>
-                                <TableCell colSpan={3}></TableCell>
-                            </TableRow>
-                            
+                                    <TableRow className={classes.tableTotal}>
+                                        <TableCell colSpan={3}>
+                                            <Typography variant="subtitle2">Sub Total</Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="subtitle2">$1.000</Typography>
+                                        </TableCell>
+                                        <TableCell colSpan={withEdittingButtons? 4 : 3}></TableCell>
+                                    </TableRow>
+                                    <TableRow className={classes.tableTotal}>
+                                        <TableCell colSpan={2}>
+                                            <Typography variant="subtitle2">Descuento</Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="subtitle2">15%</Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="subtitle2">$1.000</Typography>
+                                        </TableCell>
+                                        <TableCell colSpan={withEdittingButtons? 4 : 3}></TableCell>
+                                    </TableRow>
+                                </Fragment>
+                            } 
+                            {
+                                withTotal &&
+                                <TableRow className={classes.totalRow}>
+                                    <TableCell colSpan={3}>
+                                        <Typography variant="subtitle2">Total</Typography>
+                                    </TableCell>
+                                    <NumberFormat 
+                                                value={this.getTotal(data)} 
+                                                displayType={'text'} 
+                                                thousandSeparator={true} 
+                                                prefix={'$'} 
+                                                renderText={value =>( 
+                                                    <TableCell>
+                                                        <Typography variant="subtitle2">{value}</Typography>
+                                                    </TableCell>
+                                                )} />
+                                    <TableCell colSpan={withEdittingButtons? 4 : 3}></TableCell>
+                                </TableRow>
+                            } 
                         </TableBody>
                     </Table>
                 </div>

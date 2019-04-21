@@ -1,11 +1,13 @@
 import React from 'react';
-import { Formik, Field } from 'formik'
+import { Formik, Field, withFormik } from 'formik'
 import { selectSearch } from '../../../lib/searchService'
 import MyAsyncAutomoplete from '../../../componets/myAutocomplete/MyAsyncAutocomplete'
 import { withStyles, Grid, TextField, Button, MenuItem } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
 import { SIZES } from '../../../lib/enviroment.js'
 import * as Yup from 'yup'
+import OrderProductTable from '../orderDetails/OrderProductTable';
+
 
 
 function NumberFormatCustom(props) {
@@ -38,7 +40,7 @@ const styles = theme =>({
     },
     form:{
         width: 450,
-        padding: theme.spacing.unit*2
+        paddingBottom: theme.spacing.unit*3
     }
 })
 
@@ -93,7 +95,7 @@ class ProductFormInfo extends React.Component{
     
     
     render(){
-        const { classes, handleSubmit } = this.props
+        const { classes, handleSubmit, getSetValuesRef, isEditting } = this.props
         return(
             <Formik
                 initialValues={{
@@ -107,10 +109,10 @@ class ProductFormInfo extends React.Component{
                 onSubmit={handleSubmit}
             >
                 {
-                    ({handleSubmit, values, handleChange, handleBlur, setFieldValue, errors, touched, isSubmitting})=>{
-                        if(values.product){
-                            
-                        }
+                    ({handleSubmit, values, handleChange, handleBlur, setFieldValue, errors, touched, isSubmitting, setValues})=>{
+                        
+                        getSetValuesRef(setValues)
+
                         return(
                             <form className={classes.form} onSubmit={handleSubmit}>
                                <Grid container spacing={16}>
@@ -206,7 +208,7 @@ class ProductFormInfo extends React.Component{
                                             type="submit"
                                             fullWidth
                                         >
-                                            Agregar
+                                            { isEditting? 'Editar': 'Guardar' }
                                         </Button>
                                     </Grid>
                                </Grid>
@@ -229,27 +231,119 @@ ProductFormInfo = withStyles(styles)(ProductFormInfo)
 
 class ProductFrom extends React.Component{
     
-    handleSubmit = (values, actions)=>{
-        console.log(values)
+    state={
+        isEditting: false,
+        editIndex: -1
+    }
+
+    setValuesForm = ()=>{}
+
+    handleSubmit = (productValues, actions)=>{
+        const { isEditting, editIndex } = this.state
+        const { setFieldValue, values, allProducts } = this.props
+        let finalProducts = []  
+        const newProduct = {
+            ...allProducts[productValues.product.value],
+            ...productValues
+        }
+
+        if(isEditting){
+            finalProducts = values.products.slice()
+            finalProducts[editIndex] = newProduct
+        }else{
+            finalProducts = this.mergeDuplicated(newProduct, values)
+        }
+        this.setState({isEditting: false, editIndex: -1})
+        setFieldValue('products', finalProducts)
         actions.setSubmitting(false)
         actions.resetForm()
     }
 
+    mergeDuplicated(product, values){
+        const {products} = values
+        const index = products.findIndex(item =>{
+            return( 
+                item.reference === product.reference &&
+                item.size === product.size &&
+                item.price === product.price &&
+                item.color.toLowerCase() === product.color.toLowerCase()
+                )
+        })
+    
+        if(index < 0){
+            return [...products, product]
+        }
+
+        const newProducts = products.slice()
+        newProducts[index].quantity = parseInt(newProducts[index].quantity) + parseInt(product.quantity)
+        return newProducts
+    }
+
+
+    handleDelete = (index)=>()=>{
+        const { values, setFieldValue } = this.props
+        const products = values.products.slice()
+        products.splice(index, 1)
+        setFieldValue('products', products)
+    }
+
+    handleEdit = (index) => () => {
+        const { values } = this.props
+        const products = values.products
+        const edittingProduct = products[index]
+        this.setState({isEditting: true, editIndex: index})
+        this.setValuesForm({
+            product: edittingProduct.product,
+            size: edittingProduct.size,
+            color: edittingProduct.color,
+            quantity: edittingProduct.quantity,
+            price: edittingProduct.price
+        })
+    }
+
+    getSetValueRef = (setValue)=>{
+        this.setValuesForm = setValue
+    }
+
+    componentDidMount(){
+        const { saveSubmitRef, submitForm} =  this.props
+        saveSubmitRef(submitForm)
+    }
+
     
     render(){
-        const { customPrices, allProducts } = this.props
+        const { 
+            customPrices, 
+            allProducts,
+            values,
+         } = this.props
+         const { isEditting } = this.state
         return(
-            <div>
+            <div >
                 <ProductFormInfo
+                    getSetValuesRef={this.getSetValueRef}
+                    isEditting={isEditting}
                     handleSubmit={this.handleSubmit} 
                     customPrices={customPrices} 
                     allProducts={allProducts} />
-
-
+                <OrderProductTable
+                    withTotal
+                    handleEdit={this.handleEdit}
+                    handleDelete={this.handleDelete}
+                    withEdittingButtons
+                    data={values.products}
+                />
             </div>
         )
     }
 }
 
 
-export default ProductFrom
+export default withFormik({
+    mapPropsToValues:(props)=>({
+        products: props.initialValues || []
+    }),
+    handleSubmit: (values, actions)=>{
+        actions.props.handleSubmit(values, actions)
+    }
+})(ProductFrom)

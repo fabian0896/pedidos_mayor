@@ -8,6 +8,8 @@ import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom, addAllProducts } from '../../../actions'
 import ShippingForm from './ShippingForm';
 import ProductsForm from './ProductsForm'
+import DiscountForm from './DiscountForm';
+import OrderResume from './OrderResume';
 
 
 
@@ -18,7 +20,7 @@ class NewOrder extends Component{
 
 
     state ={
-        activeStep: 0,
+        activeStep: 4,
         formValues:{
             shipping:{}
         }
@@ -120,13 +122,22 @@ class NewOrder extends Component{
                             iniValues={formValues.shipping}/>
                     </MyStep>
                     <MyStep title="Prendas">
-                        <ProductsForm customPrices={{'6RlzAuoMKsCqyMEVoCtn':{cop: 84000}}} allProducts={products}/>
+                        <ProductsForm
+                            initialValues={formValues.products}
+                            handleSubmit={this.handleSubmit}
+                            saveSubmitRef={this.saveSubmitRef(2)} 
+                            customPrices={{'6RlzAuoMKsCqyMEVoCtn':{cop: 84000}}} 
+                            allProducts={products}/>
                     </MyStep>
                     <MyStep title="Cobro">
-
+                        <DiscountForm
+                            handleSubmit={this.handleSubmit}
+                            saveSubmitRef={this.saveSubmitRef(3)}
+                            initialValues={formValues}
+                         />
                     </MyStep>
                     <MyStep title="Resumen">
-
+                        <OrderResume />
                     </MyStep>
                 </MyStepper>
             </div>
