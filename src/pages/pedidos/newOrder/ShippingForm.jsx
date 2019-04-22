@@ -19,7 +19,7 @@ function ShippingForm(props){
         <Formik
             initialValues={{
                 name: iniValues.name || '',
-                country: iniValues.country || 'Hola',
+                country: iniValues.country || '',
                 city: iniValues.city || '',
                 address: iniValues.address || '',
                 zipCode: iniValues.zipCode || '',

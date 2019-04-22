@@ -76,16 +76,21 @@ class ProductFormInfo extends React.Component{
     }
 
     handleProductChange = (setValues)=> (option) => {
-        const { allProducts, customPrices } = this.props
+        const { allProducts, customPrices, currency } = this.props
         let price = ""
+        const _currency = currency.toLowerCase()
         if(option){
             const id = option.value
             if(customPrices[id]){
-                price = customPrices[id].cop
-                this.setState({labelText: 'Precio personalizado', productId: id})
+                if(customPrices[id][_currency]){
+                    price = customPrices[id][_currency]
+                    this.setState({labelText: 'Precio personalizado', productId: id})
+                }else{
+                    price = allProducts[id][_currency]
+                    this.setState({labelText: '', productId: ''})
+                }
             }else{
-                const { cop } = allProducts[id]
-                price = cop
+                price = allProducts[id][_currency]
                 this.setState({labelText: '', productId: ''})
             }
         }
@@ -316,17 +321,20 @@ class ProductFrom extends React.Component{
             customPrices, 
             allProducts,
             values,
+            currency
          } = this.props
          const { isEditting } = this.state
         return(
             <div >
                 <ProductFormInfo
+                    currency={currency}
                     getSetValuesRef={this.getSetValueRef}
                     isEditting={isEditting}
                     handleSubmit={this.handleSubmit} 
                     customPrices={customPrices} 
                     allProducts={allProducts} />
                 <OrderProductTable
+                    currency={currency}
                     withTotal
                     handleEdit={this.handleEdit}
                     handleDelete={this.handleDelete}

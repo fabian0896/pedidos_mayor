@@ -80,6 +80,7 @@ function inputComponent({ inputRef, ...props }) {
 function Control(props) {
   return (
     <TextField
+      error={props.selectProps.error}
       fullWidth
       variant="outlined"
       InputProps={{
@@ -184,7 +185,7 @@ class MyAutocompleat extends React.Component {
   ha
 
   render() {
-    const { classes, theme, form, field, optionsList, myPlaceholder } = this.props;
+    const { classes, theme, form, field, optionsList, myPlaceholder, error } = this.props;
 
     const selectStyles = {
       input: base => ({
@@ -201,6 +202,7 @@ class MyAutocompleat extends React.Component {
     return (
         <NoSsr>
           <Select
+            error={error}
             className={this.props.className}
             classes={classes}
             styles={selectStyles}

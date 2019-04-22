@@ -70,6 +70,7 @@ class OrderProductTable extends Component{
             handleDelete, 
             handleEdit,
             withTotal,
+            currency,
             ...rest
          } = this.props
         return(
@@ -90,8 +91,8 @@ class OrderProductTable extends Component{
                                 <TableCell>Talla</TableCell>
                                 <TableCell>Color</TableCell>
                                 <TableCell>Cantidad</TableCell>
-                                <TableCell>valor</TableCell>
-                                <TableCell>Total</TableCell>
+                                <TableCell>{`Valor(${currency})`}</TableCell>
+                                <TableCell>{`Total(${currency})`}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -168,7 +169,7 @@ class OrderProductTable extends Component{
                                                 value={this.getTotal(data)} 
                                                 displayType={'text'} 
                                                 thousandSeparator={true} 
-                                                prefix={'$'} 
+                                                prefix={`${currency} $`} 
                                                 renderText={value =>( 
                                                     <TableCell>
                                                         <Typography variant="subtitle2">{value}</Typography>

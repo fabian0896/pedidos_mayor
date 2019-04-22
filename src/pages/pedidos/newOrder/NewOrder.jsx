@@ -20,7 +20,7 @@ class NewOrder extends Component{
 
 
     state ={
-        activeStep: 4,
+        activeStep: 0,
         formValues:{
             shipping:{}
         }
@@ -34,6 +34,7 @@ class NewOrder extends Component{
     }
 
     componentWillUnmount(){
+        
         this.props.hideBackButtom()
     }
 
@@ -42,21 +43,35 @@ class NewOrder extends Component{
     }
 
     handleSubmit = (values, actions)=>{
-        if(values.client ){
-            this.setClientShppingInfo(values.client.value)
+        const {activeStep} = this.state
+        if(activeStep === 0){
+            this.setClientShppingInfo(values.client.value, values)
+        }else if(activeStep ===1){
+            this.setState(state=>({
+                formValues:{
+                    ...state.formValues,
+                    shipping:{
+                        ...state.formValues.shipping,
+                        ...values
+                    }
+                }
+            }))
+        }else{
+            this.setState(({formValues}) =>({
+                formValues: {...formValues, ...values}
+            }))
         }
-        this.setState(({formValues}) =>({
-            formValues: {...formValues, ...values}
-        }))
         this.nextStep()
     }
 
-    setClientShppingInfo = (id)=>{
+    setClientShppingInfo = (id, values={})=>{
         const { clients: allClients } = this.props
         const actualClient = allClients[id]
             this.setState(state=>({
                 formValues:{
                     ...state.formValues,
+                    ...values,
+                    clientInfo: actualClient,
                     shipping:{
                         name: actualClient.name,
                         country: actualClient.country.translations.es || actualClient.country.name,
@@ -123,6 +138,7 @@ class NewOrder extends Component{
                     </MyStep>
                     <MyStep title="Prendas">
                         <ProductsForm
+                            currency={formValues.currency}
                             initialValues={formValues.products}
                             handleSubmit={this.handleSubmit}
                             saveSubmitRef={this.saveSubmitRef(2)} 
@@ -137,7 +153,7 @@ class NewOrder extends Component{
                          />
                     </MyStep>
                     <MyStep title="Resumen">
-                        <OrderResume />
+                        <OrderResume currency={formValues.currency} data={formValues} />
                     </MyStep>
                 </MyStepper>
             </div>
