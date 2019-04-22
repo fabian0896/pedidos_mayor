@@ -10,6 +10,7 @@ import ShippingForm from './ShippingForm';
 import ProductsForm from './ProductsForm'
 import DiscountForm from './DiscountForm';
 import OrderResume from './OrderResume';
+import { addOrder } from '../../../lib/firebaseService'
 
 
 
@@ -31,6 +32,7 @@ class NewOrder extends Component{
     componentDidMount(){
         this.props.addAllProducts()
         this.props.showBackButtom()
+        
     }
 
     componentWillUnmount(){
@@ -107,6 +109,13 @@ class NewOrder extends Component{
         console.log('completed!')
     }
 
+    handleSave = ()=>{
+        const { formValues } = this.state
+        addOrder(formValues)
+            .then(()=>console.log("listo"))
+            .catch((err)=>console.log(err))
+    }
+
 
     render(){
         const { clientsList, products } = this.props
@@ -152,7 +161,7 @@ class NewOrder extends Component{
                             initialValues={formValues}
                          />
                     </MyStep>
-                    <MyStep title="Resumen">
+                    <MyStep onFinish={this.handleSave} title="Resumen">
                         <OrderResume currency={formValues.currency} data={formValues} />
                     </MyStep>
                 </MyStepper>

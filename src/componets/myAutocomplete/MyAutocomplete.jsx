@@ -182,8 +182,6 @@ class MyAutocompleat extends React.Component {
     });
   };
 
-  ha
-
   render() {
     const { classes, theme, form, field, optionsList, myPlaceholder, error } = this.props;
 

@@ -55,6 +55,56 @@ export function capitalize(text=""){
 
  
 
+export function incrementSerial({letter, number}){
+    const INITIAL_NUMBER = 0
+    const MAX_NUMBER = 999
+    const INITIAL_LETTER = 65
+    const MAX_LETTER = 90
+
+
+    let serialNumber = parseInt(number)
+    let serialLetter = letter
+    
+    //le inclremento al numero
+    serialNumber += 1
+
+
+    //Verifico que el numero no haga overflow (mas de 999)
+    if(serialNumber > MAX_NUMBER){
+        //el numero hizo overflow, hay que aumentar las letras y reiniciar el numero 
+        serialNumber = INITIAL_NUMBER
+
+        const asciiCode = serialLetter.split('').map(item => item.charCodeAt(0))    
+        
+        let superOverflow = false
+        for(let i in asciiCode){
+            if(asciiCode[i]+1 > MAX_LETTER){
+                if(parseInt(i) === (asciiCode.length-1)){
+                    superOverflow = true
+                    console.log('entre')
+                }
+                asciiCode[i] = INITIAL_LETTER
+            }else{
+                asciiCode[i]+= 1
+                break;
+            }
+        }
+        if(superOverflow){
+            asciiCode.push(INITIAL_LETTER)
+        }    
+        const lettersResult = asciiCode.map(code => String.fromCharCode(code)).join('')
+        return {letter: lettersResult, number: formatSerialNumber(serialNumber)}     
+    }else{
+        return {letter: serialLetter, number: formatSerialNumber(serialNumber)}
+    }
+}
+
+function formatSerialNumber(number, digits=3){
+    const letters = '000' + number
+    const lettersArray = letters.split('').reverse().join('')
+    const result = lettersArray.substring(0,digits).split('').reverse().join('')
+    return result
+}
 
 
 //-------------------- Internal functions --------------------

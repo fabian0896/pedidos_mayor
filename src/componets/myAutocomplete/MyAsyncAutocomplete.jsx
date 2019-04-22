@@ -187,7 +187,7 @@ class MyAutocompleat extends React.Component {
   } 
 
   render() {
-    const { classes, theme, field, myPlaceholder, promiseOptions, error } = this.props;
+    const { classes, theme, field, myPlaceholder, promiseOptions, error, getRef} = this.props;
 
     const selectStyles = {
       input: base => ({
@@ -204,6 +204,7 @@ class MyAutocompleat extends React.Component {
     return (
         <NoSsr>
           <Select
+            ref={getRef}
             error={error}
             cacheOptions
             defaultOptions

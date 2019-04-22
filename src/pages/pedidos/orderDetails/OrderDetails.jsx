@@ -11,9 +11,10 @@ import PaymentSummary from './PaymentSummary'
 import OrderProductTable from './OrderProductTable';
 
 
+
 class OrderDetails extends Component{
     componentDidMount(){
-        document.title = 'Pedidos | A0042' 
+        document.title = 'Pedidos | A0042'
     }
 
     render(){
@@ -21,13 +22,13 @@ class OrderDetails extends Component{
         return(
             <div>
                 <HeaderLayout>
-                    <Typography color="inherit" component="h2" variant="h1">A0042</Typography>
+                    <Typography color="inherit" component="h2" variant="h1">AA042</Typography>
                 </HeaderLayout>
                 {
                     width === 'xs' || width === 'sm'?
                     <Fragment>
                         <OrderDetailCard />
-                        <OrderProductTable />
+                        <OrderProductTable data={[]}/>
                         <Grid container spacing={16}>
                             <Grid item sm={6} xs={12}>
                                 <ShippingInfoCard />
@@ -40,7 +41,7 @@ class OrderDetails extends Component{
                     : 
                     <Grid container spacing={16}>
                         <Grid item xs={12} sm={12} md={9}>
-                            <OrderProductTable />
+                            <OrderProductTable data={[]} />
                         </Grid>
                         <Grid item xs={12} sm={12} md={3}>
                             <OrderDetailCard />

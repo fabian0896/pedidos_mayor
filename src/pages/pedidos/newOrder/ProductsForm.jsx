@@ -94,7 +94,7 @@ class ProductFormInfo extends React.Component{
                 this.setState({labelText: '', productId: ''})
             }
         }
-       setValues('price', price) 
+       setValues('price', price)  
     }
     
     
@@ -111,7 +111,7 @@ class ProductFormInfo extends React.Component{
                     price: ''
                 }}
                 validationSchema={validationFormInfoSchema}
-                onSubmit={handleSubmit}
+                onSubmit={(values, actions)=> handleSubmit(values,actions, this.selectRef)}
             >
                 {
                     ({handleSubmit, values, handleChange, handleBlur, setFieldValue, errors, touched, isSubmitting, setValues})=>{
@@ -123,6 +123,7 @@ class ProductFormInfo extends React.Component{
                                <Grid container spacing={16}>
                                     <Grid item md={12}>
                                         <Field
+                                            getRef={node => this.selectRef = node}
                                             error={errors.product && touched.product}
                                             onChange={this.handleProductChange(setFieldValue)}
                                             myPlaceholder="Prenda" 
@@ -243,7 +244,7 @@ class ProductFrom extends React.Component{
 
     setValuesForm = ()=>{}
 
-    handleSubmit = (productValues, actions)=>{
+    handleSubmit = (productValues, actions, selectRef)=>{
         const { isEditting, editIndex } = this.state
         const { setFieldValue, values, allProducts } = this.props
         let finalProducts = []  
@@ -262,6 +263,7 @@ class ProductFrom extends React.Component{
         setFieldValue('products', finalProducts)
         actions.setSubmitting(false)
         actions.resetForm()
+        selectRef.focus()
     }
 
     mergeDuplicated(product, values){

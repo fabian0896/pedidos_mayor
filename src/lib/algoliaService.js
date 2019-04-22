@@ -4,6 +4,7 @@ const agoliaClient = algoliasearch('AKE68Y9274', 'f8604ef41d20eb78f752a3f55d9357
 
 const clientsIndex = agoliaClient.initIndex('clients');
 const productsIndex = agoliaClient.initIndex('products');
+const ordersIndex = agoliaClient.initIndex('orders');
 
 
 //------------------------ Clients ---------------------------
@@ -35,4 +36,18 @@ export function deleteProduct(objectID){
     return productsIndex.deleteObject(objectID)
 }
 
+
+//--------------------------Orders ---------------
+
+export function addOrder(order){
+    return ordersIndex.addObject(order)
+}
+
+export function updateOrder(objectID, order){
+    return ordersIndex.partialUpdateObject({...order, objectID})
+}
+
+export function deleteOrder(objectID){
+    return ordersIndex.deleteObject(objectID)
+}
 

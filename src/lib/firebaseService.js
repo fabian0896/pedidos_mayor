@@ -2,8 +2,9 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 
-import { formatPhone, randomColor } from './utilities'
+import { formatPhone, randomColor, incrementSerial } from './utilities'
 import * as algolia from './algoliaService'
+
 
 
 
@@ -11,6 +12,7 @@ const CLIENTS = 'clients'
 const CODES = 'codes'
 const SELLERS = 'sellers'
 const PRODUCTS = 'products'
+const ORDERS = 'orders'
 
 
 //---------------------------------------------CLients -------------------------------------------
@@ -203,13 +205,8 @@ export function createSeller({email, password, code, name}){
 export function getCodes(){
     return new Promise(async (res, rej)=>{
        const myHandleError = handleError(rej)
-       const codes = [] 
-       const snap = await firebase.firestore().collection(CODES).get().catch(myHandleError)
-       snap.forEach(code => {
-           codes.push(code.data())
-       })
-       res(codes)
-       return
+       const snap = await firebase.firestore().collection(CODES).doc('registerCode').get().catch(myHandleError)
+       return [snap.data()]
     })
 }
 
@@ -310,6 +307,78 @@ export async function getLastProducts(){
     })
     return result
 }
+
+//--------------------------------------------- Orders ---------------------------------------------------
+
+export async function getSerialCode(){
+    const ref = firebase.firestore().collection('codes').doc('serialCode')
+    return await firebase.firestore().runTransaction((transaction)=>{
+        return transaction.get(ref).then(snap =>{
+            if(!snap.exists){
+                return Promise.reject('No se encontro el codigo')
+            }
+            const serial = snap.data()
+            const newSerial = incrementSerial(serial)
+            transaction.update(ref, newSerial)
+            return newSerial
+        })
+    })
+} 
+
+
+export async function addOrder(order){
+    const dbOrders = firebase.firestore().collection(ORDERS)
+    const dbClients = firebase.firestore().collection(CLIENTS)
+    const oredrRef = dbOrders.doc()
+    const orderId = oredrRef.id
+    const batch = firebase.firestore().batch()
+
+    const serialCode = await getSerialCode()
+    const serialCodeText = serialCode.letter + serialCode.number
+
+    const orderResume = {
+        serialCode: serialCodeText,
+        total: order.total,
+        subTotal: order.subTotal,
+        descount: order.descount,
+        currency: order.currency,
+        balance: order.total
+    }
+
+    const orderObject = { 
+        ...order,
+        serialCode: serialCodeText,
+        clientId: order.clientInfo.id,
+        creator: firebase.auth().currentUser.uid,
+        createdAt: new Date(),
+        updatedAt: new Date()
+    }
+
+    delete orderObject.clientInfo
+    delete orderObject.client
+
+    const algoliaObject={
+        objectID: orderId,
+        serialCode: serialCodeText,
+        clientName: order.clientInfo.name,
+        clinetId: order.clientInfo.id,
+        country: order.clientInfo.country.translations.es || order.clientInfo.country.name,
+        city: order.clientInfo.city,
+        creator: firebase.auth().currentUser.uid,
+    }
+
+    const clientRef = dbClients.doc(order.clientInfo.id)
+    batch.update(clientRef, {[`orders.${orderId}`]: orderResume,})
+
+    batch.set(oredrRef,orderObject)
+
+    const res = await batch.commit()
+
+    await algolia.addOrder(algoliaObject)
+
+    return res
+}
+
 
 
 //-------------------------------------------- Handle Error ----------------------------------------------

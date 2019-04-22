@@ -66,6 +66,7 @@ class OrderResume extends React.Component{
 
     render(){
         const { classes, data, currency: orderCurrency } = this.props
+        console.log(data)
         const shipping = data.shipping
         const client = data.clientInfo
         const clientCountry = client.country.translations.es || client.country.name
