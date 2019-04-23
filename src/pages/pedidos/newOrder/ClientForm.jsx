@@ -30,46 +30,59 @@ const validationSchema = Yup.object().shape({
     currency: Yup.string().required('valor requerido')
 })
 
+const customChange = (setFieldValue, clients)=> (option) =>{
+    if(option){
+        const currency = clients[option.value].currency || 'USD'
+        setFieldValue('currency', currency)
+        return
+    }
+    setFieldValue('currency', null)
+}
 
 function ClientForm(props) {
-    const { classes, saveSubmitRef, handleSubmit, iniValues } = props
+    const { classes, saveSubmitRef, handleSubmit, iniValues, clients } = props
     return (
         <Formik
             initialValues={{
                 client: iniValues.client || null,
-                currency: null
+                currency: iniValues.currency || null
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
         >
             {
-                ({ submitForm, handleSubmit, handleChange, handleBlur, values, errors, touched }) => {
+                ({ submitForm, handleSubmit, handleChange, handleBlur, values, errors, touched, setFieldValue }) => {
                     saveSubmitRef(submitForm)
+                    console.log(values)
                     return (
                         <form onSubmit={handleSubmit} className={classes.form}>
                             <Field
+                                onChange={customChange(setFieldValue, clients)}
                                 error={errors.client && touched.client}
                                 myPlaceholder="Cliente"
                                 className={classes.input}
                                 name="client"
                                 component={MyAutocomplete}
                                 optionsList={props.options} />
-                            <FormControl
-                                component="fieldset"
-                                error={errors.currency && touched.currency}
-                                >
-                                <FormLabel component="legend">Moneda</FormLabel>
-                                <RadioGroup
-                                    aria-label="Gender"
-                                    name="currency"
-                                    value={values.currency}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                >
-                                    <FormControlLabel value="USD" control={<Radio />} label="Dolares" />
-                                    <FormControlLabel value="COP" control={<Radio />} label="Pesos Colombianos" />
-                                </RadioGroup>
-                            </FormControl>
+                            {
+                                values.currency &&
+                                <FormControl
+                                    component="fieldset"
+                                    error={errors.currency && touched.currency}
+                                    >
+                                    <FormLabel component="legend">Moneda</FormLabel>
+                                    <RadioGroup
+                                        aria-label="Gender"
+                                        name="currency"
+                                        value={values.currency}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    >
+                                        <FormControlLabel value="USD" control={<Radio />} label="Dolares" />
+                                        <FormControlLabel value="COP" control={<Radio />} label="Pesos Colombianos" />
+                                    </RadioGroup>
+                                </FormControl>
+                            }
                         </form>
                     )
                 }

@@ -13,7 +13,7 @@ class ClientList extends Component{
     
     
     render(){
-        const { clients } = this.props
+        const { clients, handleAddOrder } = this.props
         const { expanded } = this.state
 
         return(
@@ -21,6 +21,7 @@ class ClientList extends Component{
         {
             clients.map((client, index) =>(
                 <ListClientItem
+                    handleAddOrder={handleAddOrder(client.id)}
                     handleClickVerMas={this.props.handleClickVerMas(client.id)}
                     key={index}
                     client={client} 

@@ -345,8 +345,15 @@ export async function addOrder(order){
         balance: order.total
     } */
 
+    const totalProducts = order.products.reduce((prev, current)=>{
+        return prev + parseInt(current.quantity)
+    }, 0)
+
     const orderObject = { 
         ...order,
+        state: 'pending',
+        totalProducts,
+        balance: order.total,
         serialCode: serialCodeText,
         clientId: order.clientInfo.id,
         creator: firebase.auth().currentUser.uid,
@@ -382,16 +389,21 @@ export async function addOrder(order){
                 return
             }
 
+            let totalOrders = 1
+            if(client.totalOrders){
+                totalOrders = client.totalOrders + 1
+            }
+
             let totalValue = order.total
             if(client.currency !== order.currency){
                 totalValue = await convertCurrency(order.currency, client.currency, totalValue)
             }
 
             if(!client.balance){
-                transaction.update(clientRef,{balance: totalValue})
+                transaction.update(clientRef,{balance: totalValue, totalOrders})
             }else{
                 const totalBalance = client.balance + totalValue
-                transaction.update(clientRef, {balance: totalBalance})
+                transaction.update(clientRef, {balance: totalBalance, totalOrders})
             }
             transaction.set(oredrRef, orderObject)
             res('completed')
@@ -401,6 +413,16 @@ export async function addOrder(order){
 
     await algolia.addOrder(algoliaObject)
     return 
+}
+
+export async function getAllOrders(){
+    const db = firebase.firestore().collection(ORDERS).orderBy('createdAt','desc').limit(30)
+    const orders = {}
+    const snap = await db.get()
+    snap.forEach(order => {
+        orders[order.id] = { ...order.data(), id: order.id }
+    })
+    return orders
 }
 
 

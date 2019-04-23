@@ -5,6 +5,7 @@ import backButtom from './backButtom.js'
 import clients from './clients'
 import sellers from './sellers'
 import products from './products'
+import orders from './orders'
 
 const rootReducer = combineReducers({
     user,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
     backButtom,
     clients,
     sellers,
-    products
+    products,
+    orders
 });
 
 export default rootReducer;

@@ -1,6 +1,9 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core';
 import { Paper, Typography, Divider  } from '@material-ui/core'
+import NumberFormat from 'react-number-format';
+import moment from 'moment'
+import { limitName } from '../../lib/utilities'
 
 
 const styles = theme =>({
@@ -15,7 +18,8 @@ const styles = theme =>({
         padding: theme.spacing.unit*2,
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        cursor: 'pointer'
     },
     productNumber:{
         marginTop: -12
@@ -47,48 +51,77 @@ const styles = theme =>({
 })
 
 
+const status = {
+    pending: 'Pendiente',
+    production: 'En Producción',
+}
+
 function OrderResume(props){
-    const { classes, width } = props 
+    const { classes, width, order, client, onClick } = props
+    const date = moment(order.createdAt.seconds*1000).format('DD/MM/YYYY')
+    const country = client.country.translations.es || client.country
+    
     let myWidth = '100%'
     if(width){
         myWidth = width
     }
+
     return(
         <Paper style={{width: myWidth}} className={classes.root}>
-            <div className={classes.header}>
-                <Typography align="center" color="inherit" component="h6" variant="h5">A024</Typography>
+            <div onClick={onClick} className={classes.header}>
+                <Typography align="center" color="inherit" component="h6" variant="h5">{order.serialCode}</Typography>
                 <Typography align="center" color="inherit" component="p" variant="overline">Prendas</Typography>    
-                <Typography className={classes.productNumber} align="center" color="inherit" component="p" variant="overline">95</Typography>    
+                <Typography className={classes.productNumber} align="center" color="inherit" component="p" variant="overline">{order.totalProducts}</Typography>    
             </div>
             <div className={classes.content}>
                 <div className={classes.contentHeader}>
                     <div>
-                        <Typography component="span" variant="h6">Lady Lozada</Typography>
-                        <Typography component="span" variant="subtitle2" color="textSecondary">Neiva, Colombia</Typography>
+                        <Typography component="span" variant="h6">{limitName(client.name)}</Typography>
+                        <Typography component="span" variant="subtitle2" color="textSecondary">{`${client.city}, ${country}`}</Typography>
                     </div>
                     <div>
-                        {/* <img className={classes.flag} src="https://restcountries.eu/data/col.svg" alt="flag"/> */}
-                        <Typography component="span" variant="h6" color="textSecondary" >$400.000</Typography>
+                    <NumberFormat 
+                        value={order.total} 
+                        displayType={'text'} 
+                        thousandSeparator={true} 
+                        prefix={`$`} 
+                        renderText={value =>( 
+                            <Typography component="span" variant="h6" color="textSecondary" >{value}</Typography>
+                        )} />
                     </div>
                 </div>
                 <Divider/>
                 <div className={classes.info}>
                     <div className={classes.basicInfo}>
                         <Typography variant="body2" color="textSecondary">Estao:</Typography>
-                        <Typography gutterBottom  variant="body1">En Produccion</Typography>
+                        <Typography gutterBottom  variant="body1">{status[order.state]}</Typography>
                         
                         <Typography  variant="body2" color="textSecondary">Fecha:</Typography>
-                        <Typography  gutterBottom variant="body1">08/06/2019</Typography>
+                        <Typography  gutterBottom variant="body1">{date}</Typography>
 
                         <Typography  variant="body2" color="textSecondary">Encargado:</Typography>
                         <Typography  variant="body1">Fabian David</Typography>
                     </div>
                     <div className={classes.moneyInfo}>
                         <Typography align="right" variant="body2" color="textSecondary">Saldo:</Typography>
-                        <Typography gutterBottom align="right" variant="body1">$100.000</Typography>
+                        <NumberFormat 
+                        value={order.balance || 0} 
+                        displayType={'text'} 
+                        thousandSeparator={true} 
+                        prefix={`$`} 
+                        renderText={value =>( 
+                            <Typography gutterBottom align="right" variant="body1">{value}</Typography>
+                        )} />
                         
                         <Typography align="right" variant="body2" color="textSecondary">Pagado:</Typography>
-                        <Typography align="right" variant="body1">$300.000</Typography>
+                        <NumberFormat 
+                            value={order.total} 
+                            displayType={'text'} 
+                            thousandSeparator={true} 
+                            prefix={`$`} 
+                            renderText={value =>( 
+                                <Typography align="right" variant="body1">{value}</Typography>
+                            )} />
                     </div>
                 </div>
             </div>

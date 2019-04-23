@@ -49,6 +49,15 @@ class Clientes extends Component{
         this.props.history.push('/clientes/nuevo')
     }
 
+    handleAddOrder = (id) => ()=>{
+        this.props.history.push({
+            pathname: '/pedidos/nuevo',
+            state:{
+                clientId: id
+            }
+        })
+    }
+
     handleSubmit = async event => {
         event && event.preventDefault();
         const { textValue, checkValue } = this.state
@@ -130,6 +139,7 @@ class Clientes extends Component{
                                 />
                                 :
                                 <ClientList
+                                    handleAddOrder={this.handleAddOrder}
                                     handleClickVerMas={this.handleClickVerMas} 
                                     clients={clientList} />
                             }

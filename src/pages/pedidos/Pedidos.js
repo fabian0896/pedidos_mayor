@@ -13,18 +13,36 @@ import SearchBar from '../../componets/searchBar/SearchBar';
 import OrederGrid from '../../componets/orderResume/OrderGrid';
 import Section from '../../componets/section/Section';
 import OrderSlideList from '../../componets/orderResume/OrderSlideList';
+import {connect } from 'react-redux'
+import { getAllOrders } from '../../lib/firebaseService'
 
 
 
 class Pedidos extends Component {
     
-    
+    state = {
+        noRender: true,
+        orders: []
+    }
+
+    async componentDidMount(){
+        const orders = await getAllOrders()
+        const orderList = Object.keys(orders).map(id=>orders[id])
+        this.setState({orders: orderList})
+        return
+    }
+
+    handleOrderDetail = (id) => () =>{
+        this.props.history.push('/pedidos/'+id)
+    } 
 
     handleNewOrder = ()=>{
         this.props.history.push('pedidos/nuevo')
     }
     
     render() {
+        const { clients } = this.props
+        const { orders } = this.state
         return (
             <div>
                 <HeaderLayout>
@@ -60,28 +78,34 @@ class Pedidos extends Component {
 
                 <Section background='#E9E9E9'>
                     <OrderSlideList title="Pendientes">
-                        <OrderResume width={360}/>
-                        <OrderResume width={360}/>
-                        <OrderResume width={360}/>
-                        <OrderResume width={360}/>
-                        <OrderResume width={360}/>
-                        <OrderResume width={360}/>
-                        <OrderResume width={360}/>
+                    {
+                        orders.map(order=>{
+                            return(
+                                <OrderResume
+                                    onClick={this.handleOrderDetail(order.id)} 
+                                    client={clients[order.clientId]}
+                                    width={360} 
+                                    key={order.id} 
+                                    order={order}/>
+                            )
+                        })
+                    }
                     </OrderSlideList> 
                 </Section>
        
 
                 <OrederGrid title="Pedidos">
-                    <OrderResume/>
-                    <OrderResume/>
-                    <OrderResume/>
-                    <OrderResume/>
-                    <OrderResume/>
-                    <OrderResume/>
-                    <OrderResume/>
-                    <OrderResume/>
-                    <OrderResume/>
-                    <OrderResume/>
+                    {
+                        orders.map(order=>{
+                            return(
+                                <OrderResume
+                                    onClick={this.handleOrderDetail(order.id)}
+                                    client={clients[order.clientId]}
+                                    key={order.id} 
+                                    order={order}/>
+                            )
+                        })
+                    }
                 </OrederGrid>
         
             
@@ -90,6 +114,15 @@ class Pedidos extends Component {
     }
 }
 
+const mapDispatchToProps={
+   
+}
+
+function mapStateToProps(state, props){
+    return{
+        clients: state.clients.all
+    }
+}
 
 
-export default Pedidos;
+export default connect(mapStateToProps, mapDispatchToProps)(Pedidos);

@@ -10,7 +10,7 @@ import classNames from 'classnames'
 import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import Button from '@material-ui/core/Button';
 import { getNameLetters } from '../../lib/utilities'
-
+import NumberFormat from 'react-number-format';
 
 const styles = theme => ({
     infoContainer:{
@@ -76,7 +76,6 @@ class ListClientesItem extends Component{
      
     render(){
         const { classes, expanded, handleChange, client } = this.props
-        
         return(
                 <ExpansionPanel expanded={ expanded } onChange={ handleChange }>
                     <ExpansionPanelSummary expandIcon={ <ExpandMoreIcon /> }>
@@ -96,7 +95,14 @@ class ListClientesItem extends Component{
                         <div className={ classes.statsContainer }>
                             <div className={ classes.stats }>
                                 <Typography inline component="span" variant="subheading" color="textSecondary">Saldo Pendiente:</Typography>
-                                <Typography inline  component="span" variant="headline" color="textPrimary">$1.000.000</Typography>
+                                <NumberFormat 
+                                    value={(client.balance || 0).toFixed(1)} 
+                                    displayType={'text'} 
+                                    thousandSeparator={true} 
+                                    prefix={`${client.currency==='COP'? '' : client.currency} $`} 
+                                    renderText={value =>( 
+                                        <Typography inline  component="span" variant="headline" color="textPrimary">{value}</Typography>
+                                    )} />
                             </div>
                             <div className={ classNames(classes.helper, classes.stats) }>
                                 <Typography inline component="span" variant="subheading" color="textSecondary">Ultimo pago:</Typography>
@@ -104,13 +110,13 @@ class ListClientesItem extends Component{
                             </div>
                             <div className={ classNames(classes.helper, classes.stats) }>
                                 <Typography inline component="span" variant="subheading" color="textSecondary">Total de pedidos:</Typography>
-                                <Typography inline component="span" variant="headline" color="textPrimary">35</Typography>
+                                <Typography inline component="span" variant="headline" color="textPrimary">{client.totalOrders}</Typography>
                             </div>
                         </div>
                     </ExpansionPanelDetails>
                     <ExpansionPanelActions>
                         <Button onClick={this.props.handleClickVerMas} size="small" color="secondary">ver mas</Button>
-                        <Button size="small" color="primary">Agregar pedido</Button>
+                        <Button onClick={this.props.handleAddOrder} size="small" color="primary">Agregar pedido</Button>
                     </ExpansionPanelActions>
                 </ExpansionPanel>
         )

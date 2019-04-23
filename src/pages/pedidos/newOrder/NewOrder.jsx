@@ -5,7 +5,7 @@ import MyStepper from '../../../componets/mystepper/MyStepper';
 import MyStep from '../../../componets/mystepper/MyStep';
 import ClientForm from './ClientForm';
 import { connect } from 'react-redux'
-import { showBackButtom, hideBackButtom, addAllProducts } from '../../../actions'
+import { showBackButtom, hideBackButtom, addAllProducts, getAllOrders} from '../../../actions'
 import ShippingForm from './ShippingForm';
 import ProductsForm from './ProductsForm'
 import DiscountForm from './DiscountForm';
@@ -34,7 +34,8 @@ class NewOrder extends Component{
         successText: '',
         Icon: null,
         success: false,
-        saving: false
+        saving: false,
+        noRender: true
     }
 
     submit = Array(4).fill(null)
@@ -42,8 +43,46 @@ class NewOrder extends Component{
     componentDidMount(){
         this.props.addAllProducts()
         this.props.showBackButtom()
+        const routerState = this.props.location.state || {}
+        if(routerState.order){
+            // se viene desde una edicion de pedido
+
+        }else if(routerState.clientId){
+            // se viene desde "agregar pedido" en un client
+            
+            this.setClientInForm(routerState.clientId, ()=>{
+                this.setState({noRender: false})
+            })
+        } else{
+            this.setState({noRender: false})
+        }
+        return
+    }
+
+    
+    setOrderInfoForEdit = (id) => {
         
     }
+
+
+    setClientInForm = (id, cb)=>{
+        const actualClient = this.props.clients[id]
+        if(!actualClient){
+            cb && cb()
+            return
+        }
+        this.setClientShppingInfo(id)
+        const clientOption = this.props.clientsList.find(client=> client.value === actualClient.id)
+        this.setState(state=>({
+            activeStep: 0,
+            formValues:{
+                ...state.formValues,
+                client: clientOption,
+                currency: actualClient.currency || 'USD'
+            }
+        }),()=> {cb && cb()})
+    }
+
 
     componentWillUnmount(){
         
@@ -154,135 +193,144 @@ class NewOrder extends Component{
             loadingText,
             success,
             successText,
-            Icon
+            Icon,
+            noRender
          } = this.state
         return(
             <div>
                 {
-                    saving?
-                    <Loader
-                    loadingText={loadingText}
-                    successText={successText}
-                    Icon={Icon}
-                    success={success}
-                    loading={loading}/>
-                    :
+                    !noRender &&
                     <Fragment>
                         {
-                            width !== 'xs' && width !== 'sm'?
-                            <Fragment>
-                                <HeaderLayout>
-                                    <Typography component="h2" variant="h2" color="inherit">Nuevo Pedido</Typography>
-                                </HeaderLayout>
-                                <MyStepper
-                                    activeStep={activeStep}
-                                    handleNext={this.handleNext}
-                                    handleBack={this.handleBack}
-                                    onComplete={this.handleComplete}
-                                    >
-                                    <MyStep title="Cliente">
-                                        <ClientForm
-                                            handleSubmit={this.handleSubmit}
-                                            saveSubmitRef={this.saveSubmitRef(0)} 
-                                            options={clientsList}
-                                            iniValues={formValues}
-                                            />
-                                    </MyStep>
-                                    <MyStep title="Envio">
-                                        <ShippingForm
-                                            handleSubmit={this.handleSubmit}
-                                            saveSubmitRef={this.saveSubmitRef(1)}
-                                            iniValues={formValues.shipping}/>
-                                    </MyStep>
-                                    <MyStep title="Prendas">
-                                        <ProductsForm
-                                            currency={formValues.currency}
-                                            initialValues={formValues.products}
-                                            handleSubmit={this.handleSubmit}
-                                            saveSubmitRef={this.saveSubmitRef(2)} 
-                                            customPrices={{'6RlzAuoMKsCqyMEVoCtn':{cop: 84000}}} 
-                                            allProducts={products}/>
-                                    </MyStep>
-                                    <MyStep title="Cobro">
-                                        <DiscountForm
-                                            handleSubmit={this.handleSubmit}
-                                            saveSubmitRef={this.saveSubmitRef(3)}
-                                            initialValues={formValues}
-                                        />
-                                    </MyStep>
-                                    <MyStep onFinish={this.handleSave} title="Resumen">
-                                        <OrderResume currency={formValues.currency} data={formValues} />
-                                    </MyStep>
-                                </MyStepper>
-                            </Fragment>
+                            saving?
+                            <Loader
+                            loadingText={loadingText}
+                            successText={successText}
+                            Icon={Icon}
+                            success={success}
+                            loading={loading}/>
                             :
-                            <MyMobileStepper
-                                step={activeStep}
-                                handleInitialBack={this.handleGoBack}
-                                initialBackTitle="Cancelar"
-                            >
-
-                                <MyMobileStep
-                                    title="Cliente"
-                                    handleNext={this.handleNext}
-                                >
-                                    <ClientForm
-                                        handleSubmit={this.handleSubmit}
-                                        saveSubmitRef={this.saveSubmitRef(0)} 
-                                        options={clientsList}
-                                        iniValues={formValues}
-                                        />
-                                </MyMobileStep>
-
-                                <MyMobileStep
-                                    title="Envio"
-                                    handleNext={this.handleNext}
-                                    handleBack={this.handleBack}
-                                >
-                                    <ShippingForm
-                                        handleSubmit={this.handleSubmit}
-                                        saveSubmitRef={this.saveSubmitRef(1)}
-                                        iniValues={formValues.shipping}/>
-                                </MyMobileStep>
-
-                                <MyMobileStep
-                                    title="Prendas"
-                                    handleNext={this.handleNext}
-                                    handleBack={this.handleBack}
-                                >
-                                    <ProductsForm
-                                        currency={formValues.currency}
-                                        initialValues={formValues.products}
-                                        handleSubmit={this.handleSubmit}
-                                        saveSubmitRef={this.saveSubmitRef(2)} 
-                                        customPrices={{'6RlzAuoMKsCqyMEVoCtn':{cop: 84000}}} 
-                                        allProducts={products}/>
-                                </MyMobileStep>
-
-                                <MyMobileStep
-                                    title="Cobro"
-                                    handleNext={this.handleNext}
-                                    handleBack={this.handleBack}
-                                >
-                                    <DiscountForm
-                                        handleSubmit={this.handleSubmit}
-                                        saveSubmitRef={this.saveSubmitRef(3)}
-                                        initialValues={formValues}
-                                    />
-                                </MyMobileStep>
-                                
-                                <MyMobileStep
-                                    title="Resumen"
-                                    handleBack={this.handleBack}
-                                    buttonTitle="Guardar"
-                                    handleNext={this.handleSave}    
-                                >
-                                    <OrderResume currency={formValues.currency} data={formValues} />
-                                </MyMobileStep>
-                                
-
-                            </MyMobileStepper>
+                            <Fragment>
+                                {
+                                    width !== 'xs' && width !== 'sm'?
+                                    <Fragment>
+                                        <HeaderLayout>
+                                            <Typography component="h2" variant="h2" color="inherit">Nuevo Pedido</Typography>
+                                        </HeaderLayout>
+                                        <MyStepper
+                                            activeStep={activeStep}
+                                            handleNext={this.handleNext}
+                                            handleBack={this.handleBack}
+                                            onComplete={this.handleComplete}
+                                            >
+                                            <MyStep title="Cliente">
+                                                <ClientForm
+                                                    clients={this.props.clients}
+                                                    handleSubmit={this.handleSubmit}
+                                                    saveSubmitRef={this.saveSubmitRef(0)} 
+                                                    options={clientsList}
+                                                    iniValues={formValues}
+                                                    />
+                                            </MyStep>
+                                            <MyStep title="Envio">
+                                                <ShippingForm
+                                                    handleSubmit={this.handleSubmit}
+                                                    saveSubmitRef={this.saveSubmitRef(1)}
+                                                    iniValues={formValues.shipping}/>
+                                            </MyStep>
+                                            <MyStep title="Prendas">
+                                                <ProductsForm
+                                                    currency={formValues.currency}
+                                                    initialValues={formValues.products}
+                                                    handleSubmit={this.handleSubmit}
+                                                    saveSubmitRef={this.saveSubmitRef(2)} 
+                                                    customPrices={{'6RlzAuoMKsCqyMEVoCtn':{cop: 84000}}} 
+                                                    allProducts={products}/>
+                                            </MyStep>
+                                            <MyStep title="Cobro">
+                                                <DiscountForm
+                                                    handleSubmit={this.handleSubmit}
+                                                    saveSubmitRef={this.saveSubmitRef(3)}
+                                                    initialValues={formValues}
+                                                />
+                                            </MyStep>
+                                            <MyStep onFinish={this.handleSave} title="Resumen">
+                                                <OrderResume currency={formValues.currency} data={formValues} />
+                                            </MyStep>
+                                        </MyStepper>
+                                    </Fragment>
+                                    :
+                                    <MyMobileStepper
+                                        step={activeStep}
+                                        handleInitialBack={this.handleGoBack}
+                                        initialBackTitle="Cancelar"
+                                    >
+        
+                                        <MyMobileStep
+                                            title="Cliente"
+                                            handleNext={this.handleNext}
+                                        >
+                                            <ClientForm
+                                                clients={this.props.clients}
+                                                handleSubmit={this.handleSubmit}
+                                                saveSubmitRef={this.saveSubmitRef(0)} 
+                                                options={clientsList}
+                                                iniValues={formValues}
+                                                />
+                                        </MyMobileStep>
+        
+                                        <MyMobileStep
+                                            title="Envio"
+                                            handleNext={this.handleNext}
+                                            handleBack={this.handleBack}
+                                        >
+                                            <ShippingForm
+                                                handleSubmit={this.handleSubmit}
+                                                saveSubmitRef={this.saveSubmitRef(1)}
+                                                iniValues={formValues.shipping}/>
+                                        </MyMobileStep>
+        
+                                        <MyMobileStep
+                                            title="Prendas"
+                                            handleNext={this.handleNext}
+                                            handleBack={this.handleBack}
+                                        >
+                                            <ProductsForm
+                                                currency={formValues.currency}
+                                                initialValues={formValues.products}
+                                                handleSubmit={this.handleSubmit}
+                                                saveSubmitRef={this.saveSubmitRef(2)} 
+                                                customPrices={{'6RlzAuoMKsCqyMEVoCtn':{cop: 84000}}} 
+                                                allProducts={products}/>
+                                        </MyMobileStep>
+        
+                                        <MyMobileStep
+                                            title="Cobro"
+                                            handleNext={this.handleNext}
+                                            handleBack={this.handleBack}
+                                        >
+                                            <DiscountForm
+                                                handleSubmit={this.handleSubmit}
+                                                saveSubmitRef={this.saveSubmitRef(3)}
+                                                initialValues={formValues}
+                                            />
+                                        </MyMobileStep>
+                                        
+                                        <MyMobileStep
+                                            title="Resumen"
+                                            handleBack={this.handleBack}
+                                            buttonTitle="Guardar"
+                                            handleNext={this.handleSave}    
+                                        >
+                                            <OrderResume currency={formValues.currency} data={formValues} />
+                                        </MyMobileStep>
+                                        
+        
+                                    </MyMobileStepper>
+                                }
+                            </Fragment>
                         }
+
                     </Fragment>
                 }
             </div>
@@ -293,7 +341,8 @@ class NewOrder extends Component{
 const mapDispatchToProps ={
     showBackButtom,
     hideBackButtom,
-    addAllProducts
+    addAllProducts,
+    getAllOrders
 }
 
 function mapStateToProps(state, props){

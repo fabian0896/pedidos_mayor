@@ -42,7 +42,11 @@ export function getNameLetters(name){
 
 export function limitName(name){
     const names = name.split(' ')
-    return `${names[0]} ${names[1] || ''}`
+    if(names.length > 2){
+        return `${names[0]} ${names[2] || ''}`
+    }else{
+        return name
+    }
 }
 
 

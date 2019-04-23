@@ -182,8 +182,14 @@ class MyAutocompleat extends React.Component {
     });
   };
 
+  myHandleChange = (option)=>{
+    const {form, field, onChange} = this.props
+    form.setFieldValue(field.name, option)
+    onChange && onChange(option)
+  }
+
   render() {
-    const { classes, theme, form, field, optionsList, myPlaceholder, error } = this.props;
+    const { classes, theme, field, optionsList, myPlaceholder, error } = this.props;
 
     const selectStyles = {
       input: base => ({
@@ -207,7 +213,7 @@ class MyAutocompleat extends React.Component {
             options={optionsList}
             components={components}
             value={ field.value }
-            onChange={(option)=> form.setFieldValue(field.name, option)}
+            onChange={this.myHandleChange}
             placeholder={myPlaceholder}
             isClearable
           />
