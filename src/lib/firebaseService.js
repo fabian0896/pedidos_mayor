@@ -336,14 +336,14 @@ export async function addOrder(order){
     const serialCode = await getSerialCode()
     const serialCodeText = serialCode.letter + serialCode.number
 
-    const orderResume = {
+    /* const orderResume = {
         serialCode: serialCodeText,
         total: order.total,
         subTotal: order.subTotal,
         descount: order.descount,
         currency: order.currency,
         balance: order.total
-    }
+    } */
 
     const orderObject = { 
         ...order,
@@ -371,11 +371,12 @@ export async function addOrder(order){
     await db.runTransaction((transaction)=>{
         return new Promise(async (res, rej)=>{
             const clientRef = dbClients.doc(order.clientInfo.id)
-            const clientOrderRef = clientRef.collection(ORDERS).doc(orderId)
+            //const clientOrderRef = clientRef.collection(ORDERS).doc(orderId)
             const snap = await transaction.get(clientRef)
             const client = snap.data()
             
-            transaction.set(clientOrderRef, orderResume)
+            //transaction.set(clientOrderRef, orderResume)
+            
             if(!snap.exists){
                 rej('El cliente no existe')
                 return
@@ -399,7 +400,6 @@ export async function addOrder(order){
     })
 
     await algolia.addOrder(algoliaObject)
-
     return 
 }
 

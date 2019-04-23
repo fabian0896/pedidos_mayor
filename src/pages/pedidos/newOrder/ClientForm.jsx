@@ -14,7 +14,10 @@ import * as Yup from 'yup'
 const styles = theme => ({
     form: {
         width: '450px',
-        padding: theme.spacing.unit * 2
+        padding: theme.spacing.unit * 2,
+        [theme.breakpoints.down('md')]:{
+            width: '100%'
+        }
     },
     input: {
         marginBottom: theme.spacing.unit*3

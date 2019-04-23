@@ -40,7 +40,10 @@ const styles = theme =>({
     },
     form:{
         width: 450,
-        paddingBottom: theme.spacing.unit*3
+        paddingBottom: theme.spacing.unit*3,
+        [theme.breakpoints.down('md')]:{
+            width: '100%'
+        }
     }
 })
 
@@ -121,7 +124,7 @@ class ProductFormInfo extends React.Component{
                         return(
                             <form className={classes.form} onSubmit={handleSubmit}>
                                <Grid container spacing={16}>
-                                    <Grid item md={12}>
+                                    <Grid item xs={12} md={12}>
                                         <Field
                                             getRef={node => this.selectRef = node}
                                             error={errors.product && touched.product}
@@ -133,7 +136,7 @@ class ProductFormInfo extends React.Component{
                                             promiseOptions={selectSearch} />
                                     </Grid>
                                     
-                                    <Grid item md={3}>
+                                    <Grid item xs={6} sm={3} md={3}>
                                         <TextField
                                             disabled={!values.price}
                                             error={errors.size && touched.size}
@@ -158,7 +161,7 @@ class ProductFormInfo extends React.Component{
                                         </TextField>
                                     </Grid>
     
-                                    <Grid item md={3}>
+                                    <Grid item xs={6} sm={3} md={3}>
                                         <TextField
                                             disabled={!values.price}
                                             error={errors.color && touched.color}
@@ -172,7 +175,7 @@ class ProductFormInfo extends React.Component{
                                             />
                                     </Grid>
     
-                                    <Grid item md={3}>
+                                    <Grid item xs={6} sm={3} md={3}>
                                         <TextField
                                             disabled={!values.price}
                                             error={errors.quantity && touched.quantity}
@@ -186,7 +189,7 @@ class ProductFormInfo extends React.Component{
                                             />
                                     </Grid>
     
-                                    <Grid item md={3}>
+                                    <Grid item xs={6} sm={3} md={3}>
                                         <TextField
                                             disabled={!values.price}
                                             error={errors.price && touched.price}
@@ -206,7 +209,7 @@ class ProductFormInfo extends React.Component{
                                             />
                                     </Grid>
 
-                                    <Grid item md={12}>
+                                    <Grid item xs={12} sm={12} md={12}>
                                         <Button
                                             disabled={isSubmitting}
                                             variant="contained"

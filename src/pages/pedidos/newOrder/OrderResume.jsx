@@ -20,6 +20,10 @@ const styles = theme =>({
         '& div':{
             flex: 1,
             paddingRight: theme.spacing.unit*2
+        },
+        [theme.breakpoints.down('md')]:{
+            width: '100%',
+            maxWidth: 'auto'
         }   
     },
     product:{
@@ -38,7 +42,10 @@ const styles = theme =>({
         },
         '& div *':{
             flex: 1
-        }   
+        },
+        [theme.breakpoints.down('md')]:{
+            width: '100%',
+        }      
     },
     title:{
         fontWeight: 600,
@@ -66,7 +73,6 @@ class OrderResume extends React.Component{
 
     render(){
         const { classes, data, currency: orderCurrency } = this.props
-        console.log(data)
         const shipping = data.shipping
         const client = data.clientInfo
         const clientCountry = client.country.translations.es || client.country.name

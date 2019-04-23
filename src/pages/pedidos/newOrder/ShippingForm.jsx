@@ -7,7 +7,10 @@ import { withStyles, TextField, Grid } from '@material-ui/core';
 const styles = theme =>({
     form:{
         width: 450,
-        padding: theme.spacing.unit*2
+        padding: theme.spacing.unit*2,
+        [theme.breakpoints.down('md')]:{
+            width: '100%'
+        }
     }
 })
 
@@ -40,7 +43,7 @@ function ShippingForm(props){
                     return(
                         <form className={classes.form} onSubmit={handleSubmit}>
                             <Grid container spacing={16}>
-                                <Grid item md={12}>
+                                <Grid item xs={12} md={12}>
                                     <TextField
                                         value={values.name}
                                         onBlur={handleBlur}
@@ -52,7 +55,7 @@ function ShippingForm(props){
                                     />
                                 </Grid>
 
-                                <Grid item md={6}>
+                                <Grid item xs={12} sm={6} md={6}>
                                     <TextField
                                         value={values.country}
                                         onBlur={handleBlur}
@@ -64,7 +67,7 @@ function ShippingForm(props){
                                     />
                                 </Grid>
 
-                                <Grid item md={6}>
+                                <Grid item xs={12} sm={6} md={6}>
                                     <TextField
                                         value={values.city}
                                         onBlur={handleBlur}
@@ -76,7 +79,7 @@ function ShippingForm(props){
                                     />
                                 </Grid>
 
-                                <Grid item md={12}>
+                                <Grid item xs={12} md={12}>
                                     <TextField
                                         value={values.address}
                                         onBlur={handleBlur}
@@ -88,7 +91,7 @@ function ShippingForm(props){
                                     />
                                 </Grid>
 
-                                <Grid item md={6}>
+                                <Grid item xs={12} sm={6} md={6}>
                                     <TextField
                                         value={values.zipCode}
                                         onBlur={handleBlur}
@@ -100,7 +103,7 @@ function ShippingForm(props){
                                     />
                                 </Grid>
                                 
-                                <Grid item md={6}>
+                                <Grid item xs={12} sm={6} md={6}>
                                     <TextField
                                         value={values.phone}
                                         onBlur={handleBlur}
@@ -112,7 +115,7 @@ function ShippingForm(props){
                                     />
                                 </Grid>
 
-                                <Grid item md={12}>
+                                <Grid item xs={12} md={12}>
                                     <TextField
                                         value={values.email}
                                         onBlur={handleBlur}
