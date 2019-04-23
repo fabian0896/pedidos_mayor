@@ -4,6 +4,7 @@ import 'firebase/auth'
 
 import { formatPhone, randomColor, incrementSerial } from './utilities'
 import * as algolia from './algoliaService'
+import { convertCurrency } from './currencyService'
 
 
 
@@ -331,8 +332,7 @@ export async function addOrder(order){
     const dbClients = firebase.firestore().collection(CLIENTS)
     const oredrRef = dbOrders.doc()
     const orderId = oredrRef.id
-    const batch = firebase.firestore().batch()
-
+   
     const serialCode = await getSerialCode()
     const serialCodeText = serialCode.letter + serialCode.number
 
@@ -367,16 +367,40 @@ export async function addOrder(order){
         creator: firebase.auth().currentUser.uid,
     }
 
-    const clientRef = dbClients.doc(order.clientInfo.id)
-    batch.update(clientRef, {[`orders.${orderId}`]: orderResume,})
+    const db = firebase.firestore()
+    await db.runTransaction((transaction)=>{
+        return new Promise(async (res, rej)=>{
+            const clientRef = dbClients.doc(order.clientInfo.id)
+            const clientOrderRef = clientRef.collection(ORDERS).doc(orderId)
+            const snap = await transaction.get(clientRef)
+            const client = snap.data()
+            
+            transaction.set(clientOrderRef, orderResume)
+            if(!snap.exists){
+                rej('El cliente no existe')
+                return
+            }
 
-    batch.set(oredrRef,orderObject)
+            let totalValue = order.total
+            if(client.currency !== order.currency){
+                totalValue = await convertCurrency(order.currency, client.currency, totalValue)
+            }
 
-    const res = await batch.commit()
+            if(!client.balance){
+                transaction.update(clientRef,{balance: totalValue})
+            }else{
+                const totalBalance = client.balance + totalValue
+                transaction.update(clientRef, {balance: totalBalance})
+            }
+            transaction.set(oredrRef, orderObject)
+            res('completed')
+            return 
+        })
+    })
 
     await algolia.addOrder(algoliaObject)
 
-    return res
+    return 
 }
 
 

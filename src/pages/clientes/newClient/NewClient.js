@@ -47,6 +47,7 @@ class NewClient extends Component {
             city: '',
             address: '',
             zipCode: '',
+            currency: 'USD'
         },
         countries: null,
         activeStep: 0,

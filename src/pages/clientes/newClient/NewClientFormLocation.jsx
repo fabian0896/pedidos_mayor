@@ -57,6 +57,7 @@ function NewClientFormLocation(props) {
                             <Grid className={classes.formContainer} container spacing={24}>
                                 <Grid item xs={12}>
                                     <Field
+                                        error={errors.country && touched.country}
                                         myPlaceholder="Pais" 
                                         className={classes.input} 
                                         name="country" 
