@@ -345,12 +345,21 @@ export async function addOrder(order){
         balance: order.total
     } */
 
+
+    const timeLineObject = {
+        type: 'CREATED',
+        author: firebase.auth().currentUser.uid,
+        date: new Date(),
+        message: 'Se creó el pedido'
+    }
+
     const totalProducts = order.products.reduce((prev, current)=>{
         return prev + parseInt(current.quantity)
     }, 0)
 
     const orderObject = { 
         ...order,
+        timeLine:[timeLineObject],
         state: 'pending',
         totalProducts,
         balance: order.total,
@@ -415,6 +424,8 @@ export async function addOrder(order){
     return 
 }
 
+
+
 export async function getAllOrders(){
     const db = firebase.firestore().collection(ORDERS).orderBy('createdAt','desc').limit(30)
     const orders = {}
@@ -425,6 +436,14 @@ export async function getAllOrders(){
     return orders
 }
 
+export async function getOrderbyId(id){
+    const db = firebase.firestore().collection(ORDERS).doc(id)
+    const snap = await db.get()
+    if(!snap.exists){
+        return Promise.reject('El Pedido no existe')
+    }
+    return {...snap.data(), id: snap.id}
+}
 
 
 //-------------------------------------------- Handle Error ----------------------------------------------

@@ -19,7 +19,11 @@ const styles = theme =>({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        transition: '.2s',
+        '&:hover':{
+            boxShadow: theme.shadows[20]
+        }
     },
     productNumber:{
         marginTop: -12
@@ -49,7 +53,6 @@ const styles = theme =>({
 
     }
 })
-
 
 const status = {
     pending: 'Pendiente',

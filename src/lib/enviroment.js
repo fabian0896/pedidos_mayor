@@ -49,3 +49,8 @@
      },
      
  ]
+
+ export const ORDER_STATUS = {
+    pending: 'Pendiente',
+    production: 'En Producción',
+}

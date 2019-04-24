@@ -1,6 +1,9 @@
 import React from 'react'
 import { Paper, withStyles, Avatar, Typography, Divider } from '@material-ui/core';
-
+import { getNameLetters } from '../../../lib/utilities'
+import NumberFormat from 'react-number-format';
+import { ORDER_STATUS } from '../../../lib/enviroment'
+import moment from 'moment'
 
 const styles = theme =>({
     root:{
@@ -62,31 +65,40 @@ const styles = theme =>({
 })
 
 function OrderDetailsCard(props) {
-    const { classes } = props
+    const { classes, order, client } = props
+    const country = client.country.translations.es || client.country.name
+    const date = moment(order.createdAt.seconds*1000).format('DD/MM/YYYY')
     return (
         <Paper className={classes.root}>
             <div className={classes.header}>
                 <div className={classes.flagContainer}>
-                    <img className={classes.flag} src="https://restcountries.eu/data/col.svg" alt="Colombia"/>
+                    <img className={classes.flag} src={client.country.flag} alt={client.country.name}/>
                 </div>
                 <div className={classes.avatarContainer} >
-                    <Avatar className={classes.avatar}>FD</Avatar>
+                    <Avatar style={{background: `rgb(${client.personalColor.join(',')})`}} className={classes.avatar}>{getNameLetters(client.name)}</Avatar>
                 </div>
                 <div className={classes.content}>
-                    <Typography component="h6" variant="h5" align="center">Fabian David Dueñas</Typography>
-                    <Typography gutterBottom component="span" variant="subtitle1" color="textSecondary" align="center" >Cali, Colombia</Typography>
+                    <Typography component="h6" variant="h5" align="center">{client.name}</Typography>
+                    <Typography gutterBottom component="span" variant="subtitle1" color="textSecondary" align="center" >{`${client.city}, ${country}`}</Typography>
 
                     <div className={classes.resumeContent}>
                         <div>
-                            <Typography variant="subtitle2" align="center">95</Typography>
+                            <Typography variant="subtitle2" align="center">{order.totalProducts}</Typography>
                             <Typography color="textSecondary" variant="body1" align="center">Prendas</Typography>
                         </div>
                         <div>
-                            <Typography variant="subtitle2" align="center">$400.000</Typography>
+                            <NumberFormat 
+                                value={order.total} 
+                                displayType={'text'} 
+                                thousandSeparator={true} 
+                                prefix={`${order.currency === 'COP'?'':order.currency + ' '}$`} 
+                                renderText={value =>( 
+                                    <Typography variant="subtitle2" align="center">{value}</Typography>
+                                )} />
                             <Typography color="textSecondary" variant="body1" align="center">Valor</Typography>
                         </div>
                         <div>
-                            <Typography variant="subtitle2" align="center">95</Typography>
+                            <Typography variant="subtitle2" align="center">{order.totalProducts}</Typography>
                             <Typography color="textSecondary" variant="body1" align="center">Prendas</Typography>
                         </div>
                     </div>
@@ -94,10 +106,10 @@ function OrderDetailsCard(props) {
                     <Divider className={classes.divider}/>
 
                     <Typography component="span" variant="subtitle2" color="textSecondary">Estado:</Typography>
-                    <Typography gutterBottom component="span" variant="subtitle1">En Producción</Typography>
+                    <Typography gutterBottom component="span" variant="subtitle1">{ORDER_STATUS[order.state]}</Typography>
                     
                     <Typography component="span" variant="subtitle2" color="textSecondary">Fecha:</Typography>
-                    <Typography gutterBottom component="span" variant="subtitle1">08/06/2019</Typography>
+                    <Typography gutterBottom component="span" variant="subtitle1">{date}</Typography>
                     
                     <Typography component="span" variant="subtitle2" color="textSecondary">Encargado:</Typography>
                     <Typography gutterBottom component="span" variant="subtitle1">Fabian David Dueñas</Typography>

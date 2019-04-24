@@ -50,6 +50,17 @@ const styles = theme =>({
 })
 
 
+const MoneyCel = ({amount, colSpan})=>(
+    <NumberFormat 
+        value={amount} 
+        displayType={'text'} 
+        thousandSeparator={true} 
+        prefix={'$'} 
+        renderText={value => (
+            <TableCell colSpan={colSpan}>
+                <Typography variant="subtitle2">{value}</Typography>
+            </TableCell>)} />
+)
 
 
 class OrderProductTable extends Component{
@@ -71,6 +82,7 @@ class OrderProductTable extends Component{
             handleEdit,
             withTotal,
             currency,
+            order,
             ...rest
          } = this.props
         return(
@@ -140,9 +152,7 @@ class OrderProductTable extends Component{
                                         <TableCell colSpan={3}>
                                             <Typography variant="subtitle2">Sub Total</Typography>
                                         </TableCell>
-                                        <TableCell>
-                                            <Typography variant="subtitle2">$1.000</Typography>
-                                        </TableCell>
+                                        <MoneyCel amount={order.subTotal}/>
                                         <TableCell colSpan={withEdittingButtons? 4 : 3}></TableCell>
                                     </TableRow>
                                     <TableRow className={classes.tableTotal}>
@@ -150,11 +160,9 @@ class OrderProductTable extends Component{
                                             <Typography variant="subtitle2">Descuento</Typography>
                                         </TableCell>
                                         <TableCell>
-                                            <Typography variant="subtitle2">15%</Typography>
+                                            <Typography variant="subtitle2">{`${order.descount}%`}</Typography>
                                         </TableCell>
-                                        <TableCell>
-                                            <Typography variant="subtitle2">$1.000</Typography>
-                                        </TableCell>
+                                        <MoneyCel amount={-order.subTotal*(order.descount/100)}/>
                                         <TableCell colSpan={withEdittingButtons? 4 : 3}></TableCell>
                                     </TableRow>
                                 </Fragment>
@@ -166,10 +174,10 @@ class OrderProductTable extends Component{
                                         <Typography variant="subtitle2">Total</Typography>
                                     </TableCell>
                                     <NumberFormat 
-                                                value={this.getTotal(data)} 
+                                                value={withDetails? order.total : this.getTotal(data)} 
                                                 displayType={'text'} 
                                                 thousandSeparator={true} 
-                                                prefix={`${currency} $`} 
+                                                prefix={`${currency==='COP'?'':currency+' '}$`} 
                                                 renderText={value =>( 
                                                     <TableCell>
                                                         <Typography variant="subtitle2">{value}</Typography>

@@ -53,7 +53,6 @@ function ClientForm(props) {
             {
                 ({ submitForm, handleSubmit, handleChange, handleBlur, values, errors, touched, setFieldValue }) => {
                     saveSubmitRef(submitForm)
-                    console.log(values)
                     return (
                         <form onSubmit={handleSubmit} className={classes.form}>
                             <Field
