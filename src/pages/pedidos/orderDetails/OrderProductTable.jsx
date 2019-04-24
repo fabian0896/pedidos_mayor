@@ -105,6 +105,7 @@ class OrderProductTable extends Component{
                                 <TableCell>Cantidad</TableCell>
                                 <TableCell>{`Valor(${currency})`}</TableCell>
                                 <TableCell>{`Total(${currency})`}</TableCell>
+
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -140,6 +141,7 @@ class OrderProductTable extends Component{
                                                 thousandSeparator={true} 
                                                 prefix={'$'} 
                                                 renderText={value => <TableCell>{value}</TableCell>} />
+                                           
                                         </TableRow>
                                     )
                                 })

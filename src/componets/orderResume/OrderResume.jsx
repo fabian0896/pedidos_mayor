@@ -4,6 +4,7 @@ import { Paper, Typography, Divider  } from '@material-ui/core'
 import NumberFormat from 'react-number-format';
 import moment from 'moment'
 import { limitName } from '../../lib/utilities'
+import { ORDER_STATUS } from '../../lib/enviroment'
 
 
 const styles = theme =>({
@@ -55,8 +56,7 @@ const styles = theme =>({
 })
 
 const status = {
-    pending: 'Pendiente',
-    production: 'En Producción',
+    ...ORDER_STATUS
 }
 
 function OrderResume(props){

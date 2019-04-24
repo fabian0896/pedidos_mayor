@@ -94,7 +94,7 @@ class ShippingInfoCard extends React.Component {
     }
 
     render() {
-        const { classes } = this.props
+        const { classes, data } = this.props
         const { showMore } = this.state
 
         return (
@@ -105,27 +105,27 @@ class ShippingInfoCard extends React.Component {
                 <div className={classes.content}>
                     <List>
                         <ShippingData
-                            title="nombre"
-                            value="Fabian David Dueñas" />
+                            title="Nombre"
+                            value={data.name} />
                         <ShippingData    
                             title="Ciudad"
-                            value="Cali" />
+                            value={data.city}/>
                         <ShippingData
                             title="Pais"
-                            value="Colombia" />
+                            value={data.country} />
                         <ShippingData
-                            title="telefono"
-                            value="+(57) 321 7378301" />
+                            title="Telefono"
+                            value={data.phone} />
                         <Collapse in={showMore}>
                             <ShippingData
                                 title="Dirección"
-                                value="Crr 23B # 4 - 09 Barrio Miraflores Piso 2" />
+                                value={data.address} />
                             <ShippingData
                                 title="Codigo Postal"
-                                value="76001" />
+                                value={data.zipCode} />
                             <ShippingData
                                 title="correo"
-                                value="fabian0896@outlook.com" />
+                                value={data.email} />
                         </Collapse>
                     </List>
                 </div>

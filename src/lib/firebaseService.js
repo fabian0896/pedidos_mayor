@@ -446,6 +446,17 @@ export async function getOrderbyId(id){
 }
 
 
+export async function getOrderByClient(clientId){
+    const db = firebase.firestore().collection(ORDERS).where('clientId','==',clientId).orderBy('createdAt', 'desc').limit(30)
+    const orders = {}
+    const snap = await db.get()
+    snap.forEach(order =>{
+        orders[order.id] = {...order.data(), id: order.id}
+    })
+    return orders
+}
+
+
 //-------------------------------------------- Handle Error ----------------------------------------------
 
 const handleError = (cb) => (err) =>{

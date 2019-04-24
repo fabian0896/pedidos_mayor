@@ -26,7 +26,7 @@ class OrderDetails extends Component{
 
     async componentDidMount(){
         this.props.showBackButtom()
-        document.title = 'Pedidos | A0042'
+        //document.title = 'Pedidos | A0042'
         
         const id = this.props.match.params.id
         let client = null
@@ -35,6 +35,7 @@ class OrderDetails extends Component{
             client = await this.getClient(clientId)
         }
         this.setState({noRender: false, loading: false, client})
+        return
     }
 
     getOrder = async (id) => {
@@ -79,11 +80,21 @@ class OrderDetails extends Component{
                         {
                             width === 'xs' || width === 'sm'?
                             <Fragment>
-                                <OrderDetailCard />
-                                <OrderProductTable data={products}/>
+                                <OrderDetailCard
+                                        order={order}
+                                        client={client}
+                                />
+
+                               <OrderProductTable
+                                        withDetails
+                                        withTotal
+                                        currency={order.currency}
+                                        order={order}
+                                        data={products} />
+
                                 <Grid container spacing={16}>
                                     <Grid item sm={6} xs={12}>
-                                        <ShippingInfoCard />
+                                        <ShippingInfoCard data={order.shipping} />
                                     </Grid>
                                     <Grid item sm={6} xs={12}>
                                         <PaymentSummary/>
@@ -105,11 +116,10 @@ class OrderDetails extends Component{
                                         order={order}
                                         client={client}
                                     />
-                                    <ShippingInfoCard />
                                     <PaymentSummary/>
+                                    <ShippingInfoCard data={order.shipping} />
                                 </Grid>
                             </Grid>
-        
                         }
                     </Fragment>
                 }
