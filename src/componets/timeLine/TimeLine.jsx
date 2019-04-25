@@ -19,7 +19,7 @@ const Item = withStyles(theme=>({
         '&:last-child $lineBottom':{
             background: 'transparent',
             
-        }
+        },
     },
     decorator:{
         paddingRight: theme.spacing.unit*1,
@@ -32,12 +32,13 @@ const Item = withStyles(theme=>({
         flex:1,
         width: 2,
         background: theme.palette.grey[400],
-    
+        marginBottom: '4px'
     },
     lineBottom:{
         flex:1,
         width: 2,
         background: theme.palette.grey[400],
+        marginTop: '4px'
     },
     boll:{
         width: 30,
@@ -48,7 +49,7 @@ const Item = withStyles(theme=>({
         justifyContent: 'center',
         alignItems: 'center',
         color: theme.palette.primary.contrastText,
-        boxShadow: theme.shadows[2]
+        boxShadow: theme.shadows[5]
     },
     messageContainer:{
         paddingTop: theme.spacing.unit*2,
@@ -58,10 +59,24 @@ const Item = withStyles(theme=>({
         display: 'flex',
         flex: 1,
         borderRadius: '5px',
-        transition: '.2s',
+        transition: '.3s',
         '&:hover':{
-            background: theme.palette.grey[100]
-        }
+            background: theme.palette.grey[200],
+            '&:before':{
+                content: "''",
+                position: 'absolute',
+                width: 0,
+                height: 0,
+                borderLeft: '8px solid transparent',
+                borderRight: `8px solid ${theme.palette.grey[200]}`,
+                borderTop: '8px solid transparent',
+                borderBottom: '8px solid transparent',
+                left: -16,
+                top: '50%',
+                transform: 'translateY(-50%)',
+            }
+        },
+        position: 'relative',
     },
     mainMessage:{
         flex: 1
@@ -98,7 +113,7 @@ const Item = withStyles(theme=>({
                 </Typography>
             </div>
             <div className={classes.secondaryMessage}>
-                <Typography component="span" variant="body2">
+                <Typography color="textSecondary" component="span" variant="body2">
                     {moment(item.date).format('h:mm A')}
                 </Typography>
             </div>
