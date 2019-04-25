@@ -1,9 +1,10 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core';
+import { withStyles, Button } from '@material-ui/core';
 import classNames from 'classnames'
 
 const styles = theme =>({
     header:{
+        //position: 'relative',
         color: '#FFF',
         background: theme.palette.primary.light,
         height: '240px',
@@ -27,14 +28,22 @@ const styles = theme =>({
             marginRight: -12,
 
         }
+    },
+    auxBotton: {
+        position: 'absolute',
+        top: theme.spacing.unit + 64,
+        right: theme.spacing.unit
     }
 })
 
 
-function HeaderLayout(props){
-    const { classes, children, className } = props
+function HeaderLayout({ classes, children, className, auxButton, buttonTitle, onClick }){
     return(
         <div className={classNames(classes.header, className)}>
+            {
+                auxButton &&
+                <Button className={classes.auxBotton} size="small" color="inherit" onClick={onClick}>{buttonTitle}</Button>
+            }
             {children}
         </div>
     )

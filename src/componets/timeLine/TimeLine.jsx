@@ -102,7 +102,7 @@ const Item = withStyles(theme=>({
         <div className={classes.messageContainer}>
             <div className={classes.mainMessage}>
                 <Typography component="p" variant="body2">
-                    {moment(item.date).format('DD/MM/YYYY')}
+                    {moment(item.date.seconds*1000).format('DD/MM/YYYY')}
                 </Typography>
                 <Typography component="p" variant="subtitle2" >
                     {item.title}
@@ -114,7 +114,7 @@ const Item = withStyles(theme=>({
             </div>
             <div className={classes.secondaryMessage}>
                 <Typography color="textSecondary" component="span" variant="body2">
-                    {moment(item.date).format('h:mm A')}
+                    {moment(item.date.seconds*1000).format('h:mm A')}
                 </Typography>
             </div>
         </div>

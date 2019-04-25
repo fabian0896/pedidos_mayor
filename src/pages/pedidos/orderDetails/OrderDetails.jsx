@@ -2,7 +2,8 @@ import React, {Component, Fragment} from 'react'
 import {
     Grid,
     Typography,
-    withWidth
+    withWidth,
+    Button
 } from '@material-ui/core'
 import HeaderLayout from '../../../componets/headerLayout/HeaderLayout';
 import OrderDetailCard from './OrderDetailCard';
@@ -13,41 +14,6 @@ import { getOrderbyId, getClientById } from '../../../lib/firebaseService'
 import {connect} from 'react-redux'
 import { showBackButtom, hideBackButtom } from '../../../actions'
 import TimeLine from '../../../componets/timeLine/TimeLine'
-
-
-const dataTest = [
-    {
-        type: 'CREATED',
-        author: 'i3lPSjl7GUYfQIeEkrnbiYqBDZY2',
-        date: new Date(),
-        title: 'Pedido Creado',
-        message: 'se añadio el pedido al sistema'
-    },
-    {
-        type: 'CREATED',
-        author: 'i3lPSjl7GUYfQIeEkrnbiYqBDZY2',
-        date: new Date(),
-        title: 'Pedido Creado',
-        message: 'se añadio el pedido al sistema'
-    },
-    {
-        type: 'CREATED',
-        author: 'i3lPSjl7GUYfQIeEkrnbiYqBDZY2',
-        date: new Date(),
-        title: 'Pedido Creado',
-        message: 'se añadio el pedido al sistema'
-    },
-    {
-        type: 'CREATED',
-        author: 'i3lPSjl7GUYfQIeEkrnbiYqBDZY2',
-        date: new Date(),
-        title: 'Pedido Creado',
-        message: 'se añadio el pedido al sistema'
-    },
-    
-]
-
-
 
 
 class OrderDetails extends Component{
@@ -97,6 +63,16 @@ class OrderDetails extends Component{
         return fetchClient
     }
 
+    handleEdit = ()=>{
+        const id = this.props.match.params.id
+        this.props.history.push({
+            pathname: '/pedidos/nuevo',
+            state:{
+                order: id 
+            }
+        })
+    }
+
 
     componentWillUnmount(){
         this.props.hideBackButtom()
@@ -110,7 +86,11 @@ class OrderDetails extends Component{
                 {
                     !noRender &&
                     <Fragment>
-                        <HeaderLayout>
+                        <HeaderLayout
+                            auxButton
+                            onClick={this.handleEdit}
+                            buttonTitle="Editar"
+                        >
                             <Typography color="inherit" component="h2" variant="h1">{order.serialCode}</Typography>
                         </HeaderLayout>
                         {
@@ -129,7 +109,7 @@ class OrderDetails extends Component{
                                         data={products} />
                                 
                                 <TimeLine 
-                                        data={dataTest}
+                                        data={order.timeLine}
                                 />
 
                                 <Grid container spacing={16}>
@@ -151,7 +131,7 @@ class OrderDetails extends Component{
                                         order={order}
                                         data={products} />
                                     <TimeLine 
-                                        data={dataTest}
+                                        data={order.timeLine}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={12} md={3}>

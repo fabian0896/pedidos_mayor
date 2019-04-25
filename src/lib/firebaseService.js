@@ -336,21 +336,13 @@ export async function addOrder(order){
     const serialCode = await getSerialCode()
     const serialCodeText = serialCode.letter + serialCode.number
 
-    /* const orderResume = {
-        serialCode: serialCodeText,
-        total: order.total,
-        subTotal: order.subTotal,
-        descount: order.descount,
-        currency: order.currency,
-        balance: order.total
-    } */
-
 
     const timeLineObject = {
         type: 'CREATED',
         author: firebase.auth().currentUser.uid,
         date: new Date(),
-        message: 'Se creó el pedido'
+        title: 'Pedido Creado',
+        message: 'Se añadio el pedido al sistema'
     }
 
     const totalProducts = order.products.reduce((prev, current)=>{
@@ -407,12 +399,22 @@ export async function addOrder(order){
             if(client.currency !== order.currency){
                 totalValue = await convertCurrency(order.currency, client.currency, totalValue)
             }
-
+            const lastOrder = new Date()
             if(!client.balance){
-                transaction.update(clientRef,{balance: totalValue, totalOrders})
+                transaction.update(clientRef,{
+                    balance: totalValue, 
+                    totalOrders, 
+                    lastOrder, 
+                    updatedAt: lastOrder
+                })
             }else{
                 const totalBalance = client.balance + totalValue
-                transaction.update(clientRef, {balance: totalBalance, totalOrders})
+                transaction.update(clientRef, {
+                    balance: totalBalance, 
+                    totalOrders, 
+                    lastOrder,
+                    updatedAt: lastOrder
+                })
             }
             transaction.set(oredrRef, orderObject)
             res('completed')
@@ -421,6 +423,87 @@ export async function addOrder(order){
     })
 
     await algolia.addOrder(algoliaObject)
+    return 
+}
+
+
+export async function updateOrder(order, id){
+    const dbOrders = firebase.firestore().collection(ORDERS)
+    const dbClients = firebase.firestore().collection(CLIENTS)
+    const oredrRef = dbOrders.doc(id)
+  
+
+    const timeLineObject = {
+        type: 'UPDATED',
+        author: firebase.auth().currentUser.uid,
+        date: new Date(),
+        title: 'Pedido Actualizado',
+        message: 'Se modifico X cosa'
+    }
+
+    const totalProducts = order.products.reduce((prev, current)=>{
+        return prev + parseInt(current.quantity)
+    }, 0)
+
+    const orderObject = { 
+        ...order,
+        state: 'pending',
+        totalProducts,
+        balance: order.total,
+        clientId: order.clientInfo.id,
+        updatedAt: new Date()
+    }
+
+    delete orderObject.clientInfo
+    delete orderObject.client
+
+    const algoliaObject={
+        clientName: order.clientInfo.name,
+        clinetId: order.clientInfo.id,
+        country: order.clientInfo.country.translations.es || order.clientInfo.country.name,
+        city: order.clientInfo.city,
+    }
+
+    const db = firebase.firestore()
+    await db.runTransaction((transaction)=>{
+        return new Promise(async (res, rej)=>{
+            const clientRef = dbClients.doc(order.clientInfo.id)
+            //const clientOrderRef = clientRef.collection(ORDERS).doc(orderId)
+            const snap = await transaction.get(clientRef)
+            const client = snap.data()
+            
+            const timeLine = [...client.timeLine, timeLineObject]
+    
+            
+            if(!snap.exists){
+                rej('El cliente no existe')
+                return
+            }
+
+            let totalValue = order.total
+            if(client.currency !== order.currency){
+                totalValue = await convertCurrency(order.currency, client.currency, totalValue)
+            }
+
+            if(!client.balance){
+                transaction.update(clientRef,{
+                    balance: totalValue, 
+                    updatedAt: new Date(),
+                })
+            }else{
+                const totalBalance = client.balance + totalValue
+                transaction.update(clientRef, {
+                    balance: totalBalance, 
+                    updatedAt: new Date()
+                })
+            }
+            transaction.update(oredrRef, {...orderObject, timeLine})
+            res('completed')
+            return 
+        })
+    })
+
+    await algolia.updateOrder(id, algoliaObject)
     return 
 }
 

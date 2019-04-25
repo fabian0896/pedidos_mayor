@@ -60,7 +60,7 @@ class NewOrder extends Component{
     }
 
     
-    setOrderInfoForEdit = (id) => {
+    setOrderInfoForEdit = async (id) => {
         
     }
 
