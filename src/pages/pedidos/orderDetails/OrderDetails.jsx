@@ -12,6 +12,42 @@ import OrderProductTable from './OrderProductTable';
 import { getOrderbyId, getClientById } from '../../../lib/firebaseService'
 import {connect} from 'react-redux'
 import { showBackButtom, hideBackButtom } from '../../../actions'
+import TimeLine from '../../../componets/timeLine/TimeLine'
+
+
+const dataTest = [
+    {
+        type: 'CREATED',
+        author: 'i3lPSjl7GUYfQIeEkrnbiYqBDZY2',
+        date: new Date(),
+        title: 'Pedido Creado',
+        message: 'se añadio el pedido al sistema'
+    },
+    {
+        type: 'CREATED',
+        author: 'i3lPSjl7GUYfQIeEkrnbiYqBDZY2',
+        date: new Date(),
+        title: 'Pedido Creado',
+        message: 'se añadio el pedido al sistema'
+    },
+    {
+        type: 'CREATED',
+        author: 'i3lPSjl7GUYfQIeEkrnbiYqBDZY2',
+        date: new Date(),
+        title: 'Pedido Creado',
+        message: 'se añadio el pedido al sistema'
+    },
+    {
+        type: 'CREATED',
+        author: 'i3lPSjl7GUYfQIeEkrnbiYqBDZY2',
+        date: new Date(),
+        title: 'Pedido Creado',
+        message: 'se añadio el pedido al sistema'
+    },
+    
+]
+
+
 
 
 class OrderDetails extends Component{
@@ -91,6 +127,10 @@ class OrderDetails extends Component{
                                         currency={order.currency}
                                         order={order}
                                         data={products} />
+                                
+                                <TimeLine 
+                                        data={dataTest}
+                                />
 
                                 <Grid container spacing={16}>
                                     <Grid item sm={6} xs={12}>
@@ -110,6 +150,9 @@ class OrderDetails extends Component{
                                         currency={order.currency}
                                         order={order}
                                         data={products} />
+                                    <TimeLine 
+                                        data={dataTest}
+                                    />
                                 </Grid>
                                 <Grid item xs={12} sm={12} md={3}>
                                     <OrderDetailCard
