@@ -16,7 +16,7 @@ import OrderSlideList from '../../componets/orderResume/OrderSlideList';
 import {connect } from 'react-redux'
 import { getAllOrders } from '../../lib/firebaseService'
 
-import Title from './Title'
+import Title from '../../componets/title/Title'
 
 
 
