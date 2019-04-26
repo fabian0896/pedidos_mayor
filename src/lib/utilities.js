@@ -112,12 +112,16 @@ function formatSerialNumber(number, digits=3){
 
 
 
-export function isTheArrayEqual(oldArray, newArray){
+export function isTheArrayEqual(oldArray, newArray, atrr){
     if(oldArray.length !== newArray.length){
         return false
     }
     oldArray.forEach(parentObject=>{
-        const index = newArray.findIndex(childObject=> compareObjects(parentObject, childObject))
+        const index = newArray.findIndex(childObject=> compareObjects(
+                parentObject, 
+                childObject, 
+                atrr
+        ))
         if(index >= 0){
             newArray.splice(index,1)
         }
@@ -125,8 +129,8 @@ export function isTheArrayEqual(oldArray, newArray){
     return newArray.length? false : true
 }
 
-export function compareObjects(obj1, obj2){
-    const keys = Object.keys(obj1)
+export function compareObjects(obj1, obj2, keysArray){  
+    const keys = keysArray || Object.keys(obj1)
     const comparation = keys.map(key=>{
         return obj1[key] === obj2[key]
     })

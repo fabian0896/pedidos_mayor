@@ -57,21 +57,25 @@ class Pedidos extends Component {
                         icon={<AssignmentLateIcon />}
                         title="Pedidos Pendientes"
                         value="10"
+                        secondary="Despacharlos!"
                     />
                     <StatsCard
                         icon={<WidgetsIcon />}
                         title="Pedidos Totales"
                         value="139"
+                        secondary="30 por mes"
                     />
                     <StatsCard
                         icon={<EventIcon />}
                         title="Este Mes"
                         value="34"
+                        secondary="4 nuevos hoy"
                     />
                     <StatsCard
                         icon={<AccessibilityNewIcon />}
                         title="Total Prendas"
                         value="4093"
+                        secondary="40 por pedido"
                     />
                 </StatsCardList>
                 

@@ -3,7 +3,6 @@ import {
     Grid,
     Typography,
     withWidth,
-    Button
 } from '@material-ui/core'
 import HeaderLayout from '../../../componets/headerLayout/HeaderLayout';
 import OrderDetailCard from './OrderDetailCard';
@@ -56,7 +55,6 @@ class OrderDetails extends Component{
     getClient = async (id) =>{
         const client = this.props.clients[id]
         if(client){
-            console.log("el cliente esta en props")
             return client
         }
         const fetchClient = await getClientById(id)
@@ -64,7 +62,6 @@ class OrderDetails extends Component{
     }
 
     handleEdit = ()=>{
-        const id = this.props.match.params.id
         const { order } = this.state
         this.props.history.push({
             pathname: '/pedidos/nuevo',

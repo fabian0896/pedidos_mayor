@@ -10,7 +10,7 @@ import ShippingForm from './ShippingForm';
 import ProductsForm from './ProductsForm'
 import DiscountForm from './DiscountForm';
 import OrderResume from './OrderResume';
-import { addOrder } from '../../../lib/firebaseService'
+import { addOrder, updateOrder } from '../../../lib/firebaseService'
 import Loader from '../../../componets/loader/Loader';
 import { Save as SaveIcon } from '@material-ui/icons'
 import MyMobileStepper from '../../../componets/myMobileStepper/MyMobileStepper';
@@ -165,22 +165,29 @@ class NewOrder extends Component{
     }
 
     handleSave = async ()=>{
-        const { formValues } = this.state
+        const { formValues, isEditing } = this.state
+        const loadingMessage = isEditing? 'Se esta modificando el pedido' : 'Se esta agregando el pedido'
+        const successMessage = isEditing? 'El pedido se modifico correctamente' : 'El pedido se agrego correctamente'
 
         this.setState({
             saving: true,
             loading: true,
             success: false,
             Icon: SaveIcon,
-            loadingText: 'Se esta agregando el pedido',
-            successText: 'El pedido se agrego correctamente!'
+            loadingText: loadingMessage,
+            successText: successMessage
         })
 
-        await addOrder(formValues)
+        if(isEditing){
+            await updateOrder(formValues, formValues.id)
+        }else{
+            await addOrder(formValues)
+        }
 
         this.setState({ success: true, loading: false })
         setTimeout(()=>{
-            this.props.history.push('/pedidos')
+            const route = isEditing? `/pedidos/${formValues.id}`: '/pedidos'
+            this.props.history.push(route)
         }, 700)
         return 
     }

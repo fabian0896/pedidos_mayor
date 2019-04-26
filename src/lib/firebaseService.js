@@ -484,24 +484,30 @@ export async function updateOrder(order, id){
                 title: 'Pedido Actualizado',
             }
 
-            const equalShipping = compareObjects(order.shipping, oldOrder.shipping)
-            const equalProducts = isTheArrayEqual(order.products, oldOrder.products)
 
-            if(!equalProducts && !equalShipping){
-                timeLineObject['message'] = 'Se modificaron las prendas y la informacion del envio en el pedido'
-            }else if(!equalProducts){
-                timeLineObject['message'] = 'Se modiciaron las prendas en el pedido'
-            }else if(!equalShipping){
-                timeLineObject['message'] = 'Se modifico la informacion del envio'
-            }else{
-                //el pedido no ha cambiado en nada, no es necesario actualizar
-                res('completed')
-                return
+            const equalShipping = compareObjects(order.shipping, oldOrder.shipping)
+            const equalProducts = isTheArrayEqual(order.products, oldOrder.products, ['color','quantity','price','reference', 'size'])
+            const equalDescount = order.descount === oldOrder.descount 
+            const edittinfMessage = []
+            const timeLine = [...oldOrder.timeLine]
+           
+            if(!equalProducts){
+                edittinfMessage.push("Se modificaron las prendas")
             }
+            if(!equalShipping){
+                edittinfMessage.push('Se modificó la informacion de envio')
+            }
+            if(!equalDescount){
+                edittinfMessage.push(`Se modificó el descuento aplicado ${oldOrder.descount}% > ${order.descount}%`)
+            }
+
+            if(edittinfMessage.length){
+                timeLineObject['message'] = edittinfMessage.join(', ')
+                timeLine.push(timeLineObject)
+            }   
             
-            const timeLine = [...client.timeLine, timeLineObject]
-    
             
+
 
             let totalValue = order.total
             if(client.currency !== order.currency){

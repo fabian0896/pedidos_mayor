@@ -20,6 +20,9 @@ const Item = withStyles(theme=>({
             background: 'transparent',
             
         },
+        '&:hover $boll':{
+            background: theme.palette.secondary.dark
+        }
     },
     decorator:{
         paddingRight: theme.spacing.unit*1,
@@ -49,7 +52,8 @@ const Item = withStyles(theme=>({
         justifyContent: 'center',
         alignItems: 'center',
         color: theme.palette.primary.contrastText,
-        boxShadow: theme.shadows[5]
+        boxShadow: theme.shadows[5],
+        transition:'.3s'
     },
     messageContainer:{
         paddingTop: theme.spacing.unit*2,
@@ -79,7 +83,8 @@ const Item = withStyles(theme=>({
         position: 'relative',
     },
     mainMessage:{
-        flex: 1
+        flex: 1,
+        paddingRight: theme.spacing.unit
     },
     secondaryMessage:{
         display: 'flex',
@@ -95,7 +100,7 @@ const Item = withStyles(theme=>({
         <div className={classes.decorator}>
             <div className={classes.lineTop} />
             <div className={classes.boll}>
-                <Typography component="span" variant="subtitle2" color="inherit">{index + 1}</Typography>
+                <Typography style={{lineHeight: 1}} component="span" variant="subtitle2" color="inherit">{index + 1}</Typography>
             </div>
             <div className={classes.lineBottom} />
         </div>

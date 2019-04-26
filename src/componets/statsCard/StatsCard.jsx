@@ -2,52 +2,44 @@ import React from 'react'
 import { 
     withStyles, 
     Paper,
-    Typography
+    Typography,
+    Divider
 } from '@material-ui/core'
 
 
 
 const styles = theme =>({
     root:{
-        position: 'relative',
-        overflow: 'hidden',
-        height: '100%',
-        //padding: theme.spacing.unit*3,
+        background: theme.palette.secondary.dark,
+        color: theme.palette.secondary.contrastText,
+        height: '100%'
+    },
+    mainContainer:{
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        //borderTop: `8px solid ${theme.palette.secondary.dark}`,
-        transition: '.3s',
-        '&:hover':{
-            transform: 'scale(1.03)'
-        }
+        padding: theme.spacing.unit*2
+    },
+    secondaryContent:{
+        margin: `${theme.spacing.unit}px ${theme.spacing.unit*2}px`
     },
     title:{
         
     },
     icon:{
-        fontSize: '35px'
+        fontSize: '45px'
     },
-    header:{
-        background: theme.palette.secondary.dark,
-        color: theme.palette.secondary.contrastText,
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: `${theme.spacing.unit}px ${theme.spacing.unit}px`
+    info:{
+        flex: 1
     },
-    content:{
-        flex: 1,
-        alignItems: 'center',
-        padding: `${theme.spacing.unit*2}px ${theme.spacing.unit}px`
+    divider:{
+        marginTop: theme.spacing.unit,
+        marginBottom: theme.spacing.unit,
+        marginLeft: theme.spacing.unit*2,
+        marginRight: theme.spacing.unit*2,
     }
 })
 
 
-function StatsCard({classes, icon, title, value}){
+function StatsCard({classes, icon, title, value, secondary}){
     const NewIcon = React.cloneElement(icon,{
         className: classes.icon,
         fontSize: 'inherit',
@@ -55,13 +47,19 @@ function StatsCard({classes, icon, title, value}){
     })
     return(
         <Paper className={classes.root}>
-            <div className={classes.header}>
+        <div className={classes.mainContainer}>
+            <div className={classes.icon}>
                 {NewIcon}
-                <Typography align="center" component='p' variant="subtitle1" color="inherit">{title}</Typography>
             </div>
-            <div className={classes.content}>
-                <Typography color="textSecondary" align="center" component='p' variant="h5">{value}</Typography>
+            <div className={classes.info}>
+                <Typography style={{color: '#e5e5e5'}} align="right" component='p' variant="body2" color="inherit">{title}</Typography>
+                <Typography color="inherit" align="right" component='p' variant="h5">{value}</Typography>
             </div>
+        </div>
+        <Divider className={classes.divider}/>
+        <div className={classes.secondaryContent}>
+            <Typography style={{lineHeight: 1.4}} variant="overline" color="inherit">{secondary}</Typography>
+        </div>
         </Paper>
     )
 }

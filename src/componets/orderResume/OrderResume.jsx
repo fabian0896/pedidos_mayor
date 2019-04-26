@@ -11,7 +11,7 @@ const styles = theme =>({
     root:{
         //height: 200,
         display: 'inline-flex',
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
     header:{
         background: theme.palette.primary.dark,
