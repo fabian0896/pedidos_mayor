@@ -111,6 +111,30 @@ function formatSerialNumber(number, digits=3){
 }
 
 
+
+export function isTheArrayEqual(oldArray, newArray){
+    if(oldArray.length !== newArray.length){
+        return false
+    }
+    oldArray.forEach(parentObject=>{
+        const index = newArray.findIndex(childObject=> compareObjects(parentObject, childObject))
+        if(index >= 0){
+            newArray.splice(index,1)
+        }
+    })
+    return newArray.length? false : true
+}
+
+export function compareObjects(obj1, obj2){
+    const keys = Object.keys(obj1)
+    const comparation = keys.map(key=>{
+        return obj1[key] === obj2[key]
+    })
+    return comparation.reduce((previus, current)=>{
+        return previus && current
+    })
+}
+
 //-------------------- Internal functions --------------------
 
 function randomNumber(min = 0, max = 255){

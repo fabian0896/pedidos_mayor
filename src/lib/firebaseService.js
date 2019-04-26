@@ -2,7 +2,13 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 
-import { formatPhone, randomColor, incrementSerial } from './utilities'
+import { 
+    formatPhone, 
+    randomColor, 
+    incrementSerial, 
+    compareObjects, 
+    isTheArrayEqual 
+} from './utilities'
 import * as algolia from './algoliaService'
 import { convertCurrency } from './currencyService'
 
@@ -432,15 +438,6 @@ export async function updateOrder(order, id){
     const dbClients = firebase.firestore().collection(CLIENTS)
     const oredrRef = dbOrders.doc(id)
   
-
-    const timeLineObject = {
-        type: 'UPDATED',
-        author: firebase.auth().currentUser.uid,
-        date: new Date(),
-        title: 'Pedido Actualizado',
-        message: 'Se modifico X cosa'
-    }
-
     const totalProducts = order.products.reduce((prev, current)=>{
         return prev + parseInt(current.quantity)
     }, 0)
@@ -469,16 +466,42 @@ export async function updateOrder(order, id){
         return new Promise(async (res, rej)=>{
             const clientRef = dbClients.doc(order.clientInfo.id)
             //const clientOrderRef = clientRef.collection(ORDERS).doc(orderId)
-            const snap = await transaction.get(clientRef)
-            const client = snap.data()
+            const clientSnap = await transaction.get(clientRef)
+            const orderSnap = await transaction.get(oredrRef)
+            const client = clientSnap.data()
+            const oldOrder = orderSnap.data()
+
+            if(!clientSnap.exists || !orderSnap.exists){
+                rej('El cliente y/o el pedido no existe')
+                return
+            }
+
+
+            const timeLineObject = {
+                type: 'UPDATED',
+                author: firebase.auth().currentUser.uid,
+                date: new Date(),
+                title: 'Pedido Actualizado',
+            }
+
+            const equalShipping = compareObjects(order.shipping, oldOrder.shipping)
+            const equalProducts = isTheArrayEqual(order.products, oldOrder.products)
+
+            if(!equalProducts && !equalShipping){
+                timeLineObject['message'] = 'Se modificaron las prendas y la informacion del envio en el pedido'
+            }else if(!equalProducts){
+                timeLineObject['message'] = 'Se modiciaron las prendas en el pedido'
+            }else if(!equalShipping){
+                timeLineObject['message'] = 'Se modifico la informacion del envio'
+            }else{
+                //el pedido no ha cambiado en nada, no es necesario actualizar
+                res('completed')
+                return
+            }
             
             const timeLine = [...client.timeLine, timeLineObject]
     
             
-            if(!snap.exists){
-                rej('El cliente no existe')
-                return
-            }
 
             let totalValue = order.total
             if(client.currency !== order.currency){

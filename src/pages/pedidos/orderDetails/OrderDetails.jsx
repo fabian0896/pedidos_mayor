@@ -65,10 +65,11 @@ class OrderDetails extends Component{
 
     handleEdit = ()=>{
         const id = this.props.match.params.id
+        const { order } = this.state
         this.props.history.push({
             pathname: '/pedidos/nuevo',
             state:{
-                order: id 
+                order
             }
         })
     }

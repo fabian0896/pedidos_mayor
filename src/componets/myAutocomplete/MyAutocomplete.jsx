@@ -189,7 +189,7 @@ class MyAutocompleat extends React.Component {
   }
 
   render() {
-    const { classes, theme, field, optionsList, myPlaceholder, error } = this.props;
+    const { classes, theme, field, optionsList, myPlaceholder, error, disabled } = this.props;
 
     const selectStyles = {
       input: base => ({
@@ -206,6 +206,7 @@ class MyAutocompleat extends React.Component {
     return (
         <NoSsr>
           <Select
+            isDisabled={disabled}
             error={error}
             className={this.props.className}
             classes={classes}

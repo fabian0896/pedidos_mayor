@@ -35,7 +35,8 @@ class NewOrder extends Component{
         Icon: null,
         success: false,
         saving: false,
-        noRender: true
+        noRender: true,
+        isEditing: false
     }
 
     submit = Array(4).fill(null)
@@ -46,7 +47,7 @@ class NewOrder extends Component{
         const routerState = this.props.location.state || {}
         if(routerState.order){
             // se viene desde una edicion de pedido
-
+            this.setOrderInfoForEdit(routerState.order)
         }else if(routerState.clientId){
             // se viene desde "agregar pedido" en un client
             
@@ -60,8 +61,13 @@ class NewOrder extends Component{
     }
 
     
-    setOrderInfoForEdit = async (id) => {
-        
+    setOrderInfoForEdit = (order) => {
+        const clientOption = this.props.clientsList.find(client=> client.value === order.clientId)
+        this.setState(state =>({
+            formValues: {...order,client: clientOption},
+            noRender: false,
+            isEditing: true
+        }))
     }
 
 
@@ -194,7 +200,8 @@ class NewOrder extends Component{
             success,
             successText,
             Icon,
-            noRender
+            noRender,
+            isEditing
          } = this.state
         return(
             <div>
@@ -225,6 +232,7 @@ class NewOrder extends Component{
                                             >
                                             <MyStep title="Cliente">
                                                 <ClientForm
+                                                    isEditing={isEditing}
                                                     clients={this.props.clients}
                                                     handleSubmit={this.handleSubmit}
                                                     saveSubmitRef={this.saveSubmitRef(0)} 
@@ -271,6 +279,7 @@ class NewOrder extends Component{
                                             handleNext={this.handleNext}
                                         >
                                             <ClientForm
+                                                isEditing={isEditing}
                                                 clients={this.props.clients}
                                                 handleSubmit={this.handleSubmit}
                                                 saveSubmitRef={this.saveSubmitRef(0)} 

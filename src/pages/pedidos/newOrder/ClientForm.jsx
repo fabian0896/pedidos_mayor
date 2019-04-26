@@ -40,7 +40,7 @@ const customChange = (setFieldValue, clients)=> (option) =>{
 }
 
 function ClientForm(props) {
-    const { classes, saveSubmitRef, handleSubmit, iniValues, clients } = props
+    const { classes, saveSubmitRef, handleSubmit, iniValues, clients, isEditing } = props
     return (
         <Formik
             initialValues={{
@@ -56,6 +56,7 @@ function ClientForm(props) {
                     return (
                         <form onSubmit={handleSubmit} className={classes.form}>
                             <Field
+                                disabled={isEditing}
                                 onChange={customChange(setFieldValue, clients)}
                                 error={errors.client && touched.client}
                                 myPlaceholder="Cliente"
@@ -66,6 +67,7 @@ function ClientForm(props) {
                             {
                                 values.currency &&
                                 <FormControl
+                                    disabled={isEditing}
                                     component="fieldset"
                                     error={errors.currency && touched.currency}
                                     >
