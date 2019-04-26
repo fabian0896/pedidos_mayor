@@ -5,7 +5,7 @@ import {
     Widgets as WidgetsIcon,
     Event as EventIcon,
     AssignmentLate as AssignmentLateIcon,
-    AccessibilityNew as AccessibilityNewIcon
+    AccessibilityNew as AccessibilityNewIcon,
 } from '@material-ui/icons'
 import StatsCardList from '../../componets/statsCard/StatsCardList';
 import OrderResume from '../../componets/orderResume/OrderResume';
@@ -15,6 +15,8 @@ import Section from '../../componets/section/Section';
 import OrderSlideList from '../../componets/orderResume/OrderSlideList';
 import {connect } from 'react-redux'
 import { getAllOrders } from '../../lib/firebaseService'
+
+import Title from './Title'
 
 
 
@@ -81,6 +83,7 @@ class Pedidos extends Component {
                 
 
                 <Section background='#E9E9E9'>
+                <Title align="left" primary="Pendientes" secondary="Pedidos pendientes por despacho"/>
                     <OrderSlideList title="Pendientes">
                     {
                         orders.map(order=>{
@@ -98,7 +101,8 @@ class Pedidos extends Component {
                 </Section>
        
 
-                <OrederGrid title="Pedidos">
+                <Title align="center" primary="Todos" secondary="Lista de los ultimos pedidos realizados"/>
+                <OrederGrid>
                     {
                         orders.map(order=>{
                             return(

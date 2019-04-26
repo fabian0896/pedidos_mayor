@@ -206,8 +206,7 @@ class Prendas extends Component{
                     onConfirm={this.handleDelete}
                     onClose={this.handleCloseAlert}
                     hideContent={savingModal}
-                    type="warning"
-                    title="Atención!!" 
+                    type="error"
                     message={`seguro que quieres borrar ${deletingProduct.name} ?`}
                     open={alertOpen}>
                         {

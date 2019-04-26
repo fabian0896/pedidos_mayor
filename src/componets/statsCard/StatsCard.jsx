@@ -12,7 +12,12 @@ const styles = theme =>({
     root:{
         background: theme.palette.secondary.dark,
         color: theme.palette.secondary.contrastText,
-        height: '100%'
+        height: '100%',
+        transition: '.3s',
+        '&:hover':{
+            boxShadow: theme.shadows[20],
+            transform: 'scale(1.001)'
+        }
     },
     mainContainer:{
         display: 'flex',

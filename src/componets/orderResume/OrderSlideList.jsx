@@ -33,11 +33,9 @@ const styles = theme =>({
     }
 })
 
-function OrderSlideList({children, title, classes}){
+function OrderSlideList({children, classes}){
     return(
         <div className={classes.root}>
-            <Typography gutterBottom variant="h3">{title}</Typography>
-            <Divider style={{marginBottom: 20}} />
             <div className={classes.slide}>
                 {
                     React.Children.map(children, (child)=>{

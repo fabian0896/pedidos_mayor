@@ -1,16 +1,31 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Modal, withStyles,Typography, Button } from '@material-ui/core'
 import classNames from 'classnames'
 import { green, amber } from '@material-ui/core/colors'
 import PropTypes from 'prop-types';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import ErrorIcon from '@material-ui/icons/Error';
+import InfoIcon from '@material-ui/icons/Info';
+import WarningIcon from '@material-ui/icons/Warning';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+
+
+
+const variantIcon = {
+    success: CheckCircleIcon,
+    warning: WarningIcon,
+    error: ErrorIcon,
+    info: InfoIcon,
+}
+
 
 const styles = theme => ({
     paper: {
       position: 'absolute',
-      width: theme.spacing.unit * 45,
+      width: 250,
       backgroundColor: theme.palette.background.paper,
       boxShadow: theme.shadows[5],
-      padding: theme.spacing.unit * 4,
       outline: 'none',
       top: `${50}%`,
       left: `${50}%`,
@@ -19,13 +34,12 @@ const styles = theme => ({
       borderRadius: theme.shape.borderRadius
     },
     header:{
-        marginLeft: -theme.spacing.unit * 4,
-        marginTop: -theme.spacing.unit * 4,
-        marginRight: -theme.spacing.unit * 4,
-        padding: `${theme.spacing.unit * 3}px ${theme.spacing.unit * 4}px`,
-        background: theme.palette.secondary.main,
+        margin: `${theme.spacing.unit*3}px ${theme.spacing.unit*3}px 0`,
         color: theme.palette.secondary.contrastText,
-        marginBottom: theme.spacing.unit * 3
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative'
     },
     title:{
         fontWeight: 500
@@ -33,11 +47,12 @@ const styles = theme => ({
     content:{
         position: 'relative',
         //minHeight: '200px'
-        marginBottom: theme.spacing.unit*4
+        margin: `${theme.spacing.unit*3}px ${theme.spacing.unit*3}px ${theme.spacing.unit*2}px`,
     },
     actions: {
         display: 'flex',
-        justifyContent: 'flex-end'
+        justifyContent: 'space-between',
+        margin: `0px ${theme.spacing.unit*3}px ${theme.spacing.unit*2}px`,
     },
     success: {
         backgroundColor: green[600],
@@ -51,6 +66,26 @@ const styles = theme => ({
     warning: {
         backgroundColor: amber[700],
     },
+    icone:{
+        fontSize: 80,
+    },
+    contentMessage:{
+        color: 'hsla(0,0%,100%,.8)'
+    },
+    cancelButtom:{
+        color: '#FFF',
+        opacity: '.7'
+    },
+    confirmButtom:{
+        color: '#FFF'
+    },
+    closeButtom:{
+        color: '#FFF',
+        opacity: '.7',
+        position: 'absolute',
+        right: -10,
+        top: -10
+    }
   });
 
 
@@ -60,14 +95,13 @@ function ModalAlert(props){
         classes, 
         onClose, 
         open, 
-        title, 
         message, 
         type,
         onConfirm,
         hideContent,
         children
     } = props
-    
+    const Icone = variantIcon[type]
     return(
         <Modal
         ria-labelledby="Modal-Multiproposito"
@@ -75,30 +109,47 @@ function ModalAlert(props){
         open={open}
         onClose={onClose}
         >
-            <div className={classes.paper}>
-                <div className={classNames(classes.header, classes[type])}>
-                    <Typography className={classes.title} color="inherit" component="h3" variant="h5" >{title}</Typography>
-                </div>
+            <div className={classNames(classes.paper, classes[type])}>
                 {
                     !hideContent &&
-                    <div className={classes.content}>
-                        <Typography component="p" variant="subtitle1" color="textSecondary" >{ message }</Typography>
-                    </div>
+                    <Fragment>
+                        <div className={classNames(classes.header)}>
+                            <div >
+                                <IconButton onClick={onClose} className={classes.closeButtom} >
+                                    <CloseIcon fontSize="small"/>
+                                </IconButton>
+                                <Icone  className={classNames(classes.icone)}/>
+                            </div>
+                        </div>
+                        <div className={classes.content}>
+                            <Typography
+                                className={classes.contentMessage} 
+                                align="center" 
+                                component="p" 
+                                variant="subtitle1" 
+                                color="inherit" >
+                                    { message }
+                            </Typography>
+                        </div>
+                    </Fragment>
                 }
                 <div>
                     {children}  
                 </div>
                 <div className={classes.actions}>
                     <Button
+                        size="small"
                         onClick={onClose}
-                        color="secondary"
+                        color="inherit"
+                        className={classes.cancelButtom}
                         >Cancelar
                     </Button>
                     <Button
+                        size="small"
+                        className={classes.confirmButtom}
                         onClick={()=>{onConfirm()}}
                         style={{marginLeft: 10}}
-                        variant="contained"
-                        color="primary"
+                        color="inherit"
                         >Continuar
                     </Button>
                 </div>

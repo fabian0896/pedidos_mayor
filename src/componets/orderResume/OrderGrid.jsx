@@ -6,11 +6,9 @@ import {
 } from '@material-ui/core'
 
 
-function OrederGrid({children, title}){
+function OrederGrid({children}){
     return(
         <div>
-            <Typography gutterBottom variant="h3">{title}</Typography>
-            <Divider style={{marginBottom: 20}} />
             <Grid container spacing={24}>
                 {
                     React.Children.map(children,child =>{
