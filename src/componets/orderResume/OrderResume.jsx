@@ -39,10 +39,6 @@ const styles = theme =>({
         alignItems: 'center',
         marginBottom: theme.spacing.unit
     },
-    flag:{
-        maxHeight: '25px',
-        borderRadius: theme.shape.borderRadius
-    },
     info:{
         marginTop: theme.spacing.unit,
         display: 'flex',

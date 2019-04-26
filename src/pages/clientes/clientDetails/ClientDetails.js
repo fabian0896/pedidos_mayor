@@ -8,6 +8,8 @@ import { getClientById, getOrderByClient } from '../../../lib/firebaseService'
 import { Paper } from '@material-ui/core';
 import OrderSlideList from '../../../componets/orderResume/OrderSlideList';
 import OrderResume from '../../../componets/orderResume/OrderResume';
+import Section from '../../../componets/section/Section';
+import Title from '../../../componets/title/Title';
 
 
 const styles = theme => ({
@@ -17,10 +19,6 @@ const styles = theme => ({
         zIndex: 3,
         marginTop: '-80px'
     },
-    card:{
-        padding: theme.spacing.unit*2,
-        marginTop: theme.spacing.unit*3
-    }
 })
 
 class ClientDetail extends Component {
@@ -92,7 +90,8 @@ class ClientDetail extends Component {
                         <div className={classes.content}>
                             <ClientDetailInfo client={{...client, seller: sellers[client.seller]}} />
                         </div>
-                        <Paper className={classes.card}>
+                        <Section background='#E9E9E9'>
+                        <Title align="center" primary="Pedidos" secondary="Todos los pedidos del cliente"/>
                             <OrderSlideList title="Pedidos">
                             {
                                 orderList.map(order=>{
@@ -100,14 +99,14 @@ class ClientDetail extends Component {
                                         <OrderResume
                                             onClick={this.handleOrderDetail(order.id)} 
                                             client={client}
-                                            width={360} 
+                                            width={365} 
                                             key={order.id} 
                                             order={order}/>
                                     )
                                 })
                             }
                             </OrderSlideList>
-                        </Paper>
+                        </Section>
                     </Fragment>
                 }
             </div>
