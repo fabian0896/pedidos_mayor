@@ -17,6 +17,10 @@ import {connect } from 'react-redux'
 import { getAllOrders } from '../../lib/firebaseService'
 
 import Title from '../../componets/title/Title'
+import { searchOrder } from '../../lib/searchService'
+import { Paper } from '@material-ui/core';
+import Loader from '../../componets/loader/Loader';
+import { Search as SearchIcon } from '@material-ui/icons'
 
 
 
@@ -24,7 +28,10 @@ class Pedidos extends Component {
     
     state = {
         noRender: true,
-        orders: []
+        orders: [],
+        isSearching: false,
+        searchResult: [],
+        loadingSearch: false
     }
 
     async componentDidMount(){
@@ -42,18 +49,71 @@ class Pedidos extends Component {
         this.props.history.push('pedidos/nuevo')
     }
     
+    hanldleSearch = async (event, value)=>{
+        event.preventDefault()
+        this.setState({searchResult: []})
+        if(!value){
+            this.setState({
+                loadingSearch: false,
+                isSearching: false,
+            })
+            return
+        }
+        this.setState({loadingSearch: true})        
+        const res = await searchOrder(value)
+        console.log(res)
+        this.setState({
+            loadingSearch: false,
+            searchResult: res,
+            isSearching: true
+        })
+        return
+    }
+
+
     render() {
         const { clients } = this.props
-        const { orders } = this.state
+        const { orders, loadingSearch, isSearching, searchResult } = this.state
         return (
             <div>
                 <HeaderLayout>
                     <SearchBar 
                         handleAdd={this.handleNewOrder}
+                        handleSubmit={this.hanldleSearch}
                     />
                 </HeaderLayout>
 
-                
+                {
+                    loadingSearch &&
+                    <Paper style={{marginBottom: 24}}>
+                        <Loader
+                            floating
+                            loadingText="Buscando Pedidos..."
+                            successText=""
+                            Icon={SearchIcon}
+                            success={false}
+                            loading={true} 
+                        />
+                    </Paper>
+                }
+                {
+                    isSearching && !loadingSearch &&
+                    <OrederGrid>
+                        {
+                        searchResult.map(order=>{
+                            return(
+                                <OrderResume
+                                    onClick={this.handleOrderDetail(order.id)}
+                                    client={clients[order.clientId]}
+                                    key={order.id} 
+                                    order={order}/>
+                            )
+                        })
+                    }
+                    </OrederGrid>
+                }
+
+
                 <StatsCardList style={{marginBottom: 50}}>
                     <StatsCard
                         icon={<AssignmentLateIcon />}

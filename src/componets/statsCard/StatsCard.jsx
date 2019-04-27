@@ -27,7 +27,8 @@ const styles = theme =>({
         margin: `${theme.spacing.unit}px ${theme.spacing.unit*2}px`
     },
     title:{
-        
+        color: theme.palette.secondary.contrastText,
+        opacity: '.7'
     },
     icon:{
         fontSize: '45px'
@@ -57,13 +58,13 @@ function StatsCard({classes, icon, title, value, secondary}){
                 {NewIcon}
             </div>
             <div className={classes.info}>
-                <Typography style={{color: '#e5e5e5'}} align="right" component='p' variant="body2" color="inherit">{title}</Typography>
+                <Typography className={classes.title} align="right" component='p' variant="body2" color="inherit">{title}</Typography>
                 <Typography color="inherit" align="right" component='p' variant="h5">{value}</Typography>
             </div>
         </div>
         <Divider className={classes.divider}/>
         <div className={classes.secondaryContent}>
-            <Typography style={{lineHeight: 1.4}} variant="overline" color="inherit">{secondary}</Typography>
+            <Typography className={classes.title} style={{lineHeight: 1.4}} variant="overline" color="inherit">{secondary}</Typography>
         </div>
         </Paper>
     )

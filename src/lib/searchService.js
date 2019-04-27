@@ -1,10 +1,11 @@
 import * as algoliasearch from 'algoliasearch'
-import { getClientById } from './firebaseService'
+import { getClientById, getOrderbyId } from './firebaseService'
 
 const agoliaClient = algoliasearch('AKE68Y9274', 'f8604ef41d20eb78f752a3f55d935700')
 
 const clientsIndex = agoliaClient.initIndex('clients');
 const productsIndex = agoliaClient.initIndex('products');
+const ordersIndex = agoliaClient.initIndex('orders');
 
 
 
@@ -104,4 +105,15 @@ export async function selectSearch(query){
         }
     })
     return formated
+}
+
+//-------------------------------Order--------------------------
+
+
+export async function searchOrder(query){
+    const res = await ordersIndex.search({
+        query
+    })
+    const promises = res.hits.map(item=>getOrderbyId(item.objectID))
+    return await Promise.all(promises)
 }

@@ -48,6 +48,11 @@ const styles = theme =>({
     },
     moneyInfo:{
 
+    },
+    flag:{
+        height: 25,
+        borderRadius: 4,
+        boxShadow: theme.shadows[1]
     }
 })
 
@@ -79,14 +84,7 @@ function OrderResume(props){
                         <Typography component="span" variant="subtitle2" color="textSecondary">{`${client.city}, ${country}`}</Typography>
                     </div>
                     <div>
-                    <NumberFormat 
-                        value={order.total} 
-                        displayType={'text'} 
-                        thousandSeparator={true} 
-                        prefix={`$`} 
-                        renderText={value =>( 
-                            <Typography component="span" variant="h6" color="textSecondary" >{value}</Typography>
-                        )} />
+                        <img className={classes.flag} src={client.country.flag} alt={client.country.name}/>
                     </div>
                 </div>
                 <Divider/>
@@ -119,8 +117,18 @@ function OrderResume(props){
                             thousandSeparator={true} 
                             prefix={`$`} 
                             renderText={value =>( 
-                                <Typography align="right" variant="body1">{value}</Typography>
-                            )} />
+                                <Typography gutterBottom align="right" variant="body1">{value}</Typography>
+                                )} />
+                        
+                        <Typography align="right" variant="body2" color="textSecondary">Total</Typography>
+                        <NumberFormat 
+                        value={order.total} 
+                        displayType={'text'} 
+                        thousandSeparator={true} 
+                        prefix={`$`} 
+                        renderText={value =>( 
+                            <Typography component="span" variant="h6">{value}</Typography>
+                        )} />
                     </div>
                 </div>
             </div>
