@@ -98,7 +98,10 @@ class Pedidos extends Component {
                 }
                 {
                     isSearching && !loadingSearch &&
-                    <OrederGrid>
+                    <OrederGrid
+                        noOrderTitle="No se encontraron pedidos"
+                        noOrderMessage="Intenta cambiando el termino de busqueda o agrega el pedido"
+                    >
                         {
                         searchResult.map(order=>{
                             return(
@@ -162,7 +165,10 @@ class Pedidos extends Component {
        
 
                 <Title align="center" primary="Todos" secondary="Lista de los ultimos pedidos realizados"/>
-                <OrederGrid>
+                <OrederGrid 
+                    noOrderTitle="No hay pedidos"
+                    noOrderMessage="No se encontraron pedidos, cuando agregues uno, lo veras en esta seccion :)"
+                    >
                     {
                         orders.map(order=>{
                             return(

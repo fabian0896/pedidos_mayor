@@ -136,7 +136,7 @@ class OrderProductTable extends Component{
                                                 prefix={'$'} 
                                                 renderText={value => <TableCell>{value}</TableCell>} />
                                             <NumberFormat 
-                                                value={product.quantity * product.price} 
+                                                value={(product.quantity * product.price).toFixed(1)} 
                                                 displayType={'text'} 
                                                 thousandSeparator={true} 
                                                 prefix={'$'} 
@@ -164,7 +164,7 @@ class OrderProductTable extends Component{
                                         <TableCell>
                                             <Typography variant="subtitle2">{`${order.descount}%`}</Typography>
                                         </TableCell>
-                                        <MoneyCel amount={-order.subTotal*(order.descount/100)}/>
+                                        <MoneyCel amount={-(order.subTotal*(order.descount/100)).toFixed(1)}/>
                                         <TableCell colSpan={withEdittingButtons? 4 : 3}></TableCell>
                                     </TableRow>
                                 </Fragment>

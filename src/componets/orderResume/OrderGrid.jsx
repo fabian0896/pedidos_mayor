@@ -29,7 +29,7 @@ const styles = theme => ({
 })
 
 
-function OrederGrid({children, classes}){
+function OrederGrid({children, classes, noOrderTitle, noOrderMessage}){
     return(
         <div>
             {
@@ -48,9 +48,9 @@ function OrederGrid({children, classes}){
                 :
                 <Paper className={classes.paper}>
                     <div className={classes.textContainer}>
-                        <Typography color="textSecondary" gutterBottom variant="h4">No se encontraron pedidos</Typography>
+                        <Typography color="textSecondary" gutterBottom variant="h4">{noOrderTitle}</Typography>
                         <Typography color="textSecondary" variant="body1">
-                            Intenta cambiando el termino de busqueda o agrega el pedido
+                            {noOrderMessage}
                         </Typography>
                     </div>
                     <img className={classes.svg} src={SearchSvg} alt="search"/>
