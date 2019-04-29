@@ -36,7 +36,6 @@ const styles = theme => ({
 
 
 function MyModal(props){
-    
     const {classes,onClose, open, title, children } = props
     
     return(

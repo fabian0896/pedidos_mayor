@@ -1,9 +1,6 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core';
-import {
-    Typography,
-    Divider
-} from '@material-ui/core'
+
 
 
 const styles = theme =>({

@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom, showBackbuttonWithPath } from '../../../actions'
 import ClientDetailHeader from './ClientDetailHeader';
 import { getClientById, getOrderByClient } from '../../../lib/firebaseService'
-import { Paper } from '@material-ui/core';
 import OrderSlideList from '../../../componets/orderResume/OrderSlideList';
 import OrderResume from '../../../componets/orderResume/OrderResume';
 import Section from '../../../componets/section/Section';

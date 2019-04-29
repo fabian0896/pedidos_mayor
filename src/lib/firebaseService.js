@@ -20,6 +20,7 @@ const CODES = 'codes'
 const SELLERS = 'sellers'
 const PRODUCTS = 'products'
 const ORDERS = 'orders'
+const PAYMENTS = 'payments'
 
 
 //---------------------------------------------CLients -------------------------------------------
@@ -492,7 +493,7 @@ export async function updateOrder(order, id){
             const timeLine = [...oldOrder.timeLine]
            
             if(!equalProducts){
-                edittinfMessage.push("Se modificaron las prendas")
+                edittinfMessage.push(`Se modificaron las prendas, valor anterior:  $${oldOrder.total}, nuevo valor: $${order.total}, Nuevo Saldo: $${order.total - (order.totalPayments || 0)}`)
             }
             if(!equalShipping){
                 edittinfMessage.push('Se modificó la informacion de envio')
@@ -506,13 +507,17 @@ export async function updateOrder(order, id){
                 timeLine.push(timeLineObject)
             }   
             
-            
-
 
             let totalValue = order.total
             if(client.currency !== order.currency){
                 totalValue = await convertCurrency(order.currency, client.currency, totalValue)
             }
+
+
+            if(order.payments && order.totalPayments){
+                totalValue = totalValue - order.totalPayments
+            }
+
 
             if(!client.balance){
                 transaction.update(clientRef,{
@@ -520,7 +525,7 @@ export async function updateOrder(order, id){
                     updatedAt: new Date(),
                 })
             }else{
-                const totalBalance = client.balance + totalValue
+                const totalBalance = (client.balance - oldOrder.balance) + totalValue
                 transaction.update(clientRef, {
                     balance: totalBalance, 
                     updatedAt: new Date()
@@ -567,6 +572,101 @@ export async function getOrderByClient(clientId){
     })
     return orders
 }
+
+
+export async function getOrdersWithBalance(){
+    const db = firebase.firestore().collection(ORDERS).where('balance','>', 0)
+    const snap = await db.get()
+    const result = {}
+    snap.forEach(order=>{
+        if(order.exists){
+            result[order.id] = {...order.data(), id: order.id}
+        }
+    })
+    return result
+}
+
+
+//----------------------------------------------Payments------------------------------------------
+
+
+export async function addPayment(payment){
+    const db = firebase.firestore()
+    const paymentref = db.collection(PAYMENTS).doc()
+    const paymentId = paymentref.id
+    const oredrRef = db.collection(ORDERS).doc(payment.order.value)
+
+    await db.runTransaction(async (transaction)=>{
+            const orderSnap = await transaction.get(oredrRef)
+            const order = orderSnap.data()
+            const clientId =  order.clientId
+            const clientRef = db.collection(CLIENTS).doc(clientId)
+            const clientSnap = await transaction.get(clientRef)
+            const client = clientSnap.data()
+
+            const newBalance = client.balance - payment.value
+
+            const paymentObject = {
+                id: paymentId,
+                value: payment.value,
+                paymentMethod: payment.paymentMethod,
+                reference: payment.reference,
+                orderId: payment.order.value,
+                clientId,
+                currency: client.currency,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            }
+
+            const timeLine = order.timeLine
+
+            let totalPayments = parseInt(payment.value)
+
+            const newOrderBalance = order.balance - payment.value
+
+            if(order.payments){
+                const subTotal = Object.keys(order.payments)
+                                        .map(id=>order.payments[id])
+                                        .reduce((previus, current)=>{
+                                            return previus + parseInt(current.value)
+                                        }, 0)
+                totalPayments += subTotal
+            }
+
+            timeLine.push({
+                type: 'PAYMENT',
+                author: firebase.auth().currentUser.uid,
+                date: new Date(),
+                title: 'Pago Realizado',
+                message: `Se realizó un pago por ${client.currency} $${payment.value}, Saldo: ${client.currency} $${newOrderBalance}`
+            })
+
+            if(newOrderBalance <= 0){
+                    timeLine[timeLine.length-1].message = `Se realizo el pago total del pedido: (${client.currency} $${order.total})`
+            }
+
+            const orderObject = {
+                [`payments.${paymentId}`]: paymentObject,
+                timeLine,
+                totalPayments,
+                balance: newOrderBalance
+            }
+
+            const clientObject = {
+                balance: newBalance,
+            }
+
+            transaction.update(clientRef, clientObject)
+            transaction.update(oredrRef, orderObject)
+            transaction.set(paymentref, paymentObject)
+
+            return
+    })
+   
+
+
+}
+
 
 
 //-------------------------------------------- Handle Error ----------------------------------------------
