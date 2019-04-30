@@ -7,7 +7,8 @@ import {
     randomColor, 
     incrementSerial, 
     compareObjects, 
-    isTheArrayEqual 
+    isTheArrayEqual,
+    thousandSeparator 
 } from './utilities'
 import * as algolia from './algoliaService'
 import { convertCurrency } from './currencyService'
@@ -502,7 +503,7 @@ export async function updateOrder(order, id){
                 edittinfMessage.push(`Se modificó el descuento aplicado ${oldOrder.descount}% > ${order.descount}%`)
             }
             if(!equalDescount || !equalProducts){
-                edittinfMessage.push(`valor anterior:  $${oldOrder.total}, nuevo valor: $${order.total}, Nuevo Saldo: $${order.total - (order.totalPayments || 0)}`)
+                edittinfMessage.push(`valor anterior:  $${thousandSeparator(oldOrder.total)}, nuevo valor: $${thousandSeparator(order.total)}, Nuevo Saldo: $${thousandSeparator(order.total - (order.totalPayments || 0))}`)
             }
 
             if(edittinfMessage.length){
@@ -598,7 +599,7 @@ export async function addPayment(payment){
     const paymentref = db.collection(PAYMENTS).doc()
     const paymentId = paymentref.id
     const oredrRef = db.collection(ORDERS).doc(payment.order.value)
-
+    let algoliaObject = {}
     await db.runTransaction(async (transaction)=>{
             const orderSnap = await transaction.get(oredrRef)
             const order = orderSnap.data()
@@ -615,10 +616,24 @@ export async function addPayment(payment){
                 paymentMethod: payment.paymentMethod,
                 reference: payment.reference,
                 orderId: payment.order.value,
+                orderSerialCode: order.serialCode,
                 clientId,
+                clientName: client.name,
+                clientColor: client.personalColor,
                 currency: client.currency,
+                totalOrder: order.total,
                 createdAt: new Date(),
                 updatedAt: new Date()
+            }
+
+            algoliaObject = {
+                objectID: paymentId,
+                reference: paymentObject.reference,
+                method: paymentObject.paymentMethod,
+                clientName: client.name,
+                clientId,
+                orderId: payment.order.value,
+                serialCode: order.serialCode
             }
 
             const timeLine = order.timeLine
@@ -641,12 +656,14 @@ export async function addPayment(payment){
                 author: firebase.auth().currentUser.uid,
                 date: new Date(),
                 title: 'Pago Realizado',
-                message: `Se realizó un pago por ${client.currency} $${payment.value}, Saldo: ${client.currency} $${newOrderBalance}`
+                message: `Se realizó un pago por ${client.currency} $${thousandSeparator(payment.value)}, Saldo: ${client.currency} $${thousandSeparator(newOrderBalance)}`
             })
 
             if(newOrderBalance <= 0){
-                    timeLine[timeLine.length-1].message = `Se realizo un pago por ${payment.value} para completar el pago total del pedido (${client.currency} $${order.total})`
+                    timeLine[timeLine.length-1].message = `Se realizo un pago por $${thousandSeparator(payment.value)} para completar el pago total del pedido (${client.currency} $${thousandSeparator(order.total)})`
             }
+
+            paymentObject['orderBalance'] = newOrderBalance
 
             const orderObject = {
                 [`payments.${paymentId}`]: paymentObject,
@@ -658,7 +675,8 @@ export async function addPayment(payment){
 
             const clientObject = {
                 balance: newBalance,
-                updatedAt: new Date()
+                updatedAt: new Date(),
+                lastPayment: new Date()
             }
 
             transaction.update(clientRef, clientObject)
@@ -667,11 +685,34 @@ export async function addPayment(payment){
 
             return
     })
-   
 
+    await algolia.addPayment(algoliaObject)
 
+    return
 }
 
+export async function getPayments(id){
+    const db = firebase.firestore().collection(PAYMENTS)
+    if(id){
+        const snap = await db.where('clientId','==',id).orderBy('createdAt','desc').limit(20).get()
+        const results = []
+        snap.forEach(item=>{
+            results.push({...item.data(), id: item.id})
+        })
+        return results
+    }
+    const allSnap = await db.orderBy('createdAt','desc').limit(30).get()
+    const allResults = []
+    allSnap.forEach(item=>{
+        allResults.push({...item.data(), id: item.id})
+    })
+    return allResults
+}
+
+export async function getPaymentById(id){
+    const snap = await firebase.firestore().collection(PAYMENTS).doc(id).get()
+    return {...snap.data(), id: snap.id}
+}
 
 
 //-------------------------------------------- Handle Error ----------------------------------------------

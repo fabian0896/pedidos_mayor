@@ -92,7 +92,7 @@ const Item = withStyles(theme=>({
         alignItems: 'center'
     },
     subMessage:{
-        lineHeight: '1em'
+        lineHeight: '1.3em'
     }
 
 }))(({classes, item, index, author})=>(

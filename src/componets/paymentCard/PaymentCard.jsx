@@ -1,26 +1,48 @@
 import React from 'react'
 import { withStyles, Paper, Typography, Divider } from '@material-ui/core'
+import NumberFormat from 'react-number-format';
+import moment from 'moment'
+import { limitName } from '../../lib/utilities'
+
+const MoneyValue = ({amount, children, currency})=>(
+    <NumberFormat 
+        value={amount} 
+        displayType={'text'} 
+        thousandSeparator={true} 
+        prefix={`${currency !== 'COP'? currency + " " : ''}$`} 
+        renderText={value => (
+            React.cloneElement(children, {
+                children: value
+            })
+        )}
+    />
+)
+
+function getColor(color){
+    return `rgba(${color.join(',')})`
+}
 
 
-const PaymentCard = withStyles(theme=>({
+const PaymentCard = withStyles((theme)=>({
     root: {
+        display: 'inline-block',
         height: '100%',
         overflow: 'hidden',
         position: 'relative',
         transition: '.2s',
-        '&:before':{
+        /* '&:before':{
             content: '""',
             position: 'absolute',
             display: 'block',
             height: '100%',
             width: '100%',
-            background: '#97a565',
+            background: `#97a565`,
             top: 0,
             left: 0,
             transform: 'translateX(100%)',
             transition: '.3s',
             zIndex: 1
-        },
+        }, */
         '&:hover':{
             boxShadow: theme.shadows[20],
         },
@@ -42,10 +64,26 @@ const PaymentCard = withStyles(theme=>({
         },
         '&:hover $secondaryText':{
             opacity: .8
-        }
+        },
+        '&:hover $hoverObject':{
+            transform: 'translateX(0%)',
+        },
+    },
+    hoverObject:{
+        position: 'absolute',
+        display: 'block',
+        height: '100%',
+        width: '100%',
+        //background: `#97a565`,
+        top: 0,
+        left: 0,
+        transform: 'translateX(100%)',
+        transition: '.3s',
+        zIndex: 1
     },
     infoContainer:{
         display: 'flex',
+        height: '100%',
         '& div:first-child':{
             flex: 1,
             paddingRight: theme.spacing.unit,
@@ -78,7 +116,7 @@ const PaymentCard = withStyles(theme=>({
         transition: '.2s',
         position: 'relative',
         zIndex: 2,
-        background: '#97a565',
+        //background: '#97a565',
         padding: theme.spacing.unit*2,
         color: '#FFF',
         boxShadow: theme.shadows[4]
@@ -86,30 +124,42 @@ const PaymentCard = withStyles(theme=>({
     secondaryText:{
         opacity: .55
     }
-}))(({payment, classes})=>(
-    <Paper className={classes.root}>
+}))(({payment, classes, width})=>(
+    <Paper style={{width: `${width? width+'px' : '100%'}`}} className={classes.root}>
+        <div style={{background: getColor(payment.clientColor)}} className={classes.hoverObject}></div>
         <div className={classes.infoContainer}>
             <div>
                 <div className={classes.resume}>
-                    <Typography color="inherit" variant="h5">$100.000</Typography>
-                    <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">PayPal</Typography>
-                    <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">E45678459</Typography>
+                    <MoneyValue currency={payment.currency} amount={payment.value}>
+                        <Typography color="inherit" variant="h5"></Typography>
+                    </MoneyValue>
+                    <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">{payment.paymentMethod}</Typography>
+                    <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">{payment.reference}</Typography>
                 </div>
                     <Divider className={classes.divider}/>
                 <div className={classes.secondaryInfo}>
-                    <Typography className={classes.date} color="inherit" variant="overline">Fabian David Dueñas</Typography>
-                    <Typography className={classes.date} color="inherit" variant="overline">14/17/2019</Typography>
+                    <Typography className={classes.date} color="inherit" variant="overline">{limitName(payment.clientName)}</Typography>
+                    <Typography 
+                        className={classes.date} 
+                        color="inherit" 
+                        variant="overline">
+                            {moment(payment.createdAt.seconds*1000).format('DD/MM/YYYY')}
+                    </Typography>
                 </div>
             </div>
-            <div className={classes.detailInfo}>
+            <div style={{background: getColor(payment.clientColor)}} className={classes.detailInfo}>
                 
-                <Typography gutterBottom align="right" color="inherit" variant="h5">A016</Typography>
+                <Typography gutterBottom align="right" color="inherit" variant="h5">{payment.orderSerialCode}</Typography>
 
                 <Typography className={classes.secondaryText} align="right" color="inherit" variant="body2">Total del pedido</Typography>
-                <Typography gutterBottom align="right" color="inherit" variant="body1">500.000</Typography>
+                <MoneyValue currency={payment.currency} amount={payment.totalOrder}>
+                    <Typography gutterBottom align="right" color="inherit" variant="body1"></Typography>
+                </MoneyValue>
                 
                 <Typography className={classes.secondaryText} align="right" color="inherit" variant="body2">saldo</Typography>
-                <Typography gutterBottom align="right" color="inherit" variant="body1">400.000</Typography>
+                <MoneyValue currency={payment.currency} amount={payment.orderBalance}>
+                    <Typography gutterBottom align="right" color="inherit" variant="body1"></Typography>
+                </MoneyValue>
             </div>
         </div>
     </Paper>

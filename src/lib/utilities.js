@@ -139,6 +139,22 @@ export function compareObjects(obj1, obj2, keysArray){
     })
 }
 
+
+export function thousandSeparator(value){
+    const temp = value.toString().split('').reverse()
+    const withPionts = temp.map((val, index)=>{
+        if((index+1)%3 === 0){
+            if(index === (temp.length-1)){
+                return val
+            }
+            return '.' + val
+        }else{
+            return val
+        }
+    })
+    return withPionts.reverse().join('')
+} 
+
 //-------------------- Internal functions --------------------
 
 function randomNumber(min = 0, max = 255){

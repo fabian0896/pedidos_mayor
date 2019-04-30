@@ -53,7 +53,7 @@ const styles = theme => ({
 function PaymentSummary(props) {
     const { classes, data } = props
 
-    const payments = Object.keys(data.payments).map(id=>data.payments[id])
+    const payments = Object.keys(data.payments || {}).map(id=>data.payments[id])
 
     return (
         <Paper className={classes.root}>

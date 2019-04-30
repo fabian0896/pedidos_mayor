@@ -1,6 +1,6 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core';
-
+import NotFound from '../notFound/NotFound'
 
 
 const styles = theme =>({
@@ -30,9 +30,11 @@ const styles = theme =>({
     }
 })
 
-function OrderSlideList({children, classes}){
+function OrderSlideList({children, classes, noItemMessage, noItemTitle}){
     return(
         <div className={classes.root}>
+        {
+            React.Children.count(children) > 0 ?
             <div className={classes.slide}>
                 {
                     React.Children.map(children, (child)=>{
@@ -44,6 +46,11 @@ function OrderSlideList({children, classes}){
                     })
                 }
             </div>
+            :
+            <NotFound 
+                title={noItemTitle}
+                message={noItemMessage} />
+        }
         </div>
     )
 }

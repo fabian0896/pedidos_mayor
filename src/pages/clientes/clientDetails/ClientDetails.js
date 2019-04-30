@@ -4,11 +4,12 @@ import ClientDetailInfo from './ClientDetailInfo';
 import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom, showBackbuttonWithPath } from '../../../actions'
 import ClientDetailHeader from './ClientDetailHeader';
-import { getClientById, getOrderByClient } from '../../../lib/firebaseService'
+import { getClientById, getOrderByClient, getPayments } from '../../../lib/firebaseService'
 import OrderSlideList from '../../../componets/orderResume/OrderSlideList';
 import OrderResume from '../../../componets/orderResume/OrderResume';
 import Section from '../../../componets/section/Section';
 import Title from '../../../componets/title/Title';
+import PaymentCard from '../../../componets/paymentCard/PaymentCard'
 
 
 const styles = theme => ({
@@ -25,7 +26,8 @@ class ClientDetail extends Component {
     state = {
         loading: true,
         client: null,
-        orders: []
+        orders: [],
+        payments: []
     }
 
     async componentDidMount() {
@@ -38,6 +40,8 @@ class ClientDetail extends Component {
         } else {
             this.getClient(clientId)
         }
+        const payments = await getPayments(clientId)
+        this.setState({payments})
         return
     }
 
@@ -72,7 +76,7 @@ class ClientDetail extends Component {
 
     render() {
         const { classes, sellers } = this.props
-        const { loading, client, orders } = this.state
+        const { loading, client, orders, payments } = this.state
         const orderList = Object.keys(orders).map(id=>orders[id])
         return (
             <div>
@@ -91,7 +95,9 @@ class ClientDetail extends Component {
                         </div>
                         <Section background='#E9E9E9'>
                         <Title align="center" primary="Pedidos" secondary="Todos los pedidos del cliente"/>
-                            <OrderSlideList title="Pedidos">
+                            <OrderSlideList 
+                                noItemTitle="No hay pedidos"
+                                noItemMessage="El cliente no tiene pedidos aun, ve a la seccion de pedidos para agrarlos ;)" >
                             {
                                 orderList.map(order=>{
                                     return(
@@ -106,6 +112,17 @@ class ClientDetail extends Component {
                             }
                             </OrderSlideList>
                         </Section>
+
+                        <Title align="right" primary="Pagos" secondary="Todos los pagos del cliente" />
+                        <OrderSlideList
+                            noItemTitle="No se han realizado pagos"
+                            noItemMessage="El cliente no ha realizado ningun pago aun" >
+                                {
+                                    payments.map(payment=>(
+                                        <PaymentCard width={350} key={payment.id} payment={payment} />
+                                    ))
+                                }
+                        </OrderSlideList>
                     </Fragment>
                 }
             </div>

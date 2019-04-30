@@ -108,7 +108,13 @@ function Option(props) {
       }}
       {...props.innerProps}
     >
+    <div>
       {props.children}
+      {
+        props.data.secondary &&
+        <Typography style={{lineHeight: 1}} color="textSecondary" variant="body1">{props.data.secondary}</Typography>
+      }
+    </div>
     </MenuItem>
   );
 }

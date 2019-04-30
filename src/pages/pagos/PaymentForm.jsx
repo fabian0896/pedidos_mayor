@@ -1,11 +1,25 @@
 import React from 'react'
 import { withFormik, Field } from 'formik'
 import MyAutocomplete from '../../componets/myAutocomplete/MyAutocomplete'
-import { withStyles, Grid, TextField, Button } from '@material-ui/core'
+import { withStyles, Grid, TextField, Button, Typography } from '@material-ui/core'
 import { compose } from 'redux'
 import NumberFormat from 'react-number-format';
 import * as Yup from 'yup'
 
+
+const MoneyValue = ({amount, children, currency})=>(
+    <NumberFormat 
+        value={amount} 
+        displayType={'text'} 
+        thousandSeparator={true} 
+        prefix={`${currency !== 'COP'? currency + " " : ''}$`} 
+        renderText={value => (
+            React.cloneElement(children, {
+                children: value
+            })
+        )}
+    />
+)
 
 const validationSchema = Yup.object().shape({
     order: Yup.object().required('valor requerido'),
@@ -72,7 +86,15 @@ function PaymentForm(props){
                         component={MyAutocomplete}
                         optionsList={options} />
                 </Grid>
-
+                {
+                    values.order &&
+                    <Grid item xs={12}>
+                        <Typography variant="subtitle1" color="textSecondary">Saldo:</Typography>
+                        <MoneyValue currency={values.order.currency} amount={values.order.balance.toFixed(1)}>
+                            <Typography variant="h6"></Typography>
+                        </MoneyValue>
+                    </Grid>
+                }
                 <Grid item md={6}>
                     <TextField
                         error={errors.value && touched.value}

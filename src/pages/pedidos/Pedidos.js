@@ -147,7 +147,9 @@ class Pedidos extends Component {
 
                 <Section background='#E9E9E9'>
                 <Title align="left" primary="Pendientes" secondary="Pedidos pendientes por despacho"/>
-                    <OrderSlideList title="Pendientes">
+                    <OrderSlideList
+                        noItemTitle="No hay pedidos pendientes" 
+                        noItemMessage="En el momento no hay pedidos pendientes por despachar">
                     {
                         orders.map(order=>{
                             return(

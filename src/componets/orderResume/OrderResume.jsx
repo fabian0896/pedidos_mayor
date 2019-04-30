@@ -112,7 +112,7 @@ function OrderResume(props){
                         
                         <Typography align="right" variant="body2" color="textSecondary">Pagado:</Typography>
                         <NumberFormat 
-                            value={order.total} 
+                            value={order.totalPayments} 
                             displayType={'text'} 
                             thousandSeparator={true} 
                             prefix={`$`} 

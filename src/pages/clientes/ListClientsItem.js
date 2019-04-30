@@ -11,6 +11,7 @@ import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions'
 import Button from '@material-ui/core/Button';
 import { getNameLetters } from '../../lib/utilities'
 import NumberFormat from 'react-number-format';
+import moment from 'moment'
 
 const styles = theme => ({
     infoContainer:{
@@ -76,6 +77,7 @@ class ListClientesItem extends Component{
      
     render(){
         const { classes, expanded, handleChange, client } = this.props
+        const date = client.lastPayment? moment(client.lastPayment.seconds*1000).format('DD/MM/YYYY') : '---'
         return(
                 <ExpansionPanel expanded={ expanded } onChange={ handleChange }>
                     <ExpansionPanelSummary expandIcon={ <ExpandMoreIcon /> }>
@@ -106,7 +108,7 @@ class ListClientesItem extends Component{
                             </div>
                             <div className={ classNames(classes.helper, classes.stats) }>
                                 <Typography inline component="span" variant="subheading" color="textSecondary">Ultimo pago:</Typography>
-                                <Typography inline  component="span" variant="headline" color="textPrimary">5 de Febrero 2018</Typography>
+                                <Typography inline  component="span" variant="headline" color="textPrimary">{date}</Typography>
                             </div>
                             <div className={ classNames(classes.helper, classes.stats) }>
                                 <Typography inline component="span" variant="subheading" color="textSecondary">Total de pedidos:</Typography>

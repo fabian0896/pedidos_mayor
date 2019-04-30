@@ -5,6 +5,7 @@ const agoliaClient = algoliasearch('AKE68Y9274', 'f8604ef41d20eb78f752a3f55d9357
 const clientsIndex = agoliaClient.initIndex('clients');
 const productsIndex = agoliaClient.initIndex('products');
 const ordersIndex = agoliaClient.initIndex('orders');
+const paymentsIndex = agoliaClient.initIndex('payments');
 
 
 //------------------------ Clients ---------------------------
@@ -50,4 +51,19 @@ export function updateOrder(objectID, order){
 export function deleteOrder(objectID){
     return ordersIndex.deleteObject(objectID)
 }
+
+//--------------------------payments----------------------
+
+export function addPayment(payment){
+    return paymentsIndex.addObject(payment)
+}
+
+export function updatepayment(objectID, payment){
+    return paymentsIndex.partialUpdateObject({...payment, objectID})
+}
+
+export function deletepayment(objectID){
+    return paymentsIndex.deleteObject(objectID)
+}
+
 
