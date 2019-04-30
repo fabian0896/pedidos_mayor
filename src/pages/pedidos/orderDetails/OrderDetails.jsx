@@ -115,7 +115,7 @@ class OrderDetails extends Component{
                                         <ShippingInfoCard data={order.shipping} />
                                     </Grid>
                                     <Grid item sm={6} xs={12}>
-                                        <PaymentSummary/>
+                                        <PaymentSummary data={order}/>
                                     </Grid>
                                 </Grid>
                             </Fragment>
@@ -137,7 +137,7 @@ class OrderDetails extends Component{
                                         order={order}
                                         client={client}
                                     />
-                                    <PaymentSummary/>
+                                    <PaymentSummary data={order}/>
                                     <ShippingInfoCard data={order.shipping} />
                                 </Grid>
                             </Grid>

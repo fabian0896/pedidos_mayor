@@ -1,5 +1,22 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 import { Paper, withStyles, Typography } from '@material-ui/core';
+import NumberFormat from 'react-number-format';
+
+
+
+const MoneyValue = ({amount, children})=>(
+    <NumberFormat 
+        value={amount} 
+        displayType={'text'} 
+        thousandSeparator={true} 
+        prefix={'$'} 
+        renderText={value => (
+            React.cloneElement(children, {
+                children: value
+            })
+        )}
+        />
+)
 
 
 const styles = theme => ({
@@ -34,7 +51,10 @@ const styles = theme => ({
 
 
 function PaymentSummary(props) {
-    const { classes } = props
+    const { classes, data } = props
+
+    const payments = Object.keys(data.payments).map(id=>data.payments[id])
+
     return (
         <Paper className={classes.root}>
             <div className={classes.header}>
@@ -42,12 +62,16 @@ function PaymentSummary(props) {
             </div>
 
             <Typography color="textSecondary" align="center" variant="subtitle2">Total</Typography>
-            <Typography align="center" variant="h5">$400.000</Typography>
+              <MoneyValue amount={data.total}>
+                <Typography align="center" variant="h5"></Typography>
+            </MoneyValue>  
 
             <div className={classes.content}>
                 <div>
                     <Typography align="left" color="textSecondary" variant="body2">Prendas</Typography>
-                    <Typography gutterBottom align="left" variant="body1">$380.000</Typography>
+                    <MoneyValue amount={data.total}>
+                        <Typography gutterBottom align="left" variant="body1">$380.000</Typography>
+                    </MoneyValue>
 
                     <Typography align="left" color="textSecondary" variant="body2">Envio</Typography>
                     <Typography gutterBottom align="left" variant="body1">$20.000</Typography>
@@ -56,16 +80,25 @@ function PaymentSummary(props) {
                     <Typography align="left" variant="body1">$400.000</Typography>
                 </div>
                 <div >
-                    <Typography align="right" color="textSecondary" variant="body2">Pago 1</Typography>
-                    <Typography gutterBottom align="right" variant="body1">$300.000</Typography>
-
-                    <Typography align="right" color="textSecondary" variant="body2">Pago 2</Typography>
-                    <Typography align="right" variant="body1">$50.000</Typography>
+                    {
+                        payments.map((payment, index)=>{
+                            return(
+                                <Fragment key={payment.id}>
+                                    <Typography align="right" color="textSecondary" variant="body2">Pago {index+1}</Typography>
+                                    <MoneyValue amount={payment.value}>
+                                        <Typography gutterBottom align="right" variant="body1"></Typography>
+                                    </MoneyValue>
+                                </Fragment>  
+                            )
+                        })
+                    }
                 </div>
             </div>
             <div className={classes.balance}>
                 <Typography color="inherit" align="center" variant="subtitle1">Saldo</Typography>
-                <Typography color="inherit" align="center" variant="h6">$50.000</Typography>
+                <MoneyValue amount={data.balance} >
+                    <Typography color="inherit" align="center" variant="h6"></Typography>
+                </MoneyValue>
                 <Typography align="center" color="inherit" variant="overline">$15 (USD)</Typography>
             </div>
 

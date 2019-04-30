@@ -493,13 +493,16 @@ export async function updateOrder(order, id){
             const timeLine = [...oldOrder.timeLine]
            
             if(!equalProducts){
-                edittinfMessage.push(`Se modificaron las prendas, valor anterior:  $${oldOrder.total}, nuevo valor: $${order.total}, Nuevo Saldo: $${order.total - (order.totalPayments || 0)}`)
+                edittinfMessage.push(`Se modificaron las prendas`)
             }
             if(!equalShipping){
                 edittinfMessage.push('Se modificó la informacion de envio')
             }
             if(!equalDescount){
                 edittinfMessage.push(`Se modificó el descuento aplicado ${oldOrder.descount}% > ${order.descount}%`)
+            }
+            if(!equalDescount || !equalProducts){
+                edittinfMessage.push(`valor anterior:  $${oldOrder.total}, nuevo valor: $${order.total}, Nuevo Saldo: $${order.total - (order.totalPayments || 0)}`)
             }
 
             if(edittinfMessage.length){
@@ -531,7 +534,7 @@ export async function updateOrder(order, id){
                     updatedAt: new Date()
                 })
             }
-            transaction.update(oredrRef, {...orderObject, timeLine})
+            transaction.update(oredrRef, {...orderObject, timeLine, balance: totalValue})
             res('completed')
             return 
         })
@@ -620,15 +623,15 @@ export async function addPayment(payment){
 
             const timeLine = order.timeLine
 
-            let totalPayments = parseInt(payment.value)
+            let totalPayments = parseFloat(payment.value)
 
-            const newOrderBalance = order.balance - payment.value
-
+            const newOrderBalance = parseFloat(order.balance) - parseFloat(payment.value)
+            
             if(order.payments){
                 const subTotal = Object.keys(order.payments)
                                         .map(id=>order.payments[id])
                                         .reduce((previus, current)=>{
-                                            return previus + parseInt(current.value)
+                                            return previus + parseFloat(current.value)
                                         }, 0)
                 totalPayments += subTotal
             }
@@ -642,18 +645,20 @@ export async function addPayment(payment){
             })
 
             if(newOrderBalance <= 0){
-                    timeLine[timeLine.length-1].message = `Se realizo el pago total del pedido: (${client.currency} $${order.total})`
+                    timeLine[timeLine.length-1].message = `Se realizo un pago por ${payment.value} para completar el pago total del pedido (${client.currency} $${order.total})`
             }
 
             const orderObject = {
                 [`payments.${paymentId}`]: paymentObject,
                 timeLine,
                 totalPayments,
-                balance: newOrderBalance
+                balance: newOrderBalance,
+                updatedAt: new Date()
             }
 
             const clientObject = {
                 balance: newBalance,
+                updatedAt: new Date()
             }
 
             transaction.update(clientRef, clientObject)
