@@ -26,8 +26,8 @@ const styles = theme =>({
 })
 
 
-const Title = ({classes, primary, secondary, align})=>(
-    <div className={classes.root}>
+const Title = ({classes, primary, secondary, align, ...rest})=>(
+    <div className={classes.root} {...rest}>
         <Divider className={classNames({[classes.left]: align === 'left'}, classes.divider)}/>
         <div className={classes.textContainer}>
             <Typography align={align} variant="h3">{primary.toUpperCase()}</Typography>   

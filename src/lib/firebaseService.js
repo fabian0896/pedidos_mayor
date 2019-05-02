@@ -709,6 +709,16 @@ export async function getPayments(id){
     return allResults
 }
 
+export async function getPaymentsByOrderId(orderId){
+    const db = firebase.firestore().collection(PAYMENTS).where('orderId','==',orderId).orderBy('createdAt','desc').limit(10)
+    const snap = await db.get()
+    const results = []
+    snap.forEach(item=>{
+        results.push({...item.data(), id: item.id})
+    })
+    return results
+}
+
 export async function getPaymentById(id){
     const snap = await firebase.firestore().collection(PAYMENTS).doc(id).get()
     return {...snap.data(), id: snap.id}

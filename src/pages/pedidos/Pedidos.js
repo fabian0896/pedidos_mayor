@@ -38,6 +38,7 @@ class Pedidos extends Component {
         const orders = await getAllOrders()
         const orderList = Object.keys(orders).map(id=>orders[id])
         this.setState({orders: orderList})
+        document.title = "Pedidos"
         return
     }
 
