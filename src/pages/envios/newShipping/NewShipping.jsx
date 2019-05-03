@@ -26,10 +26,14 @@ class NewShipping extends React.Component{
 
     getOrderOptions = async ()=>{
         const orders =  await getPendingOrders()
+        
         return orders.map(order=>({
             label: order.serialCode,
             value: order.id,
-            secondary: this.props.clients[order.clientId].name
+            secondary: this.props.clients[order.clientId].name,
+            pendingProducts: order.totalProducts - (order.shippedProducts || 0),
+            country: this.props.clients[order.clientId].country.translations.es || this.props.clients[order.clientId].country.name,
+            city: this.props.clients[order.clientId].city
         }))
     }
 

@@ -105,7 +105,7 @@ class OrderProductTable extends Component{
                                 <TableCell>Cantidad</TableCell>
                                 <TableCell>{`Valor(${currency})`}</TableCell>
                                 <TableCell>{`Total(${currency})`}</TableCell>
-    
+                                
                             </TableRow>
                         </TableHead>
                         <TableBody>

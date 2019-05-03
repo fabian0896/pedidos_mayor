@@ -6,7 +6,9 @@ import {
     FormLabel, 
     RadioGroup, 
     FormControlLabel, 
-    Radio 
+    Radio, 
+    Typography,
+    Divider
 } from '@material-ui/core'
 import MyAutocomplete from '../../../componets/myAutocomplete/MyAutocomplete'
 import { makeStyles } from '@material-ui/styles'
@@ -18,6 +20,19 @@ const useStyles = makeStyles(theme => ({
     },
     input: {
 
+    },
+    divider:{
+        marginTop: 16,
+        marginBottom: 16
+    },
+    orderInfo:{
+        marginTop: 16,
+        display: 'flex',
+        alignItems: 'center',
+        '& > :first-child':{
+            flex: 1,
+            paddingRight: 8
+        }
     }
 }))
 
@@ -58,8 +73,23 @@ function ClientForm(props) {
                         component={MyAutocomplete}
                         optionsList={options} />
                 </Grid>
+                {
+                values.order &&
+                <Grid item xs={12}>
+                    <div className={classes.orderInfo}>
+                        <div>
+                            <Typography variant="h6">{values.order.secondary}</Typography>
+                            <Typography color="textSecondary" variant="body1">{`${values.order.city}, ${values.order.country}`}</Typography>
+                        </div>
+                         <Typography variant="h5">{values.order.label}</Typography>
+                    </div>
+                    <Divider className={classes.divider}/>
+                    <Typography color="textSecondary" variant="subtitle1">Prendas pendientes por despacho:</Typography>
+                    <Typography variant="h6">{values.order.pendingProducts}</Typography>
+                </Grid>
+                }
 
-                <Grid item md={12}>
+                <Grid item xs={12}>
                     <FormControl
                         component="fieldset"
                         error={errors.paymentMethod && touched.paymentMethod}
