@@ -132,7 +132,7 @@ const Item = withStyles(theme=>({
 const styles = theme => ({
     root:{
         padding: `${theme.spacing.unit*3}px ${theme.spacing.unit*2}px`,
-        marginTop: theme.spacing.unit*3,
+        //marginTop: theme.spacing.unit*3,
         marginBottom: theme.spacing.unit*3,
     }
 })

@@ -128,15 +128,21 @@ class OrderDetails extends Component {
                                     </Grid>
                                 </Fragment>
                                 :
-                                <Grid container spacing={16}>
-                                    <Grid item xs={12} sm={12} md={9}>
+                                <Grid container spacing={24}>
+                                    <Grid item xs={12}>
                                         <OrderProductTable
                                             withDetails
                                             withTotal
                                             currency={order.currency}
                                             order={order}
                                             data={products} />
+                                    </Grid>
+                                    <Grid item xs={12} sm={12} md={9}>
 
+                                        <TimeLine
+                                            data={order.timeLine}
+                                        />
+                                        
                                         <Title style={{marginTop: 8*4}} align="right" primary="Pagos" secondary="Pagos Realizados en este pedido" />
                                         <OrderSlideList
                                             noItemTitle="No se han realizado pagos"
@@ -148,9 +154,6 @@ class OrderDetails extends Component {
                                             }
                                         </OrderSlideList>
 
-                                        <TimeLine
-                                            data={order.timeLine}
-                                        />
 
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={3}>

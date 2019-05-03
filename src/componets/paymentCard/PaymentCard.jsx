@@ -3,6 +3,7 @@ import { withStyles, Paper, Typography, Divider } from '@material-ui/core'
 import NumberFormat from 'react-number-format';
 import moment from 'moment'
 import { limitName } from '../../lib/utilities'
+import { getPaymentStyles } from '../../lib/enviroment'
 
 const MoneyValue = ({amount, children, currency})=>(
     <NumberFormat 
@@ -49,17 +50,17 @@ const PaymentCard = withStyles((theme)=>({
         '&:hover:before':{
             transform: 'translateX(0%)',
         },
-        '&:hover $resume':{
-            color: '#FFF'
+        '&:hover $resume *':{
+            color: 'inherit'
         },
         '&:hover $detailInfo':{
             boxShadow: 'none'
         },
-        '&:hover $secondaryInfo':{
-            color: '#FFF'
+        '&:hover $secondaryInfo *':{
+            color: 'inherit'
         },
         '&:hover $date':{
-            color: '#FFF',
+            color: 'inherit',
             opacity: 1,
         },
         '&:hover $secondaryText':{
@@ -93,6 +94,10 @@ const PaymentCard = withStyles((theme)=>({
         position: 'relative',
         transition: '.3s',
         zIndex: 2,
+        '& > *':{
+            color: 'black',
+            transition: '.3s',
+        },
         padding: `${theme.spacing.unit*2}px ${theme.spacing.unit*2}px ${theme.spacing.unit*4}px` 
     },
     divider:{
@@ -106,11 +111,18 @@ const PaymentCard = withStyles((theme)=>({
     secondaryInfo:{
         position: 'relative',
         zIndex: 2,
-        margin: `${theme.spacing.unit}px ${theme.spacing.unit*2}px` 
+        margin: `${theme.spacing.unit}px ${theme.spacing.unit*2}px`,
+        '& > *':{
+            color: 'black'
+        }
     },
     date:{
         lineHeight: 1.4,
-        opacity: .5
+        opacity: .5,
+        '& > *':{
+            color: 'black'
+        },
+        transition: '.3s'
     },
     detailInfo:{
         transition: '.2s',
@@ -124,46 +136,48 @@ const PaymentCard = withStyles((theme)=>({
     secondaryText:{
         opacity: .55
     }
-}))(({payment, classes, width})=>(
-    <Paper style={{width: `${width? width+'px' : '100%'}`}} className={classes.root}>
-        <div style={{background: getColor(payment.clientColor)}} className={classes.hoverObject}></div>
-        <div className={classes.infoContainer}>
-            <div>
-                <div className={classes.resume}>
-                    <MoneyValue currency={payment.currency} amount={payment.value}>
-                        <Typography color="inherit" variant="h5"></Typography>
-                    </MoneyValue>
-                    <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">{payment.paymentMethod}</Typography>
-                    <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">{payment.reference}</Typography>
+}))(({payment, classes, width})=>{
+    const paymentStyle = getPaymentStyles(payment.paymentMethod)
+    return(
+        <Paper style={{width: `${width? width+'px' : '100%'}`}} className={classes.root}>
+            <div style={{background: paymentStyle.background}} className={classes.hoverObject}></div>
+            <div className={classes.infoContainer}>
+                <div>
+                    <div style={{color: paymentStyle.color}} className={classes.resume}>
+                        <MoneyValue currency={payment.currency} amount={payment.value}>
+                            <Typography color="inherit" variant="h5"></Typography>
+                        </MoneyValue>
+                        <Typography className={classes.secondaryText} variant="subtitle2" >{payment.paymentMethod}</Typography>
+                        <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">{payment.reference}</Typography>
+                    </div>
+                        <Divider className={classes.divider}/>
+                    <div style={{color: paymentStyle.color}} className={classes.secondaryInfo}>
+                        <Typography className={classes.date} color="inherit" variant="overline">{limitName(payment.clientName)}</Typography>
+                        <Typography 
+                            className={classes.date} 
+                            color="inherit" 
+                            variant="overline">
+                                {moment(payment.createdAt.seconds*1000).format('DD/MM/YYYY')}
+                        </Typography>
+                    </div>
                 </div>
-                    <Divider className={classes.divider}/>
-                <div className={classes.secondaryInfo}>
-                    <Typography className={classes.date} color="inherit" variant="overline">{limitName(payment.clientName)}</Typography>
-                    <Typography 
-                        className={classes.date} 
-                        color="inherit" 
-                        variant="overline">
-                            {moment(payment.createdAt.seconds*1000).format('DD/MM/YYYY')}
-                    </Typography>
-                </div>
-            </div>
-            <div style={{background: getColor(payment.clientColor)}} className={classes.detailInfo}>
-                
-                <Typography gutterBottom align="right" color="inherit" variant="h5">{payment.orderSerialCode}</Typography>
+                <div style={{background: paymentStyle.background, color: paymentStyle.color}} className={classes.detailInfo}>
+                    
+                    <Typography gutterBottom align="right" color="inherit" variant="h5">{payment.orderSerialCode}</Typography>
 
-                <Typography className={classes.secondaryText} align="right" color="inherit" variant="body2">Total del pedido</Typography>
-                <MoneyValue currency={payment.currency} amount={payment.totalOrder}>
-                    <Typography gutterBottom align="right" color="inherit" variant="body1"></Typography>
-                </MoneyValue>
-                
-                <Typography className={classes.secondaryText} align="right" color="inherit" variant="body2">saldo</Typography>
-                <MoneyValue currency={payment.currency} amount={payment.orderBalance}>
-                    <Typography gutterBottom align="right" color="inherit" variant="body1"></Typography>
-                </MoneyValue>
+                    <Typography className={classes.secondaryText} align="right" color="inherit" variant="body2">Total del pedido</Typography>
+                    <MoneyValue currency={payment.currency} amount={payment.totalOrder}>
+                        <Typography gutterBottom align="right" color="inherit" variant="body1"></Typography>
+                    </MoneyValue>
+                    
+                    <Typography className={classes.secondaryText} align="right" color="inherit" variant="body2">saldo</Typography>
+                    <MoneyValue currency={payment.currency} amount={payment.orderBalance}>
+                        <Typography gutterBottom align="right" color="inherit" variant="body1"></Typography>
+                    </MoneyValue>
+                </div>
             </div>
-        </div>
-    </Paper>
-))
+        </Paper>
+)})
 
 
 

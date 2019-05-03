@@ -26,6 +26,7 @@ import NewProductMobile from './pages/prendas/newProductMobile/NewProductMovile'
 import OrderDetails from './pages/pedidos/orderDetails/OrderDetails';
 import NewOrder from './pages/pedidos/newOrder/NewOrder';
 import Shipping from './pages/envios/Shipping';
+import NewShipping from './pages/envios/newShipping/NewShipping';
 
 
 
@@ -80,6 +81,7 @@ class App extends Component {
                 <PrivateRoute title="Pedidos" exact path="/pedidos" component={Pedidos}/>      
                 <PrivateRoute title="Prendas" exact path="/prendas/nueva" component={NewProductMobile}/>
                 <PrivateRoute title="Prendas" exact path="/prendas" component={Prendas}/>
+                <PrivateRoute title="Envios" exact path="/envios/nuevo" component={NewShipping}/>
                 <PrivateRoute title="Envios" exact path="/envios" component={Shipping}/>
                 <PrivateRoute title="Notificaciones" exact path="/notificaciones" component={Notificaciones}/> 
                 <LoginRoute exact path="/login" component={Login}/>

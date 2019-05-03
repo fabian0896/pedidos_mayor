@@ -45,8 +45,8 @@ const ShippingCard = withStyles(theme=>({
         padding: `${theme.spacing.unit*2}px ${theme.spacing.unit*2}px ${theme.spacing.unit/2}px`,
         background: theme.palette.grey[300]
     }
-}))(({classes})=>{
-    const company = getShippingCompany('fedex')
+}))(({classes, shipping})=>{
+    const company = getShippingCompany(shipping.company)
     return(
         <Paper className={classes.root}>
             <div
@@ -60,14 +60,14 @@ const ShippingCard = withStyles(theme=>({
                     color="inherit" 
                     align='center' 
                     variant="h5">
-                        202424782
+                        7750 9893 9685
                 </Typography>
                 <Typography 
                     style={{lineHeight: 1.4}} 
                     align="center" 
                     variant="overline" 
                     color="inherit">
-                        FedEx
+                        {shipping.company}
                 </Typography>
             </div>
             <div className={classes.order}>

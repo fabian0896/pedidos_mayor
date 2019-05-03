@@ -97,6 +97,60 @@ export const ShippingCompanies = {
 }
 
 export function getShippingCompany(name){
-    const _name = name.toLowerCase()
+    const _name = name.toLowerCase().trim()
     return ShippingCompanies[_name]? ShippingCompanies[_name] : ShippingCompanies['default']
+}
+
+
+export const PaymentsMethods ={
+    wester:{
+        background: '#202933',
+        color: '#ffda18'
+    },
+    western:{
+        background: '#202933',
+        color: '#ffda18'
+    },
+    westernunion:{
+        background: '#202933',
+        color: '#ffda18'
+    },
+    westerunion:{
+        background: '#202933',
+        color: '#ffda18'
+    },
+    paypal:{
+        background: '#0070ba',
+        color: '#FFF'
+    },
+    payu:{ 
+        background: '#bccf00',
+        color: '#4d4848'
+    },
+    efecty:{
+        background: '#e9b030',
+        color: '#323232'
+    },
+    bancolombia:{
+        background: '#00448d',
+        color: '#ffd200'
+    },
+    mercadopago:{
+        background: '#009ee3',
+        color: '#FFF'
+    },
+    moneygram:{
+        background: '#e0e0e0',
+        color: '#da291c'
+    },
+    default:{
+        background: '#e0e0e0',
+        color: '#323232'
+    }
+}
+
+
+export function getPaymentStyles(payment){
+    const _payment = payment.toLowerCase().trim().replace(' ','')
+    return PaymentsMethods[_payment]? PaymentsMethods[_payment] : PaymentsMethods['default']
 }

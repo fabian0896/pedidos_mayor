@@ -724,6 +724,15 @@ export async function getPaymentById(id){
     return {...snap.data(), id: snap.id}
 }
 
+export async function getPendingOrders(){
+    const snap = await firebase.firestore().collection(ORDERS).where('state','==', 'pending').orderBy('serialCode','asc').get()
+    const results = []
+    snap.forEach(item=>{
+        results.push({...item.data(), id: item.id})
+    })
+    return results
+}
+
 
 //-------------------------------------------- Handle Error ----------------------------------------------
 
