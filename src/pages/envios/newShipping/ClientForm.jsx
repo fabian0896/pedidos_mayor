@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core'
 import MyAutocomplete from '../../../componets/myAutocomplete/MyAutocomplete'
 import { makeStyles } from '@material-ui/styles'
-
+import * as Yup from 'yup'
 
 const useStyles = makeStyles(theme => ({
     form: {
@@ -121,5 +121,9 @@ export default withFormik({
     }),
     handleSubmit: (values, actions) => {
         actions.props.handleSubmit(values, actions)
-    }
+    },
+    validationSchema: Yup.object().shape({
+        order: Yup.object().required(),
+        paymentMethod: Yup.string().required()
+    })
 })(ClientForm)

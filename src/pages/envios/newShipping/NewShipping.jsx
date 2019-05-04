@@ -6,6 +6,8 @@ import MyStep from '../../../componets/mystepper/MyStep';
 import ClientForm from './ClientForm';
 import { getPendingOrders } from '../../../lib/firebaseService'
 import { connect } from 'react-redux'
+import ProductsShippingForm from './ProductsShippingForm';
+import ShippingForm from '../../pedidos/newOrder/ShippingForm'
 
 
 
@@ -14,7 +16,9 @@ class NewShipping extends React.Component{
     state={
         activeStep: 0,
         options: [],
-        formValues: {}
+        formValues: {
+            shipping:{}
+        }
     }
 
     submit = Array(5).fill(null)
@@ -30,10 +34,12 @@ class NewShipping extends React.Component{
         return orders.map(order=>({
             label: order.serialCode,
             value: order.id,
+            id: order.id,
             secondary: this.props.clients[order.clientId].name,
             pendingProducts: order.totalProducts - (order.shippedProducts || 0),
             country: this.props.clients[order.clientId].country.translations.es || this.props.clients[order.clientId].country.name,
-            city: this.props.clients[order.clientId].city
+            city: this.props.clients[order.clientId].city,
+            shipping: order.shipping
         }))
     }
 
@@ -43,16 +49,28 @@ class NewShipping extends React.Component{
 
     handleSubmit= (values, actions)=>{   
         console.log(values)
+        const { activeStep } = this.state
 
-
+        if(activeStep === 0){
+            this.setState(state=>({
+                formValues:{
+                    ...state.formValues,
+                    ...values,
+                    shipping: values.order.shipping,
+                }
+            }))
+        }else{
+            this.setState(state=>({
+                formValues: {
+                    ...state.formValues,
+                    ...values
+                }
+            }))
+        }
         
 
         this.setState(state=>({
-            activeStep: state.activeStep + 1,
-            formValues: {
-                ...state.formValues,
-                ...values
-            }
+            activeStep: state.activeStep + 1
         }))
     }
 
@@ -69,7 +87,7 @@ class NewShipping extends React.Component{
     }
 
     render(props){ 
-       const { options, activeStep } = this.state
+       const { options, activeStep, formValues } = this.state
         return(
             <div>
                 <Header>
@@ -87,11 +105,21 @@ class NewShipping extends React.Component{
                             handleSubmit={this.handleSubmit} 
                             options={options} />
                     </MyStep>
-                    <MyStep title="Prendas">
-    
+                    <MyStep title="Datos de Envio">
+                        <ShippingForm
+                            required
+                            handleSubmit={this.handleSubmit}
+                            saveSubmitRef={this.getSubmitRef(1)}
+                            iniValues={formValues.shipping}/>
                     </MyStep>
                     <MyStep title="Unidad de Empaque">
-    
+                        <ProductsShippingForm
+                            getSubmitRef={this.getSubmitRef(2)}
+                            handleSubmit={this.handleSubmit}  
+                            order={formValues.order}/>
+                    </MyStep>
+                    <MyStep title="Resumen">
+
                     </MyStep>
                 </MyStepper>
             </div>

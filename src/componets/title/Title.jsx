@@ -26,11 +26,11 @@ const styles = theme =>({
 })
 
 
-const Title = ({classes, primary, secondary, align, ...rest})=>(
+const Title = ({classes, primary, secondary, align, size, ...rest})=>(
     <div className={classes.root} {...rest}>
         <Divider className={classNames({[classes.left]: align === 'left'}, classes.divider)}/>
         <div className={classes.textContainer}>
-            <Typography align={align} variant="h3">{primary.toUpperCase()}</Typography>   
+            <Typography align={align} variant={size === 'small'? 'h6': 'h3'}>{primary.toUpperCase()}</Typography>   
             <Typography align={align} variant="body1" color="textSecondary">{secondary}</Typography>
         </div>
         <Divider className={classNames({[classes.right]: align === 'right'}, classes.divider)}/>
