@@ -8,6 +8,7 @@ import { getPendingOrders } from '../../../lib/firebaseService'
 import { connect } from 'react-redux'
 import ProductsShippingForm from './ProductsShippingForm';
 import ShippingForm from '../../pedidos/newOrder/ShippingForm'
+import ShippingResume from './ShippingResume';
 
 
 
@@ -83,7 +84,7 @@ class NewShipping extends React.Component{
     }
 
     handleComplete = () => {
-        
+        console.log("Completado!")
     }
 
     render(props){ 
@@ -96,8 +97,7 @@ class NewShipping extends React.Component{
                 <MyStepper
                     activeStep={activeStep}
                     handleNext={this.handleNext}
-                    handleBack={this.handleBack}
-                    onComplete={this.handleComplete} >
+                    handleBack={this.handleBack}>
                     <MyStep title="Pedido">
                         <ClientForm
                             initialvalues={this.state.formValues}
@@ -114,12 +114,15 @@ class NewShipping extends React.Component{
                     </MyStep>
                     <MyStep title="Unidad de Empaque">
                         <ProductsShippingForm
+                            initialvalues={formValues}
                             getSubmitRef={this.getSubmitRef(2)}
                             handleSubmit={this.handleSubmit}  
                             order={formValues.order}/>
                     </MyStep>
-                    <MyStep title="Resumen">
-
+                    <MyStep
+                        onFinish={this.handleComplete} 
+                        title="Resumen">
+                        <ShippingResume shipping={formValues}/>
                     </MyStep>
                 </MyStepper>
             </div>

@@ -8,7 +8,9 @@ import {
     Typography,
     MenuItem,
     InputAdornment,
+    IconButton
 } from '@material-ui/core';
+import { Edit as EditIcon } from '@material-ui/icons'
 import { compose } from 'redux'
 import BoxIcon from '../../../assets/box.svg'
 import Title from '../../../componets/title/Title'
@@ -60,7 +62,11 @@ const ShippingUnit = withFormik({
         height: Yup.number().min(1).required(),
         weight: Yup.number().required()
     })
-})(({handleSubmit, values, handleChange, handleBlur, maxProducts, errors, touched})=>{
+})(({handleSubmit, values, handleChange, handleBlur, maxProducts, errors, touched, setFieldValue, getSetValueRef, isEditting})=>{
+
+    useEffect(()=>{
+        getSetValueRef(setFieldValue)
+    }, [getSetValueRef])
 
     return(
         <form onSubmit={handleSubmit}>
@@ -137,16 +143,29 @@ const ShippingUnit = withFormik({
                         onBlur={handleBlur} />
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={isEditting? 6 : 12}>
                     <Button
                         type="submit" 
                         variant="contained"
                         color="primary"
                         size="medium"
                         fullWidth >
-                        Agregar
+                        {isEditting? 'Editar': 'Agregar'}
                     </Button>
                 </Grid>
+                {
+                    isEditting &&
+                    <Grid item xs={6}>
+                        <Button
+                            type="submit" 
+                            variant="contained"
+                            color="secondary"
+                            size="medium"
+                            fullWidth >
+                            Eliminar
+                        </Button>
+                    </Grid>
+                }
 
             </Grid>
         </form>
@@ -175,9 +194,19 @@ const ListShippingUnits = withStyles(theme=>({
     },
     iconWraper:{
         marginRight: theme.spacing.unit*2,
+        '&:hover $icon':{
+                display: 'none'   
+        },
+        '&:hover $editIcon':{
+                display: 'block'  
+        }
     },
     icon:{
-        width: 30
+        width: 30,
+        cursor: 'pointer'
+    },
+    editIcon:{
+        display: 'none'
     },
     info:{
         display: 'flex',
@@ -192,7 +221,7 @@ const ListShippingUnits = withStyles(theme=>({
         borderTop: `1px solid ${theme.palette.grey[300]}`,
            paddingTop: theme.spacing.unit
     }
-}))(({value, classes, totalProducts, totalWeight, pendingProducts})=>{
+}))(({value, classes, totalProducts, totalWeight, pendingProducts, handleEdit})=>{
 
     return(
         <div className={classes.root}>
@@ -202,6 +231,9 @@ const ListShippingUnits = withStyles(theme=>({
                     <li key={index} className={classes.listItem}>
                         <div className={classes.iconWraper}>
                             <img className={classes.icon} src={BoxIcon} alt="Box"/>
+                            <IconButton onClick={handleEdit(index)} className={classes.editIcon}>
+                                <EditIcon fontSize="small" />
+                            </IconButton>
                         </div>
                         <div className={classes.info}>
                             <div>
@@ -266,29 +298,47 @@ function ProductShippingForm(props){
 
     const [totalWeight, setTotalWeight] = useState(0)
     const [totalProducts, setTotalProducts] = useState(0)
+    const [isEditting, setIsEditting ] = useState(false)
+    const [editIndex, setEditIndex] = useState(-1)
 
+    let setValue = null
 
     useEffect(()=>{
         getSubmitRef(submitForm)
-    }, [getSubmitRef])
+        updateTotals(values.shippingUnits)
+    }, [getSubmitRef, ...getTotals(values.shippingUnits)])
 
     function handleSubmit(formValues, actions){
         const newArray = values.shippingUnits.slice()
         newArray.push(formValues)
+        setFieldValue('shippingUnits', newArray)
+    }
 
-
-        const totalWeight = newArray.reduce((prev, current)=>{
-            return prev + current.weight
-        }, 0)
-        const totalProducts = newArray.reduce((prev, current)=>{
-            return prev + current.quantity
-        }, 0)
-
-
+    function updateTotals(array){
+        const [totalWeight, totalProducts] = getTotals(array)
         setTotalProducts(totalProducts)
         setTotalWeight(totalWeight)
-        
-        setFieldValue('shippingUnits', newArray)
+    }
+
+
+    function getTotals(newArray){
+        return newArray.reduce((prev, current)=>{
+            const [weight, products] = prev
+            return [weight+current.weight, products+current.quantity]
+        }, [0, 0])
+    }
+
+    function getSetValueRef(setValueRef){
+        setValue = setValueRef
+    }
+
+    const handleEdit = (id) => () =>{
+        setIsEditting(true)
+        setEditIndex(id)
+        const product = values.shippingUnits[id]
+        Object.keys(product).forEach(key=>{
+            setValue(key, product[key])
+        })
     }
 
     return(       
@@ -300,9 +350,12 @@ function ProductShippingForm(props){
 
             <Title size="small" primary="Empaques" align="left"/>
             <ShippingUnit
+                isEditting={isEditting}
+                getSetValueRef={getSetValueRef}
                 maxProducts={order.pendingProducts - totalProducts} 
                 handleSubmit={handleSubmit}/>
             <ListShippingUnits
+                handleEdit={handleEdit}
                 pendingProducts={order.pendingProducts}
                 totalWeight={totalWeight}
                 totalProducts={totalProducts} 
@@ -356,7 +409,7 @@ function ProductShippingForm(props){
                         variant="outlined"
                         name="company"
                         label="Empresa"
-                        value={values.weight}
+                        value={values.company}
                         onChange={handleChange}
                         onBlur={handleBlur} />
                 </Grid>
@@ -370,10 +423,10 @@ function ProductShippingForm(props){
 export default compose(
     withFormik({
         mapPropsToValues: (props)=>({
-            shippingUnits: [],
-            price: 0,
-            company: '',
-            currency: ''
+            shippingUnits: props.initialvalues.shippingUnits || [],
+            price: props.initialvalues.price || 0,
+            company: props.initialvalues.company || '',
+            currency: props.initialvalues.currency || ''
         }),
         handleSubmit: (values,actions)=>{
             actions.props.handleSubmit(values, actions)
