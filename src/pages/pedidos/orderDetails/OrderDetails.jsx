@@ -16,6 +16,7 @@ import TimeLine from '../../../componets/timeLine/TimeLine'
 import OrderSlideList from '../../../componets/orderResume/OrderSlideList'
 import PaymentCard from '../../../componets/paymentCard/PaymentCard'
 import Title from '../../../componets/title/Title'
+import ShippingCard from '../../../componets/shippingCard/ShippingCard';
 
 class OrderDetails extends Component {
 
@@ -87,6 +88,7 @@ class OrderDetails extends Component {
     render() {
         const { width } = this.props
         const { products, client, noRender, order, payments } = this.state
+        const shippingList = order.shipments || []
         return (
             <div>
                 {
@@ -145,11 +147,25 @@ class OrderDetails extends Component {
                                         
                                         <Title style={{marginTop: 8*4}} align="right" primary="Pagos" secondary="Pagos Realizados en este pedido" />
                                         <OrderSlideList
+                                            width={280}
                                             noItemTitle="No se han realizado pagos"
                                             noItemMessage="Este Pedido no tiene pagos realizados" >
                                             {
                                                 payments.map(payment => (
-                                                    <PaymentCard width={350} key={payment.id} payment={payment} />
+                                                    <PaymentCard key={payment.id} payment={payment} />
+                                                ))
+                                            }
+                                        </OrderSlideList>
+
+
+                                        <Title style={{marginTop: 8*4}} align="left" primary="Envios" secondary="Envios realizados de este pedido" />
+                                        <OrderSlideList
+                                            width={280}
+                                            noItemTitle="No se han realizado envios"
+                                            noItemMessage="Este pedido no tiene envios realizados" >
+                                            {
+                                                shippingList.map((shipping, index) => (
+                                                    <ShippingCard key={index} width={280}  shipping={shipping} />
                                                 ))
                                             }
                                         </OrderSlideList>

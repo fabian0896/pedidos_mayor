@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import Header from '../../../componets/headerLayout/HeaderLayout'
 import { Typography } from '@material-ui/core';
 import MyStepper from '../../../componets/mystepper/MyStepper';
@@ -9,30 +9,38 @@ import { connect } from 'react-redux'
 import ProductsShippingForm from './ProductsShippingForm';
 import ShippingForm from '../../pedidos/newOrder/ShippingForm'
 import ShippingResume from './ShippingResume';
+import { AddShipping } from '../../../lib/firebaseService'
+import { Save as SaveIcon } from '@material-ui/icons'
+import Loader from '../../../componets/loader/Loader'
 
 
 
-class NewShipping extends React.Component{
+class NewShipping extends React.Component {
 
-    state={
+    state = {
         activeStep: 0,
         options: [],
         formValues: {
-            shipping:{}
-        }
+            shipping: {}
+        },
+        loadingText: '' , 
+        successText: '', 
+        success: false, 
+        loading: false,
+        saving: false
     }
 
     submit = Array(5).fill(null)
 
-     async componentDidMount(){
+    async componentDidMount() {
         const options = await this.getOrderOptions()
-        this.setState({options})
+        this.setState({ options })
     }
 
-    getOrderOptions = async ()=>{
-        const orders =  await getPendingOrders()
-        
-        return orders.map(order=>({
+    getOrderOptions = async () => {
+        const orders = await getPendingOrders()
+
+        return orders.map(order => ({
             label: order.serialCode,
             value: order.id,
             id: order.id,
@@ -44,87 +52,123 @@ class NewShipping extends React.Component{
         }))
     }
 
-    getSubmitRef = (step) => (submitRef)=>{
+    getSubmitRef = (step) => (submitRef) => {
         this.submit[step] = submitRef
     }
 
-    handleSubmit= (values, actions)=>{   
-        console.log(values)
+    handleSubmit = (values, actions) => {
         const { activeStep } = this.state
-
-        if(activeStep === 0){
-            this.setState(state=>({
-                formValues:{
+        console.log(values)
+        if (activeStep === 0) {
+            this.setState(state => ({
+                formValues: {
                     ...state.formValues,
                     ...values,
                     shipping: values.order.shipping,
                 }
             }))
-        }else{
-            this.setState(state=>({
+        } else {
+            this.setState(state => ({
                 formValues: {
                     ...state.formValues,
                     ...values
                 }
             }))
         }
-        
 
-        this.setState(state=>({
+
+        this.setState(state => ({
             activeStep: state.activeStep + 1
         }))
     }
 
-    handleBack = ()=>{
-        this.setState(state=>({activeStep: state.activeStep - 1}))
+    handleBack = () => {
+        this.setState(state => ({ activeStep: state.activeStep - 1 }))
     }
 
-    handleNext = ()=>{
+    handleNext = () => {
         this.submit[this.state.activeStep]()
     }
 
-    handleComplete = () => {
+    handleComplete = async () => {
         console.log("Completado!")
+        this.setState({
+            saving: true,
+            loadingText: 'Se esta agregando el envio a la orden',
+            successText: 'Se agrego el envio correctaamente',
+            success: false,
+            loading: true,
+        })
+        await AddShipping(this.state.formValues)
+        console.log("se agrego el pedido")
+        this.setState({success: true, loading: false})
+        const routerState = this.props.location.state || {}
+        setTimeout(()=>{
+            this.props.history.push(routerState.from || '/envios')
+        }, 700)  
     }
 
-    render(props){ 
-       const { options, activeStep, formValues } = this.state
-        return(
+    render() {
+        const { 
+            options, 
+            activeStep, 
+            formValues, 
+            loadingText, 
+            successText, 
+            success, 
+            loading,
+            saving
+        } = this.state
+
+        return (
             <div>
-                <Header>
-                    <Typography color="inherit" component="h2" variant="h2">Nuevo Envio</Typography>
-                </Header>
-                <MyStepper
-                    activeStep={activeStep}
-                    handleNext={this.handleNext}
-                    handleBack={this.handleBack}>
-                    <MyStep title="Pedido">
-                        <ClientForm
-                            initialvalues={this.state.formValues}
-                            getSubmitRef={this.getSubmitRef(0)}
-                            handleSubmit={this.handleSubmit} 
-                            options={options} />
-                    </MyStep>
-                    <MyStep title="Datos de Envio">
-                        <ShippingForm
-                            required
-                            handleSubmit={this.handleSubmit}
-                            saveSubmitRef={this.getSubmitRef(1)}
-                            iniValues={formValues.shipping}/>
-                    </MyStep>
-                    <MyStep title="Unidad de Empaque">
-                        <ProductsShippingForm
-                            initialvalues={formValues}
-                            getSubmitRef={this.getSubmitRef(2)}
-                            handleSubmit={this.handleSubmit}  
-                            order={formValues.order}/>
-                    </MyStep>
-                    <MyStep
-                        onFinish={this.handleComplete} 
-                        title="Resumen">
-                        <ShippingResume shipping={formValues}/>
-                    </MyStep>
-                </MyStepper>
+                {
+                    saving?
+                    <Loader
+                        loadingText={loadingText}
+                        successText={successText}
+                        Icon={SaveIcon}
+                        success={success}
+                        loading={loading} />
+                    :
+                    <Fragment>
+                        <Header>
+                            <Typography color="inherit" component="h2" variant="h2">Nuevo Envio</Typography>
+                        </Header>
+                        <MyStepper
+                            activeStep={activeStep}
+                            handleNext={this.handleNext}
+                            handleBack={this.handleBack}>
+                            <MyStep title="Pedido">
+                                <ClientForm
+                                    initialvalues={this.state.formValues}
+                                    getSubmitRef={this.getSubmitRef(0)}
+                                    handleSubmit={this.handleSubmit}
+                                    options={options} />
+                            </MyStep>
+                            <MyStep title="Datos de Envio">
+                                <ShippingForm
+                                    required
+                                    handleSubmit={this.handleSubmit}
+                                    saveSubmitRef={this.getSubmitRef(1)}
+                                    iniValues={formValues.shipping} />
+                            </MyStep>
+                            <MyStep title="Unidad de Empaque">
+                                <ProductsShippingForm
+                                    initialvalues={formValues}
+                                    getSubmitRef={this.getSubmitRef(2)}
+                                    handleSubmit={this.handleSubmit}
+                                    order={formValues.order} />
+                            </MyStep>
+                            <MyStep
+                                onFinish={this.handleComplete}
+                                title="Resumen">
+                                <ShippingResume shipping={formValues} />
+                            </MyStep>
+                        </MyStepper>
+                    </Fragment>
+
+                }
             </div>
         )
     }
@@ -132,8 +176,8 @@ class NewShipping extends React.Component{
 
 
 
-function mapStateToProps(state, props){
-    return{
+function mapStateToProps(state, props) {
+    return {
         clients: state.clients.all
     }
 }

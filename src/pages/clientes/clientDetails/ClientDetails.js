@@ -115,11 +115,12 @@ class ClientDetail extends Component {
 
                         <Title align="right" primary="Pagos" secondary="Todos los pagos del cliente" />
                         <OrderSlideList
+                            width={350}
                             noItemTitle="No se han realizado pagos"
                             noItemMessage="El cliente no ha realizado ningun pago aun" >
                                 {
                                     payments.map(payment=>(
-                                        <PaymentCard width={350} key={payment.id} payment={payment} />
+                                        <PaymentCard key={payment.id} payment={payment} />
                                     ))
                                 }
                         </OrderSlideList>

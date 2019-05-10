@@ -62,7 +62,7 @@ function PaymentSummary(props) {
             </div>
 
             <Typography color="textSecondary" align="center" variant="subtitle2">Total</Typography>
-              <MoneyValue amount={data.total}>
+              <MoneyValue amount={data.shipmentsPrice + data.total}>
                 <Typography align="center" variant="h5"></Typography>
             </MoneyValue>  
 
@@ -72,12 +72,20 @@ function PaymentSummary(props) {
                     <MoneyValue amount={data.total}>
                         <Typography gutterBottom align="left" variant="body1">$380.000</Typography>
                     </MoneyValue>
+                    
 
                     <Typography align="left" color="textSecondary" variant="body2">Envio</Typography>
-                    <Typography gutterBottom align="left" variant="body1">$20.000</Typography>
+                    <MoneyValue amount={data.shipmentsPrice}>
+                        <Typography gutterBottom align="left" variant="body1"></Typography>
+                    </MoneyValue>
+                    
 
                     <Typography align="left" color="textSecondary" variant="body2">Total(COP)</Typography>
-                    <Typography align="left" variant="body1">$400.000</Typography>
+                    <MoneyValue amount={data.shipmentsPrice + data.total}>
+                        <Typography align="left" variant="body1"></Typography>
+                    </MoneyValue>
+
+
                 </div>
                 <div >
                     {

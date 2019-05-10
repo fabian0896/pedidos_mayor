@@ -26,7 +26,7 @@ function getColor(color){
 
 const PaymentCard = withStyles((theme)=>({
     root: {
-        display: 'inline-block',
+        //display: 'inline-block',
         height: '100%',
         overflow: 'hidden',
         position: 'relative',
@@ -136,10 +136,10 @@ const PaymentCard = withStyles((theme)=>({
     secondaryText:{
         opacity: .55
     }
-}))(({payment, classes, width})=>{
+}))(({payment, classes})=>{
     const paymentStyle = getPaymentStyles(payment.paymentMethod)
     return(
-        <Paper style={{width: `${width? width+'px' : '100%'}`}} className={classes.root}>
+        <Paper className={classes.root}>
             <div style={{background: paymentStyle.background}} className={classes.hoverObject}></div>
             <div className={classes.infoContainer}>
                 <div>

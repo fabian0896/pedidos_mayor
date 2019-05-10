@@ -149,6 +149,7 @@ class Pedidos extends Component {
                 <Section background='#E9E9E9'>
                 <Title align="left" primary="Pendientes" secondary="Pedidos pendientes por despacho"/>
                     <OrderSlideList
+                        width={360}
                         noItemTitle="No hay pedidos pendientes" 
                         noItemMessage="En el momento no hay pedidos pendientes por despachar">
                     {
@@ -157,7 +158,6 @@ class Pedidos extends Component {
                                 <OrderResume
                                     onClick={this.handleOrderDetail(order.id)} 
                                     client={clients[order.clientId]}
-                                    width={360} 
                                     key={order.id} 
                                     order={order}/>
                             )

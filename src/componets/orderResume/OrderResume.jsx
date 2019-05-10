@@ -10,7 +10,7 @@ import { ORDER_STATUS } from '../../lib/enviroment'
 const styles = theme =>({
     root:{
         //height: 200,
-        display: 'inline-flex',
+        display: 'flex',
         overflow: 'hidden',
     },
     header:{
@@ -61,17 +61,12 @@ const status = {
 }
 
 function OrderResume(props){
-    const { classes, width, order, client, onClick } = props
+    const { classes, order, client, onClick } = props
     const date = moment(order.createdAt.seconds*1000).format('DD/MM/YYYY')
     const country = client.country.translations.es || client.country
     
-    let myWidth = '100%'
-    if(width){
-        myWidth = width
-    }
-
     return(
-        <Paper style={{width: myWidth}} className={classes.root}>
+        <Paper  className={classes.root}>
             <div onClick={onClick} className={classes.header}>
                 <Typography align="center" color="inherit" component="h6" variant="h5">{order.serialCode}</Typography>
                 <Typography align="center" color="inherit" component="p" variant="overline">Prendas</Typography>    

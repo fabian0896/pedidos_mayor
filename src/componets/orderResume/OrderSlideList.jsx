@@ -14,13 +14,15 @@ const styles = theme =>({
     slide:{
        //height: '250px',
        //width: '100%',
+       height: '100%',
        whiteSpace: 'nowrap',
        overflowY: 'auto',
        padding: `${theme.spacing.unit}px 0px` 
        //display: 'flex'
     },
     item:{
-        display: 'inline',
+        display: 'inline-block',
+        height: '100%',
        '&:nth-child(n + 2)':{
            marginLeft: 15
        },
@@ -30,7 +32,7 @@ const styles = theme =>({
     }
 })
 
-function OrderSlideList({children, classes, noItemMessage, noItemTitle}){
+function OrderSlideList({children, classes, noItemMessage, noItemTitle, width}){
     return(
         <div className={classes.root}>
         {
@@ -39,7 +41,7 @@ function OrderSlideList({children, classes, noItemMessage, noItemTitle}){
                 {
                     React.Children.map(children, (child)=>{
                         return(
-                            <div className={classes.item}>
+                            <div style={{width: `${width || 350}px`}} className={classes.item}>
                                 {child}  
                             </div>
                         )

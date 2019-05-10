@@ -2,7 +2,7 @@ import React from  'react'
 import { Typography, withStyles } from '@material-ui/core';
 import Title from '../../../componets/title/Title';
 import ListShippingUnits from './ListShippingUnits';
-import { getShippingCompany } from '../../../lib/enviroment'
+
 
 
 
@@ -50,10 +50,6 @@ const styles = theme =>({
 
 function ShippingResume(props){
     const {shipping: data, classes} = props
-    console.log(data)
-
-    const companyStyles = getShippingCompany(data.company)
-
     return(
         <div className={classes.root}>
             <Title
@@ -115,7 +111,7 @@ function ShippingResume(props){
                     </div>
                 </div>
                 <div className={classes.trackNumber}>
-                    <Typography color="inherit" align="center" variant="h6">7750 9893 9685</Typography>
+                    <Typography color="inherit" align="center" variant="h6">{data.trackingNumber || 'Pendiente'}</Typography>
                     <Typography align="center" color="inherit">Guia</Typography>
                 </div>
             </div>

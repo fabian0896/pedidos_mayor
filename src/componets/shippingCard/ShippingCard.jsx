@@ -1,12 +1,30 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { withStyles, Paper, Typography, Divider } from '@material-ui/core'
 import { getShippingCompany } from '../../lib/enviroment'
+import moment from 'moment'
+import NumberFormat from 'react-number-format';
 
+
+const MoneyValue = ({amount, children})=>(
+    <NumberFormat 
+        value={amount} 
+        displayType={'text'} 
+        thousandSeparator={true} 
+        prefix={'$'} 
+        renderText={value => (
+            React.cloneElement(children, {
+                children: value
+            })
+        )}
+        />
+)
 
 const ShippingCard = withStyles(theme=>({
     root:{
         minHeight: 200,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        //display: 'inline-block',
+        //height: '100%',
         //padding: `${theme.spacing.unit*3}px ${theme.spacing.unit*2}px`
     },
     header:{
@@ -39,7 +57,15 @@ const ShippingCard = withStyles(theme=>({
     },
     details:{
         marginTop: theme.spacing.unit*2,
-        padding: `${theme.spacing.unit*0}px ${theme.spacing.unit*2}px 0px`
+        marginBottom: theme.spacing.unit*2,
+        padding: `${theme.spacing.unit*0}px ${theme.spacing.unit*2}px 0px`,
+        display: 'flex',
+        '& > *':{
+            flex: 1
+        }
+    },
+    shippingUnits:{
+        padding: `${theme.spacing.unit*2}px ${theme.spacing.unit*2}px`,
     },
     price:{
         padding: `${theme.spacing.unit*2}px ${theme.spacing.unit*2}px ${theme.spacing.unit/2}px`,
@@ -47,6 +73,8 @@ const ShippingCard = withStyles(theme=>({
     }
 }))(({classes, shipping})=>{
     const company = getShippingCompany(shipping.company)
+    
+    
     return(
         <Paper className={classes.root}>
             <div
@@ -60,7 +88,7 @@ const ShippingCard = withStyles(theme=>({
                     color="inherit" 
                     align='center' 
                     variant="h5">
-                        7750 9893 9685
+                        {shipping.trackingNumber || 'Pendiente'}
                 </Typography>
                 <Typography 
                     style={{lineHeight: 1.4}} 
@@ -73,26 +101,42 @@ const ShippingCard = withStyles(theme=>({
             <div className={classes.order}>
                 <Divider/>
                 <div>
-                    <Typography style={{lineHeight: 1.2}} align="center" variant="h6">A039</Typography>
-                    <Typography align="center" variant="body1" color="textSecondary">Fabian Dueñas</Typography>
+                    <Typography style={{lineHeight: 1.2}} align="center" variant="h6">{shipping.order.label}</Typography>
+                    <Typography align="center" variant="body1" color="textSecondary">{shipping.order.secondary}</Typography>
                 </div>
                 <Divider/>
             </div>
             <div className={classes.details}>
-                <Typography variant="subtitle2" color="textSecondary" >Dimensiones</Typography>
-                <Typography gutterBottom variant="subtitle1">30cm x 30xm x 20cm</Typography>
-                
-                <Typography variant="subtitle2" color="textSecondary" >Prendas</Typography>
-                <Typography gutterBottom variant="subtitle1">40</Typography>
-                
-                <Typography variant="subtitle2" color="textSecondary" >Peso</Typography>
-                <Typography gutterBottom variant="subtitle1">20kg</Typography>
-
+                <div>
+                    <Typography align="center"  variant="subtitle1">{shipping.totalProducts}</Typography>
+                    <Typography gutterBottom align="center" variant="subtitle2" color="textSecondary" >Prendas</Typography>
+                </div>
+                <div>
+                    <Typography align="center"  variant="subtitle1">{shipping.paymentMethod === 'payHere'? 'Cuenta': 'Contra entrega'}</Typography>
+                    <Typography gutterBottom align="center" variant="subtitle2" color="textSecondary" >Pago</Typography>
+                </div>
+                <div>
+                    <Typography align="center"  variant="subtitle1">{`${shipping.totalWeight}Kg`}</Typography>
+                    <Typography gutterBottom align="center" variant="subtitle2" color="textSecondary" >Peso</Typography>
+                </div>
+            </div>
+            <Divider/>
+            <div className={classes.shippingUnits}>
+                {
+                    shipping.shippingUnits.map((unit, index)=>(
+                        <Fragment key={index}>
+                            <Typography variant="subtitle2" color="textSecondary" >Caja #{index+1}</Typography>
+                            <Typography gutterBottom variant="subtitle1">{`${unit.height}cm ${unit.width}cm ${unit.large}cm`}</Typography>
+                        </Fragment>
+                    ))
+                }
             </div>
             <div className={classes.price}>
                 <Typography color="textSecondary" align="center" variant="subtitle2">Precio:</Typography>
-                <Typography align="center" variant="h6">$24.000</Typography>
-                <Typography color="textSecondary" variant="overline" align="right">10/12/1029</Typography>
+                <MoneyValue amount={shipping.price}>
+                    <Typography align="center" variant="h6"/>
+                </MoneyValue>
+                <Typography color="textSecondary" variant="overline" align="right">{moment(shipping.createdAt.seconds*1000).format('DD/MM/YYYY')}</Typography>
             </div>
         </Paper>
 

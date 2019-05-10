@@ -22,6 +22,7 @@ const SELLERS = 'sellers'
 const PRODUCTS = 'products'
 const ORDERS = 'orders'
 const PAYMENTS = 'payments'
+const SHIPPING = 'shipping'
 
 
 //---------------------------------------------CLients -------------------------------------------
@@ -727,6 +728,120 @@ export async function getPaymentById(id){
 export async function getPendingOrders(){
     const snap = await firebase.firestore().collection(ORDERS).where('state','==', 'pending').orderBy('serialCode','asc').get()
     const results = []
+    snap.forEach(item=>{
+        results.push({...item.data(), id: item.id})
+    })
+    return results
+}
+
+//-------------------------------------------- Shippinhg -------------------------------------------------
+
+export async function AddShipping(shipping){
+    const db =  firebase.firestore()
+    const shippingRef = db.collection(SHIPPING).doc()
+    const orderRef = db.collection(ORDERS).doc(shipping.order.id)
+    const shippingId = shippingRef.id
+
+    const shippingObject = {
+        id: shippingId,
+        trackingNumber: shipping.trackingNumber,
+        shippingUnits: shipping.shippingUnits,
+        shippingDestination: shipping.shipping,
+        price: shipping.price,
+        currency: shipping.currency,
+        order: shipping.order,
+        orderId: shipping.order.id,
+        company: shipping.company,
+        paymentMethod: shipping.paymentMethod,
+        updatedAt: new Date(),
+        createdAt: new Date()
+    }
+
+    await db.runTransaction(async transaction => {
+        const orderSnap = await transaction.get(orderRef)
+        const order = orderSnap.data()
+
+
+        const timeLine = order.timeLine
+        
+
+
+        let shippingPrice = parseFloat(shipping.price)
+        if(shipping.currency !== order.currency){
+            shippingPrice = await convertCurrency(shipping.currency, order.currency, shippingPrice)
+        }
+        shippingObject.price = shippingPrice
+
+        let orderBalance =  order.balance
+        if(shipping.paymentMethod === 'payHere'){
+            orderBalance += shippingPrice
+        }
+
+        const orderShipments = order.shipments || []
+
+        orderShipments.push(shippingObject)
+
+        const shipmentsPrice = orderShipments.reduce((previus, current)=>{
+            const price = current.paymentMethod === 'payHere'? current.price : 0
+            return previus + price
+        }, 0)
+
+        const totalProducts = shipping.shippingUnits.reduce((prev, current)=>{
+            return prev + current.quantity
+        }, 0)
+
+        const totalWeight = shipping.shippingUnits.reduce((prev, current)=>{
+            return prev + current.weight
+        }, 0)
+
+        shippingObject.totalProducts =  totalProducts
+        shippingObject.totalWeight = totalWeight
+
+        const shippedProducts = (order.shippedProducts || 0) + totalProducts
+        
+        const timeLineObject = {
+            type: 'SHIPPING',
+            author: firebase.auth().currentUser.uid,
+            date: new Date(),
+            title: 'Envio Realizado',
+            message: `Se despacharon ${totalProducts} prendas, por medio de ${shipping.company}, `
+        }
+
+        if(shipping.trackingNumber){
+            timeLineObject.message += `con numero de guia ${shipping.trackingNumber}`
+        }else{
+            timeLineObject.message += `guia pendiente por añadir`
+        }
+
+        timeLine.push(timeLineObject)
+
+
+        const orderObject = {
+            balance:  orderBalance,
+            shipments: orderShipments,
+            shipmentsPrice,
+            shippedProducts,
+            timeLine,
+            updatedAt: new Date()
+        }
+
+
+
+
+
+        transaction.set(shippingRef, shippingObject)
+        transaction.update(orderRef, orderObject )
+
+        return
+    })
+    return 'ADDED'
+}
+
+
+export async function getAllShipments(){
+    const db = firebase.firestore().collection(SHIPPING).orderBy('createdAt', 'desc').limit(30)
+    const snap = await db.get()
+    let results = []
     snap.forEach(item=>{
         results.push({...item.data(), id: item.id})
     })

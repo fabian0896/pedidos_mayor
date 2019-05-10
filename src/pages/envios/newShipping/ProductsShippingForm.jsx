@@ -55,14 +55,16 @@ const ShippingUnit = withFormik({
         actions.resetForm()
         actions.props.handleSubmit(values, actions)
     },
-    validationSchema: (props)=> Yup.object().shape({
-        quantity: Yup.number().min(1,'No se puede enviar menos de 1 prenda').max(props.maxProducts, 'no se pueden enviar mas prendas que las pendientes').required(),
-        width: Yup.number().min(1).required(),
-        large: Yup.number().min(1).required(),
-        height: Yup.number().min(1).required(),
-        weight: Yup.number().required()
-    })
-})(({handleSubmit, values, handleChange, handleBlur, maxProducts, errors, touched, setFieldValue, getSetValueRef, isEditting})=>{
+    validationSchema: (props)=>{
+        return Yup.object().shape({
+            quantity: Yup.number().min(1,'No se puede enviar menos de 1 prenda').max(props.maxProducts, 'no se pueden enviar mas prendas que las pendientes').required(),
+            width: Yup.number().min(1).required(),
+            large: Yup.number().min(1).required(),
+            height: Yup.number().min(1).required(),
+            weight: Yup.number().required()
+        })
+    } 
+})(({handleSubmit, values, handleChange, handleBlur, maxProducts, errors, touched, setFieldValue, getSetValueRef, isEditting, handleDelete, resetForm})=>{
 
     useEffect(()=>{
         getSetValueRef(setFieldValue)
@@ -157,6 +159,7 @@ const ShippingUnit = withFormik({
                     isEditting &&
                     <Grid item xs={6}>
                         <Button
+                            onClick={()=>{handleDelete(); resetForm()}}
                             type="submit" 
                             variant="contained"
                             color="secondary"
@@ -293,7 +296,8 @@ function ProductShippingForm(props){
         handleChange,
         handleBlur,
         submitForm,
-        getSubmitRef
+        getSubmitRef,
+        resetForm
     } = props
 
     const [totalWeight, setTotalWeight] = useState(0)
@@ -308,10 +312,18 @@ function ProductShippingForm(props){
         updateTotals(values.shippingUnits)
     }, [getSubmitRef, ...getTotals(values.shippingUnits)])
 
+
+
     function handleSubmit(formValues, actions){
         const newArray = values.shippingUnits.slice()
-        newArray.push(formValues)
+        if(!isEditting){
+            newArray.push(formValues)
+        }else{
+            newArray[editIndex] = formValues
+        }
         setFieldValue('shippingUnits', newArray)
+        setEditIndex(-1)
+        setIsEditting(false)
     }
 
     function updateTotals(array){
@@ -341,6 +353,19 @@ function ProductShippingForm(props){
         })
     }
 
+    const handleDelete = ()=>{
+        const newArray = values.shippingUnits.slice()
+        newArray.splice(editIndex, 1)
+        setFieldValue('shippingUnits', newArray)
+        setEditIndex(-1)
+        setIsEditting(false)
+    }
+
+    let maxProducts = order.pendingProducts - totalProducts
+    if(values.shippingUnits[editIndex]){
+        maxProducts += values.shippingUnits[editIndex].quantity
+    }
+
     return(       
         <div className={classes.form}>
             <div className={classes.productInfo}>
@@ -350,9 +375,10 @@ function ProductShippingForm(props){
 
             <Title size="small" primary="Empaques" align="left"/>
             <ShippingUnit
+                handleDelete={handleDelete}
                 isEditting={isEditting}
                 getSetValueRef={getSetValueRef}
-                maxProducts={order.pendingProducts - totalProducts} 
+                maxProducts={maxProducts} 
                 handleSubmit={handleSubmit}/>
             <ListShippingUnits
                 handleEdit={handleEdit}
@@ -413,6 +439,18 @@ function ProductShippingForm(props){
                         onChange={handleChange}
                         onBlur={handleBlur} />
                 </Grid>
+                <Grid item md={12}>
+                    <TextField
+                        error={errors.trackingNumber && touched.trackingNumber}
+                        type="text"
+                        fullWidth
+                        variant="outlined"
+                        name="trackingNumber"
+                        label="Guia"
+                        value={values.trackingNumber}
+                        onChange={handleChange}
+                        onBlur={handleBlur} />
+                </Grid>
             </Grid>
         </div>
     )
@@ -426,7 +464,8 @@ export default compose(
             shippingUnits: props.initialvalues.shippingUnits || [],
             price: props.initialvalues.price || 0,
             company: props.initialvalues.company || '',
-            currency: props.initialvalues.currency || ''
+            currency: props.initialvalues.currency || '',
+            trackingNumber: props.initialvalues.trackingNumber || ''
         }),
         handleSubmit: (values,actions)=>{
             actions.props.handleSubmit(values, actions)
@@ -435,7 +474,8 @@ export default compose(
             shippingUnits: Yup.array().min(1, 'No hay unidades de empaque').required(),
             price: Yup.number().min(1).required(),
             company: Yup.string().required(),
-            currency: Yup.string().required()
+            currency: Yup.string().required(),
+            trackingNumber: Yup.string()
         })
     }),
     withStyles(styles)
