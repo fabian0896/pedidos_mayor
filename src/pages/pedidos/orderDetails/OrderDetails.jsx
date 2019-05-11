@@ -122,7 +122,7 @@ class OrderDetails extends Component {
 
                                     <Grid container spacing={16}>
                                         <Grid item sm={6} xs={12}>
-                                            <ShippingInfoCard data={order.shipping} />
+                                            <ShippingInfoCard data={order} />
                                         </Grid>
                                         <Grid item sm={6} xs={12}>
                                             <PaymentSummary data={order} />
@@ -178,7 +178,7 @@ class OrderDetails extends Component {
                                             client={client}
                                         />
                                         <PaymentSummary data={order} />
-                                        <ShippingInfoCard data={order.shipping} />
+                                        <ShippingInfoCard data={order} />
                                     </Grid>
                                 </Grid>
                         }
