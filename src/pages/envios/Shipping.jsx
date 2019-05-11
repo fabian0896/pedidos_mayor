@@ -6,6 +6,19 @@ import SearchBar from '../../componets/searchBar/SearchBar'
 import { getAllShipments } from '../../lib/firebaseService'
 
 
+const useFetchData = (fn) =>{
+    const [data, setData] =  useState([])
+   
+    async function getData(){
+        const data = await fn()
+        setData(data)
+    }
+    useEffect(()=>{
+        getData()
+    }, [])
+    return data
+}
+
 
 function Shipping(props){
 
@@ -13,11 +26,8 @@ function Shipping(props){
         props.history.push('/envios/nuevo')
     }
 
-    const [shipments, setShipments] = useState([])
+    const shipments =  useFetchData(getAllShipments)
 
-    useEffect(()=>{
-        getAllShipments().then(shipments=> setShipments(shipments))
-    }, [getAllShipments])
 
     return(
         <div>
@@ -26,8 +36,7 @@ function Shipping(props){
                     handleAdd={handleAdd}
                 />
             </Header>
-            <Grid container spacing={16}>
-                
+            <Grid container spacing={16}>   
                 <Grid item xs={12} sm={12} md={9}>
                     <Grid container spacing={24}>
                     {
