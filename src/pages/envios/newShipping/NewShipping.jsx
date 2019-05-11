@@ -45,6 +45,7 @@ class NewShipping extends React.Component {
             value: order.id,
             id: order.id,
             secondary: this.props.clients[order.clientId].name,
+            clientId: order.clientId,
             pendingProducts: order.totalProducts - (order.shippedProducts || 0),
             country: this.props.clients[order.clientId].country.translations.es || this.props.clients[order.clientId].country.name,
             city: this.props.clients[order.clientId].city,

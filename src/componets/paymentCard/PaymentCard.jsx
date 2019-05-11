@@ -19,10 +19,6 @@ const MoneyValue = ({amount, children, currency})=>(
     />
 )
 
-function getColor(color){
-    return `rgba(${color.join(',')})`
-}
-
 
 const PaymentCard = withStyles((theme)=>({
     root: {

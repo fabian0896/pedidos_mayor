@@ -8,7 +8,7 @@ import ListShippingUnits from './ListShippingUnits';
 
 const styles = theme =>({
     root:{
-        width: 450
+        //width: 450
     },
     shippingInfo:{
         marginTop: theme.spacing.unit*3,
@@ -49,9 +49,11 @@ const styles = theme =>({
 
 
 function ShippingResume(props){
-    const {shipping: data, classes} = props
+    const {shipping: data, classes, float} = props
+    const destination = data.shipping || data.shippingDestination
+    const width = float? '100%' : '450px'
     return(
-        <div className={classes.root}>
+        <div style={{width}} className={classes.root}>
             <Title
                 align="center" 
                 primary={`Pedido ${data.order.label}`}
@@ -60,26 +62,26 @@ function ShippingResume(props){
             
             <div className={classes.shippingInfo}>
                 <div>
-                    <Typography variant="body2">{data.shipping.name}</Typography>
+                    <Typography variant="body2">{destination.name}</Typography>
                     <Typography gutterBottom color="textSecondary">Nombre</Typography>
                     
-                    <Typography variant="body2">{data.shipping.country}</Typography>
+                    <Typography variant="body2">{destination.country}</Typography>
                     <Typography gutterBottom color="textSecondary">Pais</Typography>
                     
-                    <Typography variant="body2">{data.shipping.city}</Typography>
+                    <Typography variant="body2">{destination.city}</Typography>
                     <Typography gutterBottom color="textSecondary">Ciudad</Typography>
                     
-                    <Typography variant="body2">{data.shipping.address}</Typography>
+                    <Typography variant="body2">{destination.address}</Typography>
                     <Typography gutterBottom color="textSecondary">Direccion</Typography>
                 </div>
                 <div>
-                    <Typography variant="body2">{data.shipping.phone}</Typography>
+                    <Typography variant="body2">{destination.phone}</Typography>
                     <Typography gutterBottom color="textSecondary">Telefono</Typography>
                     
-                    <Typography variant="body2">{data.shipping.email}</Typography>
+                    <Typography variant="body2">{destination.email}</Typography>
                     <Typography gutterBottom color="textSecondary">Correo</Typography>
                     
-                    <Typography variant="body2">{data.shipping.zipCode}</Typography>
+                    <Typography variant="body2">{destination.zipCode}</Typography>
                     <Typography gutterBottom color="textSecondary">Codigo Postal</Typography>
                 </div>
             </div>

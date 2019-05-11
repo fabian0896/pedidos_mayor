@@ -4,12 +4,13 @@ import ClientDetailInfo from './ClientDetailInfo';
 import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom, showBackbuttonWithPath } from '../../../actions'
 import ClientDetailHeader from './ClientDetailHeader';
-import { getClientById, getOrderByClient, getPayments } from '../../../lib/firebaseService'
+import { getClientById, getOrderByClient, getPayments, getAllShipmentsByClientId } from '../../../lib/firebaseService'
 import OrderSlideList from '../../../componets/orderResume/OrderSlideList';
 import OrderResume from '../../../componets/orderResume/OrderResume';
 import Section from '../../../componets/section/Section';
 import Title from '../../../componets/title/Title';
 import PaymentCard from '../../../componets/paymentCard/PaymentCard'
+import ShippingCard from '../../../componets/shippingCard/ShippingCard';
 
 
 const styles = theme => ({
@@ -27,7 +28,8 @@ class ClientDetail extends Component {
         loading: true,
         client: null,
         orders: [],
-        payments: []
+        payments: [],
+        shipments: []
     }
 
     async componentDidMount() {
@@ -35,7 +37,8 @@ class ClientDetail extends Component {
         const { client, clientId } = this.props
         if (client) {
             const orders = await getOrderByClient(client.id)
-            this.setState({ loading: false, client, orders })
+            const shipments =  await getAllShipmentsByClientId(client.id)
+            this.setState({ loading: false, client, orders, shipments })
 
         } else {
             this.getClient(clientId)
@@ -49,7 +52,8 @@ class ClientDetail extends Component {
     getClient = async (id) => {
         const client = await getClientById(id).catch(err => console.log(err))
         const orders = await getOrderByClient(client.id)
-        this.setState({ loading: false, client, orders })
+        const shipments =  await getAllShipmentsByClientId(client.id)
+        this.setState({ loading: false, client, orders, shipments })
         return
     }
 
@@ -76,7 +80,7 @@ class ClientDetail extends Component {
 
     render() {
         const { classes, sellers } = this.props
-        const { loading, client, orders, payments } = this.state
+        const { loading, client, orders, payments, shipments } = this.state
         const orderList = Object.keys(orders).map(id=>orders[id])
         return (
             <div>
@@ -121,6 +125,18 @@ class ClientDetail extends Component {
                                 {
                                     payments.map(payment=>(
                                         <PaymentCard key={payment.id} payment={payment} />
+                                    ))
+                                }
+                        </OrderSlideList>
+
+                        <Title style={{marginTop: 8*4}} align="left" primary="envios" secondary="Todos los envios del cliente" />
+                        <OrderSlideList
+                            width={280}
+                            noItemTitle="No se han realizado envios"
+                            noItemMessage="El cliente no ha realizado ningun envio aun" >
+                                {
+                                    shipments.map(shipping=>(
+                                        <ShippingCard key={shipping.id} shipping={shipping} />
                                     ))
                                 }
                         </OrderSlideList>

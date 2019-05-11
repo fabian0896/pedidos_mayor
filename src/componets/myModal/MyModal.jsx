@@ -1,5 +1,6 @@
 import React from 'react'
-import { Modal, withStyles,Typography } from '@material-ui/core'
+import { Modal, withStyles,Typography, IconButton } from '@material-ui/core'
+import { Close as CloseIcon } from '@material-ui/icons'
 
 
 const styles = theme => ({
@@ -14,9 +15,14 @@ const styles = theme => ({
       left: `${50}%`,
       transform: `translate(-${50}%, -${50}%)`,
       overflow: 'hidden',
-      borderRadius: theme.shape.borderRadius
+      borderRadius: theme.shape.borderRadius,
+      [theme.breakpoints.down('sm')]:{
+          width: '100%',
+          height: '100vh'
+      }
     },
     header:{
+        position: 'relative',
         marginLeft: -theme.spacing.unit * 4,
         marginTop: -theme.spacing.unit * 4,
         marginRight: -theme.spacing.unit * 4,
@@ -30,7 +36,16 @@ const styles = theme => ({
     },
     content:{
         position: 'relative',
-        minHeight: '200px'
+        minHeight: '200px',
+        maxHeight: 600,
+        overflow: 'auto',
+    },
+    closeButtom:{
+        position: 'absolute',
+        right: theme.spacing.unit*2,
+        top: theme.spacing.unit*2,
+        color: '#FFF',
+        opacity: .7
     }
   });
 
@@ -48,6 +63,9 @@ function MyModal(props){
             <div className={classes.paper}>
                 <div className={classes.header}>
                     <Typography className={classes.title} color="inherit" component="h3" variant="h5" >{title}</Typography>
+                    <IconButton onClick={onClose} className={classes.closeButtom}>
+                        <CloseIcon/>
+                    </IconButton>
                 </div>
                 <div className={classes.content}>
                     {children}

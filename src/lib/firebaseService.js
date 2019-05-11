@@ -744,6 +744,7 @@ export async function AddShipping(shipping){
 
     const shippingObject = {
         id: shippingId,
+        clientId: shipping.order.clientId,
         trackingNumber: shipping.trackingNumber,
         shippingUnits: shipping.shippingUnits,
         shippingDestination: shipping.shipping,
@@ -848,6 +849,15 @@ export async function getAllShipments(){
     return results
 }
 
+export async function getAllShipmentsByClientId(clientId){
+    const db = firebase.firestore().collection(SHIPPING).where('clientId', '==', clientId).orderBy('createdAt', 'desc').limit(15)
+    const snap = await db.get()
+    let results = []
+    snap.forEach(item=>{
+        results.push({...item.data(), id: item.id})
+    })
+    return results
+}   
 
 //-------------------------------------------- Handle Error ----------------------------------------------
 

@@ -76,7 +76,7 @@ function PaymentForm(props){
     return(
         <form onSubmit={handleSubmit}>
             <Grid container spacing={24}>
-                <Grid item md={12}>
+                <Grid item xs={12}>
                     <Field
                         disabled={isEditing}
                         error={errors.order && touched.order}
@@ -95,7 +95,7 @@ function PaymentForm(props){
                         </MoneyValue>
                     </Grid>
                 }
-                <Grid item md={6}>
+                <Grid item xs={12} sm={6}>
                     <TextField
                         error={errors.value && touched.value}
                         onChange={handleChange('value')}
@@ -111,7 +111,7 @@ function PaymentForm(props){
                     />
                 </Grid>
 
-                <Grid item md={6}>
+                <Grid item xs={12} sm={6}>
                     <TextField
                         error={errors.reference && touched.reference}
                         onChange={handleChange}
@@ -124,7 +124,7 @@ function PaymentForm(props){
                     />
                 </Grid>
 
-                <Grid item md={12}>
+                <Grid item xs={12}>
                     <TextField
                         error={errors.paymentMethod && touched.paymentMethod}   
                         onChange={handleChange}
@@ -137,7 +137,7 @@ function PaymentForm(props){
                     />
                 </Grid>
 
-                <Grid item md={6}>
+                <Grid item xs={6}>
                     <Button
                         size="large"
                         color="secondary"
@@ -147,7 +147,7 @@ function PaymentForm(props){
                     </Button>
                 </Grid>
 
-                <Grid item md={6}>
+                <Grid item xs={6}>
                     <Button
                         size="large"
                         type="submit"

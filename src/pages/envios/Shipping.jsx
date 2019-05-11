@@ -15,10 +15,6 @@ function Shipping(props){
 
     const [shipments, setShipments] = useState([])
 
-    
-  
-
-
     useEffect(()=>{
         getAllShipments().then(shipments=> setShipments(shipments))
     }, [getAllShipments])
