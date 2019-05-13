@@ -872,6 +872,123 @@ export async function updatetrackingNumber(id, trackingNumber){
     await ref.update({trackingNumber})
     return 'UPDATED'
 }
+
+
+
+export async function updateShipping(id, shipping){
+    const db =  firebase.firestore()
+    const shippingRef = db.collection(SHIPPING).doc(id)
+    const orderRef = db.collection(ORDERS).doc(shipping.order.id)
+    const clientRef = db.collection(CLIENTS).doc(shipping.order.clientId)
+    const shippingId = shippingRef.id
+
+    const shippingObject = {
+        id: shippingId,
+        clientId: shipping.order.clientId,
+        trackingNumber: shipping.trackingNumber,
+        shippingUnits: shipping.shippingUnits,
+        shippingDestination: shipping.shipping,
+        price: shipping.price,
+        currency: shipping.currency,
+        order: shipping.order,
+        orderId: shipping.order.id,
+        company: shipping.company,
+        paymentMethod: shipping.paymentMethod,
+        updatedAt: new Date(),
+    }
+
+    await db.runTransaction(async transaction => {
+        const orderSnap = await transaction.get(orderRef)
+        const clientSnap = await transaction.get(clientRef)
+        const shippingSnap = await transaction.get(shippingRef)
+        const client = clientSnap.data()
+        const order = orderSnap.data()
+        const oldShipping =  shippingSnap.data()
+
+        const timeLine = order.timeLine
+        
+        let shippingPrice = parseFloat(shipping.price)
+        if(shipping.currency !== order.currency){
+            shippingPrice = await convertCurrency(shipping.currency, order.currency, shippingPrice)
+        }
+        shippingObject.price = shippingPrice
+
+        let clientBalance = client.balance
+        let orderBalance =  order.balance
+        if(oldShipping.paymentMethod === 'payHere' && shipping.paymentMethod === 'payHere'){
+            orderBalance = (orderBalance - oldShipping.price) + shippingPrice
+            clientBalance = (clientBalance - oldShipping.price) + shippingPrice
+        } else if(oldShipping.paymentMethod === 'payThere' && shipping.paymentMethod === 'payHere'){
+            orderBalance += shippingPrice
+            clientBalance += shippingPrice
+        }else if(oldShipping.paymentMethod === 'payHere' && shipping.paymentMethod === 'payThere'){
+            orderBalance = orderBalance - oldShipping.price
+            clientBalance = clientBalance - oldShipping.price
+        }
+
+        const orderShipments = order.shipments
+        const indexEdit = orderShipments.findIndex(item =>item.id === shipping.id)
+        console.log("el index de edicion es: ", indexEdit)
+        orderShipments[indexEdit] = {...shippingObject, createdAt: oldShipping.createdAt}
+
+
+        const shipmentsPrice = orderShipments.reduce((previus, current)=>{
+            const price = current.paymentMethod === 'payHere'? current.price : 0
+            return previus + price
+        }, 0)
+
+        const totalProducts = shipping.shippingUnits.reduce((prev, current)=>{
+            return prev + current.quantity
+        }, 0)
+
+        const totalWeight = shipping.shippingUnits.reduce((prev, current)=>{
+            return prev + current.weight
+        }, 0)
+
+        shippingObject.totalProducts =  totalProducts
+        shippingObject.totalWeight = totalWeight
+
+        const shippedProducts = (order.shippedProducts - oldShipping.totalProducts) + totalProducts
+        
+        const timeLineObject = {
+            type: 'SHIPPING',
+            author: firebase.auth().currentUser.uid,
+            date: new Date(),
+            title: 'Se editó el envio',
+            message: `Se editó el envio realizado por medio de ${shipping.company}, `
+        }
+
+        if(shipping.trackingNumber){
+            timeLineObject.message += `con numero de guia ${shipping.trackingNumber}`
+        }else{
+            timeLineObject.message += `guia pendiente por añadir`
+        }
+
+        timeLine.push(timeLineObject)
+
+
+        const orderObject = {
+            balance:  orderBalance,
+            shipments: orderShipments,
+            shipmentsPrice,
+            shippedProducts,
+            timeLine,
+            updatedAt: new Date()
+        }
+  
+
+        transaction.update(clientRef, {balance: clientBalance})
+        transaction.update(shippingRef, shippingObject)
+        transaction.update(orderRef, orderObject )
+
+        return
+    })
+
+    return 'UPDATED'
+
+}
+
+
 //-------------------------------------------- Handle Error ----------------------------------------------
 
 const handleError = (cb) => (err) =>{

@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import ProductsShippingForm from './ProductsShippingForm';
 import ShippingForm from '../../pedidos/newOrder/ShippingForm'
 import ShippingResume from './ShippingResume';
-import { AddShipping } from '../../../lib/firebaseService'
+import { AddShipping, updateShipping } from '../../../lib/firebaseService'
 import { Save as SaveIcon } from '@material-ui/icons'
 import Loader from '../../../componets/loader/Loader'
 
@@ -69,7 +69,6 @@ class NewShipping extends React.Component {
 
     handleSubmit = (values, actions) => {
         const { activeStep } = this.state
-        console.log(values)
         if (activeStep === 0) {
             this.setState(state => ({
                 formValues: {
@@ -112,6 +111,8 @@ class NewShipping extends React.Component {
         })
         if(this.state.isEditing){
             console.log("se edita el pedido con id: ", this.state.formValues.id)
+            await updateShipping(this.state.formValues.id, this.state.formValues)
+            console.log("se actualizo")
         }else{
             await AddShipping(this.state.formValues)
             console.log("se agrego el pedido")

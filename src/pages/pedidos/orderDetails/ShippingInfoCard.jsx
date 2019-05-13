@@ -97,7 +97,7 @@ class ShippingInfoCard extends React.Component {
     render() {
         const { classes, data } = this.props
         const { showMore } = this.state
-
+        const shippingList =  data.shipments || []
         return (
             <Paper className={classes.root}>
                 <div className={classes.header}>
@@ -111,11 +111,11 @@ class ShippingInfoCard extends React.Component {
                     <div className={classes.secondaryInfo}>
                         <div>
                             <Typography variant="body1" color="textSecondary" align="center" >Depachado</Typography>
-                            <Typography variant="h6" align="center" >{data.shippedProducts}</Typography>
+                            <Typography variant="h6" align="center" >{data.shippedProducts || 0}</Typography>
                         </div>
                         <div>
                             <Typography variant="body1" color="textSecondary" align="center" >Pendiente</Typography>
-                            <Typography variant="h6" align="center" >{data.totalProducts - data.shippedProducts}</Typography>
+                            <Typography variant="h6" align="center" >{data.totalProducts - (data.shippedProducts || 0)}</Typography>
                         </div>
                     </div>
                 
@@ -124,8 +124,8 @@ class ShippingInfoCard extends React.Component {
 
                         <div className={classes.shippingList}>
                         {
-                            data.shipments.length ?
-                            data.shipments.map(shipping=>(
+                            !!shippingList.length ?
+                            shippingList.map(shipping=>(
                                 <div key={shipping.id} className={classes.item}>
                                     <div className={classes.main}>
                                         <Typography style={{lineHeight: 1}} variant="subtitle1">{shipping.trackingNumber || 'Pendiente'}</Typography>
@@ -144,7 +144,7 @@ class ShippingInfoCard extends React.Component {
                             </div>
                         }
                         {
-                            data.shipments.length &&
+                            !!shippingList.length &&
                             <Fragment>
                                 <Divider/>
                                 <div className={classes.itemTotal}>
@@ -164,7 +164,7 @@ class ShippingInfoCard extends React.Component {
                         {showMore ? 'mostrar menos' : 'mostrar mas'}
                     </Button>
                     <Button
-                        disabled={!(data.totalProducts - data.shippedProducts)}
+                        disabled={!(data.totalProducts - (data.shippedProducts || 0))}
                         color="primary"
                         size="small"
                     >
