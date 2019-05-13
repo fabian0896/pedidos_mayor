@@ -740,6 +740,7 @@ export async function AddShipping(shipping){
     const db =  firebase.firestore()
     const shippingRef = db.collection(SHIPPING).doc()
     const orderRef = db.collection(ORDERS).doc(shipping.order.id)
+    const clientRef = db.collection(CLIENTS).doc(shipping.order.clientId)
     const shippingId = shippingRef.id
 
     const shippingObject = {
@@ -760,8 +761,10 @@ export async function AddShipping(shipping){
 
     await db.runTransaction(async transaction => {
         const orderSnap = await transaction.get(orderRef)
+        const clientSnap = await transaction.get(clientRef)
+        const client = clientSnap.data()
         const order = orderSnap.data()
-
+        
 
         const timeLine = order.timeLine
         
@@ -826,10 +829,14 @@ export async function AddShipping(shipping){
             updatedAt: new Date()
         }
 
+        let clientBalance = client.balance
 
+        if(shipping.paymentMethod === 'payHere'){
+            clientBalance += shippingObject.price
+        }
+        
 
-
-
+        transaction.update(clientRef, {balance: clientBalance})
         transaction.set(shippingRef, shippingObject)
         transaction.update(orderRef, orderObject )
 
@@ -859,6 +866,12 @@ export async function getAllShipmentsByClientId(clientId){
     return results
 }   
 
+
+export async function updatetrackingNumber(id, trackingNumber){
+    const ref = firebase.firestore().collection(SHIPPING).doc(id)
+    await ref.update({trackingNumber})
+    return 'UPDATED'
+}
 //-------------------------------------------- Handle Error ----------------------------------------------
 
 const handleError = (cb) => (err) =>{

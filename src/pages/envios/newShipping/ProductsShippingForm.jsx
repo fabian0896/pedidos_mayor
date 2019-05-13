@@ -296,8 +296,7 @@ function ProductShippingForm(props){
         handleChange,
         handleBlur,
         submitForm,
-        getSubmitRef,
-        resetForm
+        getSubmitRef
     } = props
 
     const [totalWeight, setTotalWeight] = useState(0)

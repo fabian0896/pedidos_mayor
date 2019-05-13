@@ -27,7 +27,9 @@ class NewShipping extends React.Component {
         successText: '', 
         success: false, 
         loading: false,
-        saving: false
+        saving: false,
+        noRender: true,
+        isEditing: false
     }
 
     submit = Array(5).fill(null)
@@ -35,6 +37,14 @@ class NewShipping extends React.Component {
     async componentDidMount() {
         const options = await this.getOrderOptions()
         this.setState({ options })
+        const editShipping = this.props.location.state
+        if(editShipping){
+            this.setState({
+                formValues: editShipping,
+                isEditing: true
+            })
+        }
+        this.setState({noRender: false})
     }
 
     getOrderOptions = async () => {
@@ -100,8 +110,12 @@ class NewShipping extends React.Component {
             success: false,
             loading: true,
         })
-        await AddShipping(this.state.formValues)
-        console.log("se agrego el pedido")
+        if(this.state.isEditing){
+            console.log("se edita el pedido con id: ", this.state.formValues.id)
+        }else{
+            await AddShipping(this.state.formValues)
+            console.log("se agrego el pedido")
+        }
         this.setState({success: true, loading: false})
         const routerState = this.props.location.state || {}
         setTimeout(()=>{
@@ -118,57 +132,62 @@ class NewShipping extends React.Component {
             successText, 
             success, 
             loading,
-            saving
+            saving,
+            noRender
         } = this.state
 
         return (
             <div>
                 {
-                    saving?
-                    <Loader
-                        loadingText={loadingText}
-                        successText={successText}
-                        Icon={SaveIcon}
-                        success={success}
-                        loading={loading} />
-                    :
+                    !noRender &&
                     <Fragment>
-                        <Header>
-                            <Typography color="inherit" component="h2" variant="h2">Nuevo Envio</Typography>
-                        </Header>
-                        <MyStepper
-                            activeStep={activeStep}
-                            handleNext={this.handleNext}
-                            handleBack={this.handleBack}>
-                            <MyStep title="Pedido">
-                                <ClientForm
-                                    initialvalues={this.state.formValues}
-                                    getSubmitRef={this.getSubmitRef(0)}
-                                    handleSubmit={this.handleSubmit}
-                                    options={options} />
-                            </MyStep>
-                            <MyStep title="Datos de Envio">
-                                <ShippingForm
-                                    required
-                                    handleSubmit={this.handleSubmit}
-                                    saveSubmitRef={this.getSubmitRef(1)}
-                                    iniValues={formValues.shipping} />
-                            </MyStep>
-                            <MyStep title="Unidad de Empaque">
-                                <ProductsShippingForm
-                                    initialvalues={formValues}
-                                    getSubmitRef={this.getSubmitRef(2)}
-                                    handleSubmit={this.handleSubmit}
-                                    order={formValues.order} />
-                            </MyStep>
-                            <MyStep
-                                onFinish={this.handleComplete}
-                                title="Resumen">
-                                <ShippingResume shipping={formValues} />
-                            </MyStep>
-                        </MyStepper>
+                        {
+                            saving?
+                            <Loader
+                                loadingText={loadingText}
+                                successText={successText}
+                                Icon={SaveIcon}
+                                success={success}
+                                loading={loading} />
+                            :
+                            <Fragment>
+                                <Header>
+                                    <Typography color="inherit" component="h2" variant="h2">Nuevo Envio</Typography>
+                                </Header>
+                                <MyStepper
+                                    activeStep={activeStep}
+                                    handleNext={this.handleNext}
+                                    handleBack={this.handleBack}>
+                                    <MyStep title="Pedido">
+                                        <ClientForm
+                                            initialvalues={this.state.formValues}
+                                            getSubmitRef={this.getSubmitRef(0)}
+                                            handleSubmit={this.handleSubmit}
+                                            options={options} />
+                                    </MyStep>
+                                    <MyStep title="Datos de Envio">
+                                        <ShippingForm
+                                            required
+                                            handleSubmit={this.handleSubmit}
+                                            saveSubmitRef={this.getSubmitRef(1)}
+                                            iniValues={formValues.shipping} />
+                                    </MyStep>
+                                    <MyStep title="Unidad de Empaque">
+                                        <ProductsShippingForm
+                                            initialvalues={formValues}
+                                            getSubmitRef={this.getSubmitRef(2)}
+                                            handleSubmit={this.handleSubmit}
+                                            order={formValues.order} />
+                                    </MyStep>
+                                    <MyStep
+                                        onFinish={this.handleComplete}
+                                        title="Resumen">
+                                        <ShippingResume shipping={formValues} />
+                                    </MyStep>
+                                </MyStepper>
+                            </Fragment>
+                        }
                     </Fragment>
-
                 }
             </div>
         )

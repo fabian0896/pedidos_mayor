@@ -9,14 +9,15 @@ import { getAllShipments } from '../../lib/firebaseService'
 const useFetchData = (fn) =>{
     const [data, setData] =  useState([])
    
-    async function getData(){
-        const data = await fn()
-        setData(data)
+    function getData(){
+        fn().then((data)=>{
+            setData(data)
+        })
     }
     useEffect(()=>{
         getData()
     }, [])
-    return data
+    return [data, getData]
 }
 
 
@@ -26,8 +27,7 @@ function Shipping(props){
         props.history.push('/envios/nuevo')
     }
 
-    const shipments =  useFetchData(getAllShipments)
-
+    const [shipments, updateShipments] =  useFetchData(getAllShipments)
 
     return(
         <div>
@@ -36,13 +36,15 @@ function Shipping(props){
                     handleAdd={handleAdd}
                 />
             </Header>
-            <Grid container spacing={16}>   
+            <Grid container spacing={8}>   
                 <Grid item xs={12} sm={12} md={9}>
                     <Grid container spacing={24}>
                     {
                         shipments.map((shipping, index)=>(
                             <Grid key={index} item xs={12} sm={6} md={4} xl={2}>
-                                <ShippingCard  shipping={shipping} />
+                                <ShippingCard
+                                    onUpdate={updateShipments}
+                                    shipping={shipping} />
                             </Grid> 
                         ))
                     }

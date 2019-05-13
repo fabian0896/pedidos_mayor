@@ -147,7 +147,7 @@ class OrderDetails extends Component {
                                         
                                         <Title style={{marginTop: 8*4}} align="right" primary="Pagos" secondary="Pagos Realizados en este pedido" />
                                         <OrderSlideList
-                                            width={280}
+                                            width={350}
                                             noItemTitle="No se han realizado pagos"
                                             noItemMessage="Este Pedido no tiene pagos realizados" >
                                             {

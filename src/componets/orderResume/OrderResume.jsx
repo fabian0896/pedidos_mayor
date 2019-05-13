@@ -117,13 +117,13 @@ function OrderResume(props){
                         
                         <Typography align="right" variant="body2" color="textSecondary">Total</Typography>
                         <NumberFormat 
-                        value={order.total} 
-                        displayType={'text'} 
-                        thousandSeparator={true} 
-                        prefix={`$`} 
-                        renderText={value =>( 
-                            <Typography component="span" variant="h6">{value}</Typography>
-                        )} />
+                            value={order.total + (order.shipmentsPrice || 0)} 
+                            displayType={'text'} 
+                            thousandSeparator={true} 
+                            prefix={`$`} 
+                            renderText={value =>( 
+                                <Typography component="span" variant="h6">{value}</Typography>
+                            )} />
                     </div>
                 </div>
             </div>

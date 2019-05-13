@@ -1,10 +1,17 @@
 import React, { Fragment, useState } from 'react'
-import { withStyles, Paper, Typography, Divider } from '@material-ui/core'
+import { withStyles, Paper, Typography, Divider, InputBase, IconButton, Button } from '@material-ui/core'
 import { getShippingCompany } from '../../lib/enviroment'
 import moment from 'moment'
 import NumberFormat from 'react-number-format';
 import MyModal from '../myModal/MyModal'
 import Resume from '../../pages/envios/newShipping/ShippingResume'
+import { 
+    Close as CloseIcon, 
+    Edit as EditIcon,
+    MoreVert as MoreVertIcon
+} from '@material-ui/icons'
+import * as firebase from '../../lib/firebaseService'
+import { withRouter } from 'react-router-dom'
 
 const MoneyValue = ({amount, children})=>(
     <NumberFormat 
@@ -34,7 +41,8 @@ const ShippingCard = withStyles(theme=>({
         cursor: 'pointer',
         '&:hover':{
             boxShadow: theme.shadows[5],
-        }
+        },
+        position: "relative"
     },
     order:{
         padding: `${theme.spacing.unit*0}px ${theme.spacing.unit*2}px 0px`,
@@ -77,10 +85,61 @@ const ShippingCard = withStyles(theme=>({
     price:{
         padding: `${theme.spacing.unit*2}px ${theme.spacing.unit*2}px ${theme.spacing.unit/2}px`,
         background: theme.palette.grey[300]
+    },
+    inputContainer:{
+        padding: `0 ${theme.spacing.unit}px`,
+        background: 'rgba(255,255,255, .3)',
+        borderRadius: theme.shape.borderRadius,
+        margin: 2,
+        height: 31,
+        position: 'relative'
+    },
+    input:{
+        textAlign: 'center', 
+        ...theme.typography.h5,
+        fontWeight: 600,
+        color: 'inherit',
+        padding: '0px 30px'
+    },
+    editButton:{
+        position: "absolute",
+        right: 0,
+        top: '50%',
+        transform: 'translateY(-50%)'
+    },
+    iconButttonRoot:{
+        height: 31,
+        width: 31
+    },
+    editShippingButton:{
+        margin: `${theme.spacing.unit}px 0`
     }
-}))(({classes, shipping})=>{
+}))(({classes, shipping, onUpdate, history})=>{
     const company = getShippingCompany(shipping.company)
     const [modalOpen, setOpenModal] = useState(false)
+    const [edit, setEdit] =  useState(false)
+    const [text, setText] = useState('')
+
+    let clicks = 0
+    const handleDobleClick = () => {
+        clicks += 1
+        const timer = setTimeout(()=>{
+            if(clicks < 2){
+                handleOpenModal()
+            }
+            clicks = 0
+        }, 200)
+        if(clicks === 2){  
+            clearTimeout(timer)
+            if(!shipping.trackingNumber){
+                setEdit(true)
+            }
+        }
+    }
+
+    const handleCancelEdit = ()=>{
+        setEdit(false)
+    }
     
     const handleCloseModal = ()=>{
         setOpenModal(false)
@@ -90,6 +149,26 @@ const ShippingCard = withStyles(theme=>({
         setOpenModal(true) 
     }
 
+    const handleChange = (event)=>{
+        const value = event.target.value
+        setText(value)
+    }
+
+    const updatetrackingNumber = ()=>{
+        firebase.updatetrackingNumber(shipping.id, text).then(()=>{
+            setEdit(false)
+            onUpdate && onUpdate()
+        })
+    }
+
+    const handleEdit = ()=>{
+        history.push({
+            pathname: '/envios/nuevo',
+            state: shipping
+        })
+    }
+    
+
     return(
         <Fragment>
 
@@ -98,11 +177,20 @@ const ShippingCard = withStyles(theme=>({
                 onClose={handleCloseModal}
                 open={modalOpen} >
                 <Resume float shipping={shipping}/>
+                <Button
+                   className={classes.editShippingButton}
+                   variant="contained"
+                   color="primary"
+                   onClick={handleEdit} >
+                    Editar
+                </Button>
             </MyModal>
 
             <Paper className={classes.root}>
+            {
+                !edit?
                 <div
-                    onClick={handleOpenModal}
+                    onClick={handleDobleClick}
                     style={{
                         background: company.background,
                         color: company.color
@@ -123,6 +211,53 @@ const ShippingCard = withStyles(theme=>({
                             {shipping.company}
                     </Typography>
                 </div>
+                :
+                <div
+                    style={{
+                        background: company.background,
+                        color: company.color
+                    }} 
+                    className={classes.header}>
+                        <dir className={classes.inputContainer}>
+                            <InputBase
+                                value={text}
+                                onChange={handleChange}
+                                autoFocus
+                                style={{
+                                    height: '100%', 
+                                    width: '100%',
+                                    color: company.color
+                                }}
+                                classes={{
+                                    input: classes.input
+                                }} />
+                               {
+                                   !text?
+                                   <IconButton
+                                        onClick={handleCancelEdit}
+                                        style={{color: company.color}} 
+                                        className={classes.editButton}>
+                                       <CloseIcon fontSize="small"/>
+                                   </IconButton>
+                                   :
+                                   <IconButton
+                                        onClick={updatetrackingNumber} 
+                                        style={{color: company.color}} 
+                                        className={classes.editButton}>
+                                        <EditIcon fontSize="small"/>
+                                   </IconButton>
+                               }
+                        </dir>
+                        <Typography 
+                            style={{lineHeight: 1.4}} 
+                            align="center" 
+                            variant="overline" 
+                            color="inherit">
+                                {shipping.company}
+                        </Typography>
+                </div>
+
+            }
                 <div className={classes.order}>
                     <Divider/>
                     <div>
@@ -170,5 +305,5 @@ const ShippingCard = withStyles(theme=>({
 })
 
 
-export default ShippingCard
+export default withRouter(ShippingCard)
 
