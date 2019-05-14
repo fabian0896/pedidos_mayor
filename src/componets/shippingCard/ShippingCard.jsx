@@ -8,10 +8,10 @@ import Resume from '../../pages/envios/newShipping/ShippingResume'
 import { 
     Close as CloseIcon, 
     Edit as EditIcon,
-    MoreVert as MoreVertIcon
 } from '@material-ui/icons'
 import * as firebase from '../../lib/firebaseService'
 import { withRouter } from 'react-router-dom'
+import ModalAlert from '../modalAlert/ModalAlert';
 
 const MoneyValue = ({amount, children})=>(
     <NumberFormat 
@@ -119,6 +119,8 @@ const ShippingCard = withStyles(theme=>({
     const [modalOpen, setOpenModal] = useState(false)
     const [edit, setEdit] =  useState(false)
     const [text, setText] = useState('')
+    const [alert, setAlert] = useState(false)
+    const [loader, setLoader] = useState(false)
 
     let clicks = 0
     const handleDobleClick = () => {
@@ -168,15 +170,48 @@ const ShippingCard = withStyles(theme=>({
         })
     }
     
+    const confirmDelet = ()=>{
+        setAlert(true)
+        handleCloseModal()
+    }
+
+    const handleDeleteShipping = async ()=>{
+        setLoader(true)
+        await firebase.deleteShipping(shipping.id)
+        setLoader(false)
+        setAlert(false)
+        onUpdate && onUpdate()
+    }
+
+    const onCancelAlert = () => {
+        handleOpenModal()
+        setAlert(false)
+    }
+
 
     return(
         <Fragment>
-
+            <ModalAlert
+                loading={loader}
+                open={alert}
+                onClose={()=>setAlert(false)}
+                type="error"
+                message="estas segur@ que deseas borrar este envio?"
+                onConfirm={handleDeleteShipping}
+                onCancel={onCancelAlert}  
+            />
             <MyModal
                 title="Envio"
                 onClose={handleCloseModal}
                 open={modalOpen} >
                 <Resume float shipping={shipping}/>
+                <Button
+                   className={classes.editShippingButton}
+                   variant="contained"
+                   color="secondary"
+                   onClick={confirmDelet} >
+                    Eliminar
+                </Button>
                 <Button
                    className={classes.editShippingButton}
                    variant="contained"

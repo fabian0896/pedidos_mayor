@@ -4,6 +4,7 @@ import ShippingCard from '../../componets/shippingCard/ShippingCard';
 import Header from '../../componets/headerLayout/HeaderLayout'
 import SearchBar from '../../componets/searchBar/SearchBar'
 import { getAllShipments } from '../../lib/firebaseService'
+import PendingShippings from './PendingShippings';
 
 
 const useFetchData = (fn) =>{
@@ -52,7 +53,7 @@ function Shipping(props){
                 </Grid>
                 
                 <Grid item xs={12} sm={12} md={3}>
-                    
+                    <PendingShippings data={shipments}/>
                 </Grid>
             </Grid>
         </div>

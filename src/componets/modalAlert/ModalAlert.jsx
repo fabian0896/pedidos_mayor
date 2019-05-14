@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { Modal, withStyles,Typography, Button } from '@material-ui/core'
+import { Modal, withStyles,Typography, Button, CircularProgress } from '@material-ui/core'
 import classNames from 'classnames'
 import { green, amber } from '@material-ui/core/colors'
 import PropTypes from 'prop-types';
@@ -85,6 +85,14 @@ const styles = theme => ({
         position: 'absolute',
         right: -10,
         top: -10
+    },
+    progress:{
+        color: '#FFF',
+    },
+    progressContainer:{
+        padding: `${theme.spacing.unit*3}px 0px`,
+        display: 'flex',
+        justifyContent: 'center'
     }
   });
 
@@ -99,7 +107,9 @@ function ModalAlert(props){
         type,
         onConfirm,
         hideContent,
-        children
+        children,
+        onCancel,
+        loading
     } = props
     const Icone = variantIcon[type]
     return(
@@ -136,10 +146,19 @@ function ModalAlert(props){
                 <div>
                     {children}  
                 </div>
+                {
+                    loading &&
+                    <div className={classes.progressContainer}>
+                        <CircularProgress 
+                            size={100}
+                            className={classes.progress}   
+                            color="inherit" />
+                    </div>
+                }
                 <div className={classes.actions}>
                     <Button
                         size="small"
-                        onClick={onClose}
+                        onClick={onCancel? onCancel:onClose}
                         color="inherit"
                         className={classes.cancelButtom}
                         >Cancelar

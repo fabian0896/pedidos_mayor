@@ -808,7 +808,7 @@ export async function AddShipping(shipping){
             author: firebase.auth().currentUser.uid,
             date: new Date(),
             title: 'Envio Realizado',
-            message: `Se despacharon ${totalProducts} prendas, por medio de ${shipping.company}, `
+            message: `Se despacharon ${totalProducts} prendas por medio de ${shipping.company}, `
         }
 
         if(shipping.trackingNumber){
@@ -868,8 +868,40 @@ export async function getAllShipmentsByClientId(clientId){
 
 
 export async function updatetrackingNumber(id, trackingNumber){
-    const ref = firebase.firestore().collection(SHIPPING).doc(id)
-    await ref.update({trackingNumber})
+    const shippingRef = firebase.firestore().collection(SHIPPING).doc(id)
+    const db = firebase.firestore()
+
+    await db.runTransaction(async transaction=>{
+        const shippingSnap = await transaction.get(shippingRef)
+        const shipping = shippingSnap.data()
+        const orderRef =  firebase.firestore().collection(ORDERS).doc(shipping.orderId)
+        const orderSnap = await transaction.get(orderRef)
+        const order =  orderSnap.data()
+
+        const timeLine = order.timeLine
+        const orderShipments = order.shipments
+
+        const timeLineObject = {
+            type: 'SHIPPING',
+            author: firebase.auth().currentUser.uid,
+            date: new Date(),
+            title: 'Se agrego numero de guia pendiente ',
+            message: `se agrego el numero de guia ${trackingNumber} al envio realizado por ${shipping.company}`
+        }
+
+        timeLine.push(timeLineObject)
+
+        const indexEdit = orderShipments.findIndex(item =>item.id === shipping.id)
+        orderShipments[indexEdit] = {...orderShipments[indexEdit], trackingNumber}
+
+        transaction.update(shippingRef, {trackingNumber})
+        transaction.update(orderRef, {timeLine, shipments: orderShipments} )
+
+        return 
+    })
+
+    //await ref.update({trackingNumber})
+
     return 'UPDATED'
 }
 
@@ -928,7 +960,6 @@ export async function updateShipping(id, shipping){
 
         const orderShipments = order.shipments
         const indexEdit = orderShipments.findIndex(item =>item.id === shipping.id)
-        console.log("el index de edicion es: ", indexEdit)
         orderShipments[indexEdit] = {...shippingObject, createdAt: oldShipping.createdAt}
 
 
@@ -985,6 +1016,87 @@ export async function updateShipping(id, shipping){
     })
 
     return 'UPDATED'
+
+}
+
+
+export async function deleteShipping(id){
+    const db =  firebase.firestore()
+    const shippingRef = db.collection(SHIPPING).doc(id)
+   
+    await db.runTransaction(async transaction => {
+        const shippingSnap = await transaction.get(shippingRef)
+        const oldShipping =  shippingSnap.data()
+        
+        const orderRef = db.collection(ORDERS).doc(oldShipping.orderId)
+        const clientRef = db.collection(CLIENTS).doc(oldShipping.clientId)
+        
+
+        const orderSnap = await transaction.get(orderRef)
+        const clientSnap = await transaction.get(clientRef)
+        const client = clientSnap.data()
+        const order = orderSnap.data()
+
+        const timeLine = order.timeLine
+        
+        // restar el valor de la orden al pedido y al client balance
+        //solo si el pedido era payHere
+        let clientBalance =  client.balance
+        let orderBalance = order.balance
+        if(oldShipping.paymentMethod === 'payHere'){
+            orderBalance =  orderBalance - oldShipping.price
+            clientBalance =  clientBalance - oldShipping.price
+        }
+
+
+        const orderShipments = order.shipments
+        const indexEdit = orderShipments.findIndex(item =>item.id === oldShipping.id)
+        orderShipments.splice(indexEdit, 1)
+
+
+        const shipmentsPrice = orderShipments.reduce((previus, current)=>{
+            const price = current.paymentMethod === 'payHere'? current.price : 0
+            return previus + price
+        }, 0)
+
+
+        const shippedProducts = (order.shippedProducts - oldShipping.totalProducts)
+        
+        const timeLineObject = {
+            type: 'SHIPPING',
+            author: firebase.auth().currentUser.uid,
+            date: new Date(),
+            title: 'Se eliminó envio',
+            message: `Se eliminó el envio realizado por medio de ${oldShipping.company}, `
+        }
+
+        if(oldShipping.trackingNumber){
+            timeLineObject.message += `con numero de guia ${oldShipping.trackingNumber}`
+        }else{
+            timeLineObject.message += `guia pendiente por añadir`
+        }
+
+        timeLine.push(timeLineObject)
+
+
+        const orderObject = {
+            balance:  orderBalance,
+            shipments: orderShipments,
+            shipmentsPrice,
+            shippedProducts,
+            timeLine,
+            updatedAt: new Date()
+        }
+  
+
+        transaction.update(clientRef, {balance: clientBalance})
+        transaction.update(orderRef, orderObject )
+        transaction.delete(shippingRef)
+
+        return
+    })
+
+    return 'DELETED'
 
 }
 
