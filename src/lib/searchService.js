@@ -1,5 +1,5 @@
 import * as algoliasearch from 'algoliasearch'
-import { getClientById, getOrderbyId, getPaymentById } from './firebaseService'
+import { getClientById, getOrderbyId, getPaymentById, getShippingById } from './firebaseService'
 
 const agoliaClient = algoliasearch('AKE68Y9274', 'f8604ef41d20eb78f752a3f55d935700')
 
@@ -7,6 +7,7 @@ const clientsIndex = agoliaClient.initIndex('clients');
 const productsIndex = agoliaClient.initIndex('products');
 const ordersIndex = agoliaClient.initIndex('orders');
 const paymentsIndex = agoliaClient.initIndex('payments');
+const shippingIndex = agoliaClient.initIndex('shipments')
 
 
 
@@ -127,5 +128,16 @@ export async function searchPayment(query){
         query
     })
     const promises = res.hits.map(item=>getPaymentById(item.objectID))
+    return await Promise.all(promises)
+}
+
+
+//-----------------------------Shipments ----------------------
+
+export async function searchShipping(query){
+    const res =  await shippingIndex.search({
+        query
+    })
+    const promises = res.hits.map(item=>getShippingById(item.objectID))
     return await Promise.all(promises)
 }

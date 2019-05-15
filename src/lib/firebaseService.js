@@ -1136,6 +1136,12 @@ export async function getShipmentsWithoutTrackingNumber(){
     return results
 }
 
+export async function getShippingById(id){
+    const db = firebase.firestore().collection(SHIPPING).doc(id)
+    const snap = await db.get()
+    return {...snap.data(), id: snap.id}
+}
+
 
 //-------------------------------------------- Handle Error ----------------------------------------------
 

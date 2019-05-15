@@ -5,15 +5,19 @@ import Header from '../../componets/headerLayout/HeaderLayout'
 import SearchBar from '../../componets/searchBar/SearchBar'
 import { getAllShipments, getShipmentsWithoutTrackingNumber } from '../../lib/firebaseService'
 import PendingShippings from './PendingShippings';
-
+import { searchShipping } from '../../lib/searchService'
 
 const useFetchData = (fn) =>{
     const [data, setData] =  useState([])
    
-    function getData(){
-        fn().then((data)=>{
-            setData(data)
-        })
+    function getData(value){
+        if(!value){
+            fn().then((data)=>{
+                setData(data)
+            })
+        }else{
+            setData(value)
+        }
     }
     useEffect(()=>{
         getData()
@@ -29,9 +33,22 @@ function Shipping(props){
     }
 
 
+    
     const [shipments, updateShipments] =  useFetchData(getAllShipments)
     const [pendig, updatePending] = useFetchData(getShipmentsWithoutTrackingNumber)
     
+
+    const handleSubmit = useCallback(async (event, value)=>{
+        if(value){
+            const res = await searchShipping(value)
+            updateShipments(res)
+        }else{
+            updateShipments()
+        }
+        return
+   }) 
+
+
     const handleUpdate = useCallback(()=>{
         updatePending()
         updateShipments()
@@ -42,6 +59,7 @@ function Shipping(props){
             <Header>
                 <SearchBar 
                     handleAdd={handleAdd}
+                    handleSubmit={handleSubmit}
                 />
             </Header>
             <Grid container spacing={8}>   
