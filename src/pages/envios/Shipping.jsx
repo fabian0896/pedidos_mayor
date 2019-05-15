@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { Grid } from '@material-ui/core';
 import ShippingCard from '../../componets/shippingCard/ShippingCard';
 import Header from '../../componets/headerLayout/HeaderLayout'
 import SearchBar from '../../componets/searchBar/SearchBar'
-import { getAllShipments } from '../../lib/firebaseService'
+import { getAllShipments, getShipmentsWithoutTrackingNumber } from '../../lib/firebaseService'
 import PendingShippings from './PendingShippings';
 
 
@@ -28,7 +28,14 @@ function Shipping(props){
         props.history.push('/envios/nuevo')
     }
 
+
     const [shipments, updateShipments] =  useFetchData(getAllShipments)
+    const [pendig, updatePending] = useFetchData(getShipmentsWithoutTrackingNumber)
+    
+    const handleUpdate = useCallback(()=>{
+        updatePending()
+        updateShipments()
+    }, [])
 
     return(
         <div>
@@ -44,7 +51,7 @@ function Shipping(props){
                         shipments.map((shipping, index)=>(
                             <Grid key={index} item xs={12} sm={6} md={4} xl={2}>
                                 <ShippingCard
-                                    onUpdate={updateShipments}
+                                    onUpdate={handleUpdate}
                                     shipping={shipping} />
                             </Grid> 
                         ))
@@ -53,7 +60,7 @@ function Shipping(props){
                 </Grid>
                 
                 <Grid item xs={12} sm={12} md={3}>
-                    <PendingShippings data={shipments}/>
+                    <PendingShippings data={pendig}/>
                 </Grid>
             </Grid>
         </div>

@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { withStyles, Paper, Typography, Divider } from '@material-ui/core';
 import moment from 'moment'
+import { withRouter } from 'react-router-dom'
 
 
 const PendingShippings = withStyles(theme =>({
@@ -36,9 +37,13 @@ const PendingShippings = withStyles(theme =>({
         height: 200,
         padding: theme.spacing.unit*2
     }
-}))(({classes, data})=>{
+}))(({classes, data, history})=>{
     const list = data || []
     
+    const handleClick = useCallback((id)=>()=>{
+        history.push(`pedidos/${id}`)
+    },[])
+
     return(
         <Paper className={classes.root}>
             <div className={classes.header}>
@@ -49,7 +54,7 @@ const PendingShippings = withStyles(theme =>({
                 {
                     !!list.length &&
                     list.map(shipping=>(
-                        <div className={classes.item} key={shipping.id}>
+                        <div onClick={handleClick(shipping.orderId)} className={classes.item} key={shipping.id}>
                             <div>
                                 <Typography 
                                     style={{lineHeight: 1.25, fontWeight: 500}} 
@@ -81,4 +86,4 @@ const PendingShippings = withStyles(theme =>({
 })
 
 
-export default PendingShippings
+export default withRouter(PendingShippings)

@@ -759,6 +759,16 @@ export async function AddShipping(shipping){
         createdAt: new Date()
     }
 
+    const algoliaObject = {
+        objectID: shippingId,
+        clientId: shippingObject.clientId,
+        trackingNumber: shippingObject.trackingNumber,
+        orderSerialCode: shippingObject.order.label,
+        company: shippingObject.company,
+        paymentMethod: shippingObject.paymentMethod,
+        clientName: shippingObject.order.secondary
+    }
+
     await db.runTransaction(async transaction => {
         const orderSnap = await transaction.get(orderRef)
         const clientSnap = await transaction.get(clientRef)
@@ -842,6 +852,7 @@ export async function AddShipping(shipping){
 
         return
     })
+    await algolia.addshipping(algoliaObject)
     return 'ADDED'
 }
 
@@ -871,6 +882,11 @@ export async function updatetrackingNumber(id, trackingNumber){
     const shippingRef = firebase.firestore().collection(SHIPPING).doc(id)
     const db = firebase.firestore()
 
+    const algoliaObject = {
+        objectID: id,
+        trackingNumber
+    }
+    
     await db.runTransaction(async transaction=>{
         const shippingSnap = await transaction.get(shippingRef)
         const shipping = shippingSnap.data()
@@ -899,9 +915,7 @@ export async function updatetrackingNumber(id, trackingNumber){
 
         return 
     })
-
-    //await ref.update({trackingNumber})
-
+    await algolia.updateshipping(id, algoliaObject)
     return 'UPDATED'
 }
 
@@ -928,6 +942,18 @@ export async function updateShipping(id, shipping){
         paymentMethod: shipping.paymentMethod,
         updatedAt: new Date(),
     }
+
+
+    const algoliaObject = {
+        objectID: shippingId,
+        clientId: shippingObject.clientId,
+        trackingNumber: shippingObject.trackingNumber,
+        orderSerialCode: shippingObject.order.label,
+        company: shippingObject.company,
+        paymentMethod: shippingObject.paymentMethod,
+        clientName: shippingObject.order.secondary
+    }
+
 
     await db.runTransaction(async transaction => {
         const orderSnap = await transaction.get(orderRef)
@@ -960,25 +986,26 @@ export async function updateShipping(id, shipping){
 
         const orderShipments = order.shipments
         const indexEdit = orderShipments.findIndex(item =>item.id === shipping.id)
-        orderShipments[indexEdit] = {...shippingObject, createdAt: oldShipping.createdAt}
-
-
+        
+        
         const shipmentsPrice = orderShipments.reduce((previus, current)=>{
             const price = current.paymentMethod === 'payHere'? current.price : 0
             return previus + price
         }, 0)
-
+        
         const totalProducts = shipping.shippingUnits.reduce((prev, current)=>{
             return prev + current.quantity
         }, 0)
-
+        
         const totalWeight = shipping.shippingUnits.reduce((prev, current)=>{
             return prev + current.weight
         }, 0)
-
+        
         shippingObject.totalProducts =  totalProducts
         shippingObject.totalWeight = totalWeight
-
+        
+        orderShipments[indexEdit] = {...shippingObject, createdAt: oldShipping.createdAt}
+        
         const shippedProducts = (order.shippedProducts - oldShipping.totalProducts) + totalProducts
         
         const timeLineObject = {
@@ -1014,9 +1041,8 @@ export async function updateShipping(id, shipping){
 
         return
     })
-
+    await algolia.updateshipping(id, algoliaObject)
     return 'UPDATED'
-
 }
 
 
@@ -1095,9 +1121,19 @@ export async function deleteShipping(id){
 
         return
     })
-
+    await algolia.deleteshipping(id)
     return 'DELETED'
 
+}
+
+export async function getShipmentsWithoutTrackingNumber(){
+    const db = firebase.firestore().collection(SHIPPING).where('trackingNumber','==','').orderBy('createdAt','desc').limit(20)
+    const snap = await db.get()
+    const results = []
+    snap.forEach(item=>{
+        results.push({...item.data(), id: item.id})
+    })
+    return results
 }
 
 

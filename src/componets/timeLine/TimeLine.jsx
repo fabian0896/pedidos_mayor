@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
-    Paper, withStyles, Typography
+    Paper, withStyles, Typography, Collapse, Button
 } from '@material-ui/core'
 import moment from 'moment'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-
+import classNames from 'classnames'
 
 
 
@@ -93,12 +93,15 @@ const Item = withStyles(theme=>({
     },
     subMessage:{
         lineHeight: '1.3em'
+    },
+    special:{
+        background: `${theme.palette.grey[400]} !important`
     }
 
-}))(({classes, item, index, author})=>(
+}))(({classes, item, index, author, special})=>(
     <div className={classes.item}>
         <div className={classes.decorator}>
-            <div className={classes.lineTop} />
+            <div className={classNames(classes.lineTop,{[classes.special]: special})} />
             <div className={classes.boll}>
                 <Typography style={{lineHeight: 1}} component="span" variant="subtitle2" color="inherit">{index + 1}</Typography>
             </div>
@@ -140,20 +143,44 @@ const styles = theme => ({
 
 function TimeLine({classes, data, sellers}){
 
+    const [more, setMore] = useState(false)
+    const list = data.slice()
+
+    const allList = list.map((item, index)=> ({...item, key: index})).reverse()
+    const firstList = allList.splice(0,5)
+
     return(
         <Paper className={classes.root}>
         <Typography component='h3' variant='h3' align="center" gutterBottom>Historial</Typography>
         <div>
         {
-            data.map((item, index)=>{
+            firstList.map((item, index)=>{
                 return <Item 
                             author={sellers[item.author]} 
                             item={item} 
-                            index={index} 
+                            index={item.key} 
                             key={index} />
             }) 
         }
+        <Collapse in={more}>
+        {
+            allList.map((item, index)=>{
+                return <Item
+                            special={index===0} 
+                            author={sellers[item.author]} 
+                            item={item} 
+                            index={item.key} 
+                            key={index} />
+            }) 
+        }
+        </Collapse>
         </div>
+        <Button
+            style={{marginTop: 10}}  
+            onClick={()=>setMore(value=>!value)} 
+            color="primary" >
+                {more? 'Ocultar': 'Mostrar Mas'}
+        </Button>
         </Paper>
     )
 }

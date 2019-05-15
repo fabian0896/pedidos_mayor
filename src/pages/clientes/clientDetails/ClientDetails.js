@@ -128,18 +128,20 @@ class ClientDetail extends Component {
                                     ))
                                 }
                         </OrderSlideList>
-
-                        <Title style={{marginTop: 8*4}} align="left" primary="envios" secondary="Todos los envios del cliente" />
-                        <OrderSlideList
-                            width={280}
-                            noItemTitle="No se han realizado envios"
-                            noItemMessage="El cliente no ha realizado ningun envio aun" >
-                                {
-                                    shipments.map(shipping=>(
-                                        <ShippingCard key={shipping.id} shipping={shipping} />
-                                    ))
-                                }
-                        </OrderSlideList>
+                        
+                        <Section background='#E9E9E9'>
+                            <Title  align="left" primary="envios" secondary="Todos los envios del cliente" />
+                            <OrderSlideList
+                                width={280}
+                                noItemTitle="No se han realizado envios"
+                                noItemMessage="El cliente no ha realizado ningun envio aun" >
+                                    {
+                                        shipments.map(shipping=>(
+                                            <ShippingCard key={shipping.id} shipping={shipping} />
+                                        ))
+                                    }
+                            </OrderSlideList>
+                        </Section>
                     </Fragment>
                 }
             </div>

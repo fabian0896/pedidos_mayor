@@ -113,6 +113,13 @@ const ShippingCard = withStyles(theme=>({
     },
     editShippingButton:{
         margin: `${theme.spacing.unit}px 0`
+    },
+    modalActionsContainer:{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        '& > :first-child':{
+            marginRight: theme.spacing.unit*2
+        }
     }
 }))(({classes, shipping, onUpdate, history})=>{
     const company = getShippingCompany(shipping.company)
@@ -188,6 +195,9 @@ const ShippingCard = withStyles(theme=>({
         setAlert(false)
     }
 
+    const handleGoToOrder = ()=>{
+        history.push(`pedidos/${shipping.orderId}`)
+    }
 
     return(
         <Fragment>
@@ -205,20 +215,22 @@ const ShippingCard = withStyles(theme=>({
                 onClose={handleCloseModal}
                 open={modalOpen} >
                 <Resume float shipping={shipping}/>
-                <Button
-                   className={classes.editShippingButton}
-                   variant="contained"
-                   color="secondary"
-                   onClick={confirmDelet} >
-                    Eliminar
-                </Button>
-                <Button
-                   className={classes.editShippingButton}
-                   variant="contained"
-                   color="primary"
-                   onClick={handleEdit} >
-                    Editar
-                </Button>
+                <div className={classes.modalActionsContainer}>
+                    <Button
+                    className={classes.editShippingButton}
+                    variant="contained"
+                    color="secondary"
+                    onClick={confirmDelet} >
+                        Eliminar
+                    </Button>
+                    <Button
+                    className={classes.editShippingButton}
+                    variant="contained"
+                    color="primary"
+                    onClick={handleEdit} >
+                        Editar
+                    </Button>
+                </div>
             </MyModal>
 
             <Paper className={classes.root}>
@@ -296,7 +308,7 @@ const ShippingCard = withStyles(theme=>({
                 <div className={classes.order}>
                     <Divider/>
                     <div>
-                        <Typography style={{lineHeight: 1.2}} align="center" variant="h6">{shipping.order.label}</Typography>
+                        <Typography onClick={handleGoToOrder} style={{lineHeight: 1.2, cursor: 'pointer'}} align="center" variant="h6">{shipping.order.label}</Typography>
                         <Typography align="center" variant="body1" color="textSecondary">{shipping.order.secondary}</Typography>
                     </div>
                     <Divider/>

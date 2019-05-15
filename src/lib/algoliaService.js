@@ -6,6 +6,7 @@ const clientsIndex = agoliaClient.initIndex('clients');
 const productsIndex = agoliaClient.initIndex('products');
 const ordersIndex = agoliaClient.initIndex('orders');
 const paymentsIndex = agoliaClient.initIndex('payments');
+const shippingIndex = agoliaClient.initIndex('shipments')
 
 
 //------------------------ Clients ---------------------------
@@ -66,4 +67,18 @@ export function deletepayment(objectID){
     return paymentsIndex.deleteObject(objectID)
 }
 
+
+// ---------------------------Envios----------------------------
+
+export function addshipping(shipping){
+    return shippingIndex.addObject(shipping)
+}
+
+export function updateshipping(objectID, shipping){
+    return shippingIndex.partialUpdateObject({...shipping, objectID})
+}
+
+export function deleteshipping(objectID){
+    return shippingIndex.deleteObject(objectID)
+}
 
