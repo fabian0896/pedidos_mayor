@@ -139,7 +139,7 @@ export function getAllClients(cb){
                 clientsList[doc.id] = {id: doc.id, ...doc.data()}
             })
             cb(null, clientsList)
-    })
+    })  
 }
 
 
