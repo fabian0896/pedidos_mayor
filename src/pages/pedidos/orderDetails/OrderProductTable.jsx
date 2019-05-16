@@ -100,6 +100,8 @@ class OrderProductTable extends Component{
                                 }
                                 <TableCell>Nombre</TableCell>
                                 <TableCell>Referencia</TableCell>
+                                <TableCell>Marquilla</TableCell>
+                                <TableCell>Molde</TableCell>
                                 <TableCell>Talla</TableCell>
                                 <TableCell>Color</TableCell>
                                 <TableCell>Cantidad</TableCell>
@@ -126,6 +128,8 @@ class OrderProductTable extends Component{
                                             }
                                             <TableCell>{product.name}</TableCell>
                                             <TableCell>{product.reference}</TableCell>
+                                            <TableCell>{product.label === 'custom'? 'Personalizada':'Generica'}</TableCell>
+                                            <TableCell>{product.mold === 'new'? 'Nuevo':'Viejo'}</TableCell>
                                             <TableCell>{product.size}</TableCell>
                                             <TableCell>{product.color}</TableCell>
                                             <TableCell>{product.quantity}</TableCell>
@@ -155,7 +159,7 @@ class OrderProductTable extends Component{
                                             <Typography variant="subtitle2">Sub Total</Typography>
                                         </TableCell>
                                         <MoneyCel amount={order.subTotal}/>
-                                        <TableCell colSpan={withEdittingButtons? 4 : 3}></TableCell>
+                                        <TableCell colSpan={withEdittingButtons? 6 : 5}></TableCell>
                                     </TableRow>
                                     <TableRow className={classes.tableTotal}>
                                         <TableCell colSpan={2}>
@@ -165,7 +169,7 @@ class OrderProductTable extends Component{
                                             <Typography variant="subtitle2">{`${order.descount}%`}</Typography>
                                         </TableCell>
                                         <MoneyCel amount={-(order.subTotal*(order.descount/100)).toFixed(1)}/>
-                                        <TableCell colSpan={withEdittingButtons? 4 : 3}></TableCell>
+                                        <TableCell colSpan={withEdittingButtons? 6 : 5}></TableCell>
                                     </TableRow>
                                 </Fragment>
                             } 
@@ -185,7 +189,7 @@ class OrderProductTable extends Component{
                                                         <Typography variant="subtitle2">{value}</Typography>
                                                     </TableCell>
                                                 )} />
-                                    <TableCell colSpan={withEdittingButtons? 4 : 3}></TableCell>
+                                    <TableCell colSpan={withEdittingButtons? 6 : 5}></TableCell>
                                 </TableRow>
                             } 
                         </TableBody>

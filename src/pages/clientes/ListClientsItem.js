@@ -112,7 +112,7 @@ class ListClientesItem extends Component{
                             </div>
                             <div className={ classNames(classes.helper, classes.stats) }>
                                 <Typography inline component="span" variant="subheading" color="textSecondary">Total de pedidos:</Typography>
-                                <Typography inline component="span" variant="headline" color="textPrimary">{client.totalOrders}</Typography>
+                                <Typography inline component="span" variant="headline" color="textPrimary">{client.totalOrders || 0}</Typography>
                             </div>
                         </div>
                     </ExpansionPanelDetails>

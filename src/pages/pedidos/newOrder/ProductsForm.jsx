@@ -79,7 +79,7 @@ class ProductFormInfo extends React.Component{
     }
 
     handleProductChange = (setValues)=> (option) => {
-        const { allProducts, customPrices, currency } = this.props
+        const { allProducts, customPrices, currency, client } = this.props
         let price = ""
         const _currency = currency.toLowerCase()
         if(option){
@@ -98,6 +98,8 @@ class ProductFormInfo extends React.Component{
             }
         }
        setValues('price', price)  
+       setValues('label', client.label || 'generic')
+       setValues('mold', client.mold || 'new')
     }
     
     
@@ -111,7 +113,9 @@ class ProductFormInfo extends React.Component{
                     size: 28,
                     color: '',
                     quantity: '',
-                    price: ''
+                    price: '',
+                    label: '',
+                    mold: ''
                 }}
                 validationSchema={validationFormInfoSchema}
                 onSubmit={(values, actions)=> handleSubmit(values,actions, this.selectRef)}
@@ -209,6 +213,41 @@ class ProductFormInfo extends React.Component{
                                             />
                                     </Grid>
 
+                                    <Grid item xs={6} sm={6} md={6}>
+                                        <TextField
+                                            select
+                                            disabled={!values.price}
+                                            error={errors.label && touched.label}
+                                            value={values.label}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            name="label"
+                                            fullWidth
+                                            label="Marquilla"
+                                            variant='outlined'
+                                            >
+                                                <MenuItem value="custom">Personalizada</MenuItem>
+                                                <MenuItem value="generic">Generíca</MenuItem>
+                                            </TextField>
+                                    </Grid>
+                                    <Grid item xs={6} sm={6} md={6}>
+                                        <TextField
+                                            select
+                                            disabled={!values.price}
+                                            error={errors.mold && touched.mold}
+                                            value={values.mold}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            name="mold"
+                                            fullWidth
+                                            label="Molde"
+                                            variant='outlined'
+                                            >
+                                                <MenuItem value="new">Molde Nuevo</MenuItem>
+                                                <MenuItem value="old">Molde Viejo</MenuItem>
+                                            </TextField>
+                                    </Grid>
+
                                     <Grid item xs={12} sm={12} md={12}>
                                         <Button
                                             disabled={isSubmitting}
@@ -276,7 +315,9 @@ class ProductFrom extends React.Component{
                 item.reference === product.reference &&
                 item.size === product.size &&
                 item.price === product.price &&
-                item.color.toLowerCase() === product.color.toLowerCase()
+                item.color.toLowerCase() === product.color.toLowerCase() &&
+                item.label === product.label &&
+                item.mold === product.mold
                 )
         })
     
@@ -326,12 +367,14 @@ class ProductFrom extends React.Component{
             customPrices, 
             allProducts,
             values,
-            currency
+            currency,
+            client
          } = this.props
          const { isEditting } = this.state
         return(
             <div >
                 <ProductFormInfo
+                    client={client}
                     currency={currency}
                     getSetValuesRef={this.getSetValueRef}
                     isEditting={isEditting}

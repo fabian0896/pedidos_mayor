@@ -14,12 +14,18 @@ const signupSchema = Yup.object().shape({
     name: Yup.string().required("El pais es un campo requerido!"),
     email: Yup.string().email("Email no valido"),
     phone: Yup.string().required("El telefono es requerido!"),
-    currency: Yup.string().required('Valor requerido')
+    currency: Yup.string().required('Valor requerido'),
+    label: Yup.string().required(),
+    mold: Yup.string().required()
 })
 
 const styles = theme => ({
     formContainer: {
-        marginTop: `${theme.spacing.unit * 2}px`
+        marginTop: `${theme.spacing.unit * 2}px`,
+        width: 410,
+        [theme.breakpoints.down('sm')]: {
+            width: '100%'
+        }
     },
     input: {
         width: '400px',
@@ -40,7 +46,9 @@ function NewClientFormGeneral(props) {
                 name: props.name,
                 email: props.email,
                 phone: props.phone,
-                currency: null
+                currency: null,
+                label: 'generic',
+                mold: 'new'
             }}
             validationSchema={signupSchema}
         >
@@ -94,7 +102,7 @@ function NewClientFormGeneral(props) {
                                         value={values.email}
                                     />
                                 </Grid>
-                                <Grid item xs={12}>
+                                <Grid item xs={6}>
                                     <FormControl
                                         component="fieldset"
                                         error={errors.currency && touched.currency}
@@ -109,6 +117,42 @@ function NewClientFormGeneral(props) {
                                         >
                                             <FormControlLabel value="USD" control={<Radio />} label="Dolares" />
                                             <FormControlLabel value="COP" control={<Radio />} label="Pesos Colombianos" />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <FormControl
+                                        component="fieldset"
+                                        error={errors.label && touched.label}
+                                    >
+                                        <FormLabel component="legend">Marquilla</FormLabel>
+                                        <RadioGroup
+                                            aria-label="Label"
+                                            name="label"
+                                            value={values.label}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                        >
+                                            <FormControlLabel value="custom" control={<Radio />} label="Perzonalizada" />
+                                            <FormControlLabel value="generic" control={<Radio />} label="Generíca" />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <FormControl
+                                        component="fieldset"
+                                        error={errors.mold && touched.mold}
+                                    >
+                                        <FormLabel component="legend">Molde</FormLabel>
+                                        <RadioGroup
+                                            aria-label="Mold"
+                                            name="mold"
+                                            value={values.mold}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                        >
+                                            <FormControlLabel value="new" control={<Radio />} label="Molde Nuevo" />
+                                            <FormControlLabel value="old" control={<Radio />} label="Molde Viejo" />
                                         </RadioGroup>
                                     </FormControl>
                                 </Grid>
