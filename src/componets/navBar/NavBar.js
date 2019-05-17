@@ -15,6 +15,14 @@ import { connect } from 'react-redux'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import { Grow, Paper, ClickAwayListener, Popper, MenuList } from '@material-ui/core';
+import Notificacions from './Notifications'
+
+
+
+
+
+
+
 
 
 const ProfileOptions = ({signOut}) => {
@@ -28,41 +36,6 @@ const ProfileOptions = ({signOut}) => {
         </div>
     )
 }
-
-
-const Notificacions = withStyles(theme=>({
-    root:{
-        width: 360,
-        borderRadius: theme.shape.borderRadius,
-        overflow: 'hidden'
-    },
-    header:{
-        height: theme.spacing.unit*6,
-        display: 'flex',
-        alignItems: 'center',
-        padding: theme.spacing.unit*2,
-        background: theme.palette.grey[300]
-    }
-}))(({classes}) => {
-    return (
-        <div className={classes.root}>
-            <div className={classes.header}>
-                <Typography variant="subtitle1" >Notificaciones</Typography>
-            </div>
-            <MenuList>
-                <MenuItem>Notificacion 1</MenuItem>
-                <MenuItem>notificacion 2</MenuItem>
-                <MenuItem>Notificacion 3</MenuItem>
-            </MenuList>
-        </div>
-    )
-})
-
-
-
-
-
-
 
 
 const styles = theme => ({

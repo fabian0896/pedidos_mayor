@@ -28,7 +28,7 @@ import NewOrder from './pages/pedidos/newOrder/NewOrder';
 import Shipping from './pages/envios/Shipping';
 import NewShipping from './pages/envios/newShipping/NewShipping';
 
-
+import { getUnSeeNotifications } from './lib/firebaseService'
 
 
 class App extends Component {
@@ -60,8 +60,12 @@ class App extends Component {
     this.props.asyncUpdateClients()
     this.props.asyncAddSellers()
     this.ruta = this.props.location.pathname;
+    
   }
 
+  componentWillUnmount(){
+   
+  }
 
   render() {
     return (

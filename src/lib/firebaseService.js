@@ -38,6 +38,8 @@ export function createCliente(client) {
     const seller = firebase.auth().currentUser.uid
     const country = client.country.translations.es || client.country.name
 
+    
+
     const newClient = {
         ...client,
         phone,
@@ -55,17 +57,19 @@ export function createCliente(client) {
         seller
     }
 
-    const notificationObject = {
-        type: 'CREATED',
-        collection: CLIENTS,
-        author: firebase.auth().currentUser.uid,
-        message: `El clinete ${client.name} de ${country} acaba de ser agregado`,
-        link: `clientes/`,
-        date: new Date(),
-        seen: [firebase.auth().currentUser.uid]
-    }
-
+    
     return new Promise(async (res, rej) => {
+        const seenArray =  await getSeenArray()
+        const notificationObject = {
+            type: 'CREATED',
+            collection: CLIENTS,
+            author: firebase.auth().currentUser.uid,
+            message: `El clinete ${client.name} de ${country} acaba de ser agregado`,
+            link: `clientes/`,
+            date: new Date(),
+            seen: seenArray
+        }
+    
         const myHandleError = handleError(rej)
         const documentSnapshot = await databaseRef.add(newClient).catch(myHandleError)
         algoliaObject['objectID'] = documentSnapshot.id
@@ -87,7 +91,6 @@ export function updateClient(id, client) {
     const phone = formatPhone(client.phone, client.country.callingCodes[0])
     const country = client.country.translations.es || client.country.name
 
-
     const newClient = {
         ...client,
         phone,
@@ -103,17 +106,18 @@ export function updateClient(id, client) {
     }
 
 
-    const notificationObject = {
-        type: 'UPDATED',
-        collection: CLIENTS,
-        author: firebase.auth().currentUser.uid,
-        message: `El clinete ${client.name} de ${country} acaba de ser actualizado`,
-        link: `clientes/${id}`,
-        date: new Date(),
-        seen: [firebase.auth().currentUser.uid]
-    }
-
+    
     return new Promise(async (res, rej) => {
+        const seenArray =  await getSeenArray()
+        const notificationObject = {
+            type: 'UPDATED',
+            collection: CLIENTS,
+            author: firebase.auth().currentUser.uid,
+            message: `El clinete ${client.name} de ${country} acaba de ser actualizado`,
+            link: `clientes/${id}`,
+            date: new Date(),
+            seen: seenArray
+        }
         const myHandleError = handleError(rej)
         //const documentSnapshot = await databaseRef.doc(id).get().catch(myHandleError)
         await databaseRef.doc(id).update(newClient).catch(myHandleError)
@@ -131,6 +135,7 @@ export async function deleteClient(id) {
     const client = clientSnap.data()
     const country = client.country.translations.es || client.country.name
 
+    const seenArray =  await getSeenArray()
 
     const notificationObject = {
         type: 'UPDATED',
@@ -139,7 +144,7 @@ export async function deleteClient(id) {
         message: `El clinete ${client.name} de ${country} acaba de ser eliminadó del sistema`,
         link: `clientes`,
         date: new Date(),
-        seen: [firebase.auth().currentUser.uid]
+        seen: seenArray
     }
 
     await addNotification(notificationObject)
@@ -201,12 +206,17 @@ export async function getLastClients() {
 //------------------------------------------ SELLERS-------------------------------------------------------
 
 
-export async function getAllSellers() {
+export async function getAllSellers(array=false) {
     const snap = await firebase.firestore().collection(SELLERS).get()
     const sellers = {}
+    const sellersArray = []
     snap.forEach(seller => {
-        sellers[seller.id] = seller.data()
+        sellers[seller.id] = {...seller.data(), id: seller.id}
+        sellersArray.push({...seller.data(), id: seller.id})
     })
+    if(array){
+        return sellersArray
+    }
     return sellers;
 }
 
@@ -384,7 +394,7 @@ export async function addOrder(order) {
 
 
     
-
+    const seenArray =  await getSeenArray()
 
     const timeLineObject = {
         type: 'CREATED',
@@ -475,7 +485,7 @@ export async function addOrder(order) {
                 message: `Se añadio el pedido ${serialCode} a nombre de  ${client.name} (${totalProducts} prendas)`,
                 link: `pedidos/${orderId}`,
                 date: new Date(),
-                seen: [firebase.auth().currentUser.uid]
+                seen: seenArray
             }
 
             transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
@@ -494,6 +504,8 @@ export async function updateOrder(order, id) {
     const dbOrders = firebase.firestore().collection(ORDERS)
     const dbClients = firebase.firestore().collection(CLIENTS)
     const oredrRef = dbOrders.doc(id)
+
+    const seenArray =  await getSeenArray()
 
     const totalProducts = order.products.reduce((prev, current) => {
         return prev + parseInt(current.quantity)
@@ -599,7 +611,7 @@ export async function updateOrder(order, id) {
                 message: `Se edito el pedido ${oldOrder.serialCode} a nombre de  ${client.name} (${totalProducts} prendas)`,
                 link: `pedidos/${id}`,
                 date: new Date(),
-                seen: [firebase.auth().currentUser.uid]
+                seen: seenArray
             }
 
             transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
@@ -667,6 +679,9 @@ export async function addPayment(payment) {
     const paymentref = db.collection(PAYMENTS).doc()
     const paymentId = paymentref.id
     const oredrRef = db.collection(ORDERS).doc(payment.order.value)
+
+    const seenArray =  await getSeenArray()
+
     let algoliaObject = {}
     await db.runTransaction(async (transaction) => {
         const orderSnap = await transaction.get(oredrRef)
@@ -754,7 +769,7 @@ export async function addPayment(payment) {
             message: `Se agrego pago a el pedido ${order.serialCode} a nombre de  ${client.name} por ${payment.currency} $${thousandSeparator(payment.value)}`,
             link: `pedidos/${payment.order.value}`,
             date: new Date(),
-            seen: [firebase.auth().currentUser.uid]
+            seen: seenArray
         }
 
 
@@ -821,6 +836,9 @@ export async function AddShipping(shipping) {
     const orderRef = db.collection(ORDERS).doc(shipping.order.id)
     const clientRef = db.collection(CLIENTS).doc(shipping.order.clientId)
     const shippingId = shippingRef.id
+
+
+    const seenArray =  await getSeenArray()
 
     const shippingObject = {
         id: shippingId,
@@ -932,7 +950,7 @@ export async function AddShipping(shipping) {
             message: `Se agrego envio a el pedido ${order.serialCode} a nombre de ${client.name}. (${totalProducts}) prendas despachadas`,
             link: `pedidos/${shipping.order.id}`,
             date: new Date(),
-            seen: [firebase.auth().currentUser.uid]
+            seen: seenArray
         }
 
         transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
@@ -1017,6 +1035,8 @@ export async function updateShipping(id, shipping) {
     const orderRef = db.collection(ORDERS).doc(shipping.order.id)
     const clientRef = db.collection(CLIENTS).doc(shipping.order.clientId)
     const shippingId = shippingRef.id
+
+    const seenArray =  await getSeenArray()
 
     const shippingObject = {
         id: shippingId,
@@ -1132,7 +1152,7 @@ export async function updateShipping(id, shipping) {
             message: `Se edito envio en el pedido ${order.serialCode} a nombre de ${client.name}. (${totalProducts}) prendas despachadas`,
             link: `pedidos/${shipping.order.id}`,
             date: new Date(),
-            seen: [firebase.auth().currentUser.uid]
+            seen: seenArray
         }
 
         transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
@@ -1150,6 +1170,8 @@ export async function updateShipping(id, shipping) {
 export async function deleteShipping(id) {
     const db = firebase.firestore()
     const shippingRef = db.collection(SHIPPING).doc(id)
+
+    const seenArray =  await getSeenArray()
 
     await db.runTransaction(async transaction => {
         const shippingSnap = await transaction.get(shippingRef)
@@ -1223,7 +1245,7 @@ export async function deleteShipping(id) {
             message: `Se elimino envio en el pedido ${order.serialCode} a nombre de ${client.name}.`,
             link: `pedidos/${oldShipping.orderId}`,
             date: new Date(),
-            seen: [firebase.auth().currentUser.uid]
+            seen: seenArray
         }
 
         transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
@@ -1258,6 +1280,30 @@ export async function getShippingById(id) {
 
 async function addNotification(notification) {
     return await firebase.firestore().collection(NOTIFICATIONS).add(notification)
+}
+
+export function getUnSeeNotifications(cb){
+    const uid = firebase.auth().currentUser.uid
+    const databaseRef = firebase.firestore().collection(NOTIFICATIONS)
+    const queryRef = databaseRef.where('seen','array-contains', uid).orderBy('date','desc').limit(20)
+    const cancelFunction = queryRef.onSnapshot(data=>{
+        const result = []
+        data.forEach(item=>{
+            result.push({...item.data(), id: item.id})
+        })
+        cb(result)
+    })
+    return cancelFunction
+}
+
+
+async function getSeenArray(){
+    const allSellers = await getAllSellers(true)
+    const seller = allSellers.map(seller => {
+        return seller.id
+    })
+    const currentUser = firebase.auth().currentUser.uid
+    return seller.filter(uid=>uid !== currentUser)
 }
 
 
