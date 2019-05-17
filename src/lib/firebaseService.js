@@ -2,13 +2,13 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 
-import { 
-    formatPhone, 
-    randomColor, 
-    incrementSerial, 
-    compareObjects, 
+import {
+    formatPhone,
+    randomColor,
+    incrementSerial,
+    compareObjects,
     isTheArrayEqual,
-    thousandSeparator 
+    thousandSeparator
 } from './utilities'
 import * as algolia from './algoliaService'
 import { convertCurrency } from './currencyService'
@@ -23,17 +23,17 @@ const PRODUCTS = 'products'
 const ORDERS = 'orders'
 const PAYMENTS = 'payments'
 const SHIPPING = 'shipping'
-
+const NOTIFICATIONS = 'notifications'
 
 //---------------------------------------------CLients -------------------------------------------
 
 
-export function createCliente(client){
-    
+export function createCliente(client) {
+
     const databaseRef = firebase.firestore().collection(CLIENTS);
 
     const phone = formatPhone(client.phone, client.country.callingCodes[0])
-    const personalColor = randomColor(200,40)
+    const personalColor = randomColor(200, 40)
     const createdAt = new Date();
     const seller = firebase.auth().currentUser.uid
     const country = client.country.translations.es || client.country.name
@@ -54,11 +54,23 @@ export function createCliente(client){
         phone,
         seller
     }
-    
-    return new Promise( async (res,rej)=>{
+
+    const notificationObject = {
+        type: 'CREATED',
+        collection: CLIENTS,
+        author: firebase.auth().currentUser.uid,
+        message: `El clinete ${client.name} de ${country} acaba de ser agregado`,
+        link: `clientes/`,
+        date: new Date(),
+        seen: [firebase.auth().currentUser.uid]
+    }
+
+    return new Promise(async (res, rej) => {
         const myHandleError = handleError(rej)
         const documentSnapshot = await databaseRef.add(newClient).catch(myHandleError)
         algoliaObject['objectID'] = documentSnapshot.id
+        notificationObject['link'] += documentSnapshot.id
+        await firebase.firestore().collection(NOTIFICATIONS).add(notificationObject)
         await algolia.addClient(algoliaObject).catch(myHandleError)
         res('created')
         return
@@ -69,7 +81,7 @@ export function createCliente(client){
 
 
 
-export function updateClient(id, client){
+export function updateClient(id, client) {
     const databaseRef = firebase.firestore().collection(CLIENTS);
 
     const phone = formatPhone(client.phone, client.country.callingCodes[0])
@@ -90,37 +102,62 @@ export function updateClient(id, client){
         phone
     }
 
-    return new Promise(async (res, rej)=>{
+
+    const notificationObject = {
+        type: 'UPDATED',
+        collection: CLIENTS,
+        author: firebase.auth().currentUser.uid,
+        message: `El clinete ${client.name} de ${country} acaba de ser actualizado`,
+        link: `clientes/${id}`,
+        date: new Date(),
+        seen: [firebase.auth().currentUser.uid]
+    }
+
+    return new Promise(async (res, rej) => {
         const myHandleError = handleError(rej)
         //const documentSnapshot = await databaseRef.doc(id).get().catch(myHandleError)
         await databaseRef.doc(id).update(newClient).catch(myHandleError)
-        await algolia.updateClient(id ,algoliaObject).catch(myHandleError)
+        await firebase.firestore().collection(NOTIFICATIONS).add(notificationObject)
+        await algolia.updateClient(id, algoliaObject).catch(myHandleError)
         res('updated')
         return
     })
 }
 
 
-export function deleteClient(id){
+export async function deleteClient(id) {
     const databaseRef = firebase.firestore().collection(CLIENTS)
-    return new Promise(async (res, rej) => {
-        const myHandleError = handleError(rej)
-        await databaseRef.doc(id).delete().catch(myHandleError)
-        await algolia.deleteUser(id).catch(myHandleError)
-        res('deleted')
-        return
-    })
+    const clientSnap = await databaseRef.doc(id).get()
+    const client = clientSnap.data()
+    const country = client.country.translations.es || client.country.name
+
+
+    const notificationObject = {
+        type: 'UPDATED',
+        collection: CLIENTS,
+        author: firebase.auth().currentUser.uid,
+        message: `El clinete ${client.name} de ${country} acaba de ser eliminadó del sistema`,
+        link: `clientes`,
+        date: new Date(),
+        seen: [firebase.auth().currentUser.uid]
+    }
+
+    await addNotification(notificationObject)
+    await databaseRef.doc(id).delete()
+    await algolia.deleteUser(id)
+
+    return 'DELETED'
 }
 
 
-export function createUpdateClient(client, id){
+export function createUpdateClient(client, id) {
     return new Promise(async (res, rej) => {
         const myHandleError = handleError(rej)
-        if(id){
+        if (id) {
             const updateRes = await updateClient(id, client).catch(myHandleError)
             res(updateRes)
             return
-        }else{
+        } else {
             const createRes = await createCliente(client).catch(myHandleError)
             res(createRes)
             return
@@ -131,32 +168,32 @@ export function createUpdateClient(client, id){
 
 
 
-export function getAllClients(cb){   
-    firebase.firestore().collection(CLIENTS).orderBy('name','asc')
+export function getAllClients(cb) {
+    firebase.firestore().collection(CLIENTS).orderBy('name', 'asc')
         .onSnapshot(querySnapshot => {
             const clientsList = {}
             querySnapshot.forEach(doc => {
-                clientsList[doc.id] = {id: doc.id, ...doc.data()}
+                clientsList[doc.id] = { id: doc.id, ...doc.data() }
             })
             cb(null, clientsList)
-    })  
+        })
 }
 
 
-export async function getClientById(id, callback){
-    const snap = await firebase.firestore().collection(CLIENTS).doc(id).get().catch(err =>{throw  Error(err)})
-    if(snap.exists){
-        return {id: snap.id, ...snap.data()}
-    }else{
+export async function getClientById(id, callback) {
+    const snap = await firebase.firestore().collection(CLIENTS).doc(id).get().catch(err => { throw Error(err) })
+    if (snap.exists) {
+        return { id: snap.id, ...snap.data() }
+    } else {
         return null
     }
 }
 
-export async function getLastClients(){
+export async function getLastClients() {
     const snap = await firebase.firestore().collection(CLIENTS).orderBy('createdAt', 'desc').limit(5).get()
     const res = {}
     snap.forEach(doc => {
-        res[doc.id] = {...doc.data(), id: doc.id}
+        res[doc.id] = { ...doc.data(), id: doc.id }
     })
     return res
 }
@@ -164,43 +201,43 @@ export async function getLastClients(){
 //------------------------------------------ SELLERS-------------------------------------------------------
 
 
-export async function getAllSellers(){
+export async function getAllSellers() {
     const snap = await firebase.firestore().collection(SELLERS).get()
     const sellers = {}
-    snap.forEach(seller=>{
+    snap.forEach(seller => {
         sellers[seller.id] = seller.data()
     })
     return sellers;
 }
 
 
-export async function getSellerById(id){
+export async function getSellerById(id) {
     const seller = await firebase.firestore().collection(SELLERS).doc(id).get()
-    if(seller.exists){
+    if (seller.exists) {
         return seller.data()
     }
     return null
 }
 
-export async function registerUSer(email, password){
+export async function registerUSer(email, password) {
     const snap = await firebase.auth().createUserWithEmailAndPassword(email, password)
     return snap.user.uid
 }
 
 
-export function createSeller({email, password, code, name}){
-    return new Promise(async (res, rej)=>{
+export function createSeller({ email, password, code, name }) {
+    return new Promise(async (res, rej) => {
         const codes = await getCodes()
         const matchCode = codes.find(actualCode => actualCode.value === code)
-        if(!matchCode){
+        if (!matchCode) {
             rej("El codigo de registro es invalido")
             return
         }
-        const uid = await registerUSer(email, password).catch(()=>{
+        const uid = await registerUSer(email, password).catch(() => {
             rej("no se pudo crear el usuario con el correo espesificado")
             return
         })
-        if(uid){
+        if (uid) {
             await firebase.firestore().collection(SELLERS).doc(uid).set({
                 name,
                 email,
@@ -212,18 +249,18 @@ export function createSeller({email, password, code, name}){
 }
 
 
-export function getCodes(){
-    return new Promise(async (res, rej)=>{
-       const myHandleError = handleError(rej)
-       const snap = await firebase.firestore().collection(CODES).doc('registerCode').get().catch(myHandleError)
-       return [snap.data()]
+export function getCodes() {
+    return new Promise(async (res, rej) => {
+        const myHandleError = handleError(rej)
+        const snap = await firebase.firestore().collection(CODES).doc('registerCode').get().catch(myHandleError)
+        return [snap.data()]
     })
 }
 
 //---------------------------------------------Products ---------------------------------------------
 
-export async function addProduct(product){
-    const ref =  firebase.firestore().collection(PRODUCTS)
+export async function addProduct(product) {
+    const ref = firebase.firestore().collection(PRODUCTS)
     const uid = firebase.auth().currentUser.uid
     const lineName = product.line.value || product.line
     const newProduct = {
@@ -236,7 +273,7 @@ export async function addProduct(product){
     delete newProduct.value
 
     const snap = await ref.add(newProduct)
-    
+
     const algoliaObject = {
         ...newProduct,
         objectID: snap.id
@@ -250,10 +287,10 @@ export async function addProduct(product){
 
 }
 
-export async function updateProduct(product, id){
+export async function updateProduct(product, id) {
     const snap = await firebase.firestore().collection(PRODUCTS).doc(id)
     const lineName = product.line.value || product.line
-    const newProduct ={
+    const newProduct = {
         ...product,
         line: lineName.toLowerCase()
     }
@@ -265,42 +302,42 @@ export async function updateProduct(product, id){
     return id
 }
 
-export async function addOrUpdateProduct(product, id){
-    if(id){
+export async function addOrUpdateProduct(product, id) {
+    if (id) {
         await updateProduct(product, id)
         return 'updated'
-    }else{
+    } else {
         await addProduct(product)
         return 'created'
     }
 }
 
-export async function getAllProducts(){
+export async function getAllProducts() {
     const snap = await firebase.firestore().collection(PRODUCTS).get()
     const data = {}
-    snap.forEach(doc =>{
-        data[doc.id] = {...doc.data(), id: doc.id}
+    snap.forEach(doc => {
+        data[doc.id] = { ...doc.data(), id: doc.id }
     })
     return data
 }
 
-export async function getProductByReference(ref){
-    const snap = await firebase.firestore().collection(PRODUCTS).where('reference','==', ref).get()
+export async function getProductByReference(ref) {
+    const snap = await firebase.firestore().collection(PRODUCTS).where('reference', '==', ref).get()
     const results = []
-    snap.forEach(product =>{
-        if(product.exists){
-            results.push({...product.data(), id: product.id})
+    snap.forEach(product => {
+        if (product.exists) {
+            results.push({ ...product.data(), id: product.id })
         }
     })
-    if(results.length){
+    if (results.length) {
         return results
-    }else{
+    } else {
         return null
     }
 }
 
 
-export async function deletProduct(id){
+export async function deletProduct(id) {
     const ref = firebase.firestore().collection(PRODUCTS).doc(id)
     await ref.delete()
     await algolia.deleteProduct(id)
@@ -308,11 +345,11 @@ export async function deletProduct(id){
 }
 
 
-export async function getLastProducts(){
+export async function getLastProducts() {
     const ref = firebase.firestore().collection(PRODUCTS).orderBy('createdAt', 'desc').limit(5)
     const res = await ref.get()
     const result = {}
-    res.forEach(doc =>{
+    res.forEach(doc => {
         result[doc.id] = { ...doc.data(), id: doc.id }
     })
     return result
@@ -320,11 +357,11 @@ export async function getLastProducts(){
 
 //--------------------------------------------- Orders ---------------------------------------------------
 
-export async function getSerialCode(){
+export async function getSerialCode() {
     const ref = firebase.firestore().collection('codes').doc('serialCode')
-    return await firebase.firestore().runTransaction((transaction)=>{
-        return transaction.get(ref).then(snap =>{
-            if(!snap.exists){
+    return await firebase.firestore().runTransaction((transaction) => {
+        return transaction.get(ref).then(snap => {
+            if (!snap.exists) {
                 return Promise.reject('No se encontro el codigo')
             }
             const serial = snap.data()
@@ -333,17 +370,20 @@ export async function getSerialCode(){
             return newSerial
         })
     })
-} 
+}
 
 
-export async function addOrder(order){
+export async function addOrder(order) {
     const dbOrders = firebase.firestore().collection(ORDERS)
     const dbClients = firebase.firestore().collection(CLIENTS)
     const oredrRef = dbOrders.doc()
     const orderId = oredrRef.id
-   
+
     const serialCode = await getSerialCode()
     const serialCodeText = serialCode.letter + serialCode.number
+
+
+    
 
 
     const timeLineObject = {
@@ -354,13 +394,13 @@ export async function addOrder(order){
         message: 'Se añadio el pedido al sistema'
     }
 
-    const totalProducts = order.products.reduce((prev, current)=>{
+    const totalProducts = order.products.reduce((prev, current) => {
         return prev + parseInt(current.quantity)
     }, 0)
 
-    const orderObject = { 
+    const orderObject = {
         ...order,
-        timeLine:[timeLineObject],
+        timeLine: [timeLineObject],
         state: 'pending',
         totalProducts,
         balance: order.total,
@@ -374,7 +414,7 @@ export async function addOrder(order){
     delete orderObject.clientInfo
     delete orderObject.client
 
-    const algoliaObject={
+    const algoliaObject = {
         objectID: orderId,
         serialCode: serialCodeText,
         clientName: order.clientInfo.name,
@@ -383,69 +423,83 @@ export async function addOrder(order){
         city: order.clientInfo.city,
         creator: firebase.auth().currentUser.uid,
     }
+    
 
     const db = firebase.firestore()
-    await db.runTransaction((transaction)=>{
-        return new Promise(async (res, rej)=>{
+    await db.runTransaction((transaction) => {
+        return new Promise(async (res, rej) => {
             const clientRef = dbClients.doc(order.clientInfo.id)
             //const clientOrderRef = clientRef.collection(ORDERS).doc(orderId)
             const snap = await transaction.get(clientRef)
             const client = snap.data()
-            
+
             //transaction.set(clientOrderRef, orderResume)
-            
-            if(!snap.exists){
+
+            if (!snap.exists) {
                 rej('El cliente no existe')
                 return
             }
 
             let totalOrders = 1
-            if(client.totalOrders){
+            if (client.totalOrders) {
                 totalOrders = client.totalOrders + 1
             }
 
             let totalValue = order.total
-            if(client.currency !== order.currency){
+            if (client.currency !== order.currency) {
                 totalValue = await convertCurrency(order.currency, client.currency, totalValue)
             }
             const lastOrder = new Date()
-            if(!client.balance){
-                transaction.update(clientRef,{
-                    balance: totalValue, 
-                    totalOrders, 
-                    lastOrder, 
+            if (!client.balance) {
+                transaction.update(clientRef, {
+                    balance: totalValue,
+                    totalOrders,
+                    lastOrder,
                     updatedAt: lastOrder
                 })
-            }else{
+            } else {
                 const totalBalance = client.balance + totalValue
                 transaction.update(clientRef, {
-                    balance: totalBalance, 
-                    totalOrders, 
+                    balance: totalBalance,
+                    totalOrders,
                     lastOrder,
                     updatedAt: lastOrder
                 })
             }
+
+
+            const notificationObject = {
+                type: 'CREATED',
+                collection: ORDERS,
+                author: firebase.auth().currentUser.uid,
+                message: `Se añadio el pedido ${serialCode} a nombre de  ${client.name} (${totalProducts} prendas)`,
+                link: `pedidos/${orderId}`,
+                date: new Date(),
+                seen: [firebase.auth().currentUser.uid]
+            }
+
+            transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
             transaction.set(oredrRef, orderObject)
             res('completed')
-            return 
+            return
         })
     })
 
     await algolia.addOrder(algoliaObject)
-    return 
+    return
 }
 
 
-export async function updateOrder(order, id){
+export async function updateOrder(order, id) {
     const dbOrders = firebase.firestore().collection(ORDERS)
     const dbClients = firebase.firestore().collection(CLIENTS)
     const oredrRef = dbOrders.doc(id)
-  
-    const totalProducts = order.products.reduce((prev, current)=>{
+
+    const totalProducts = order.products.reduce((prev, current) => {
         return prev + parseInt(current.quantity)
     }, 0)
 
-    const orderObject = { 
+    const orderObject = {
         ...order,
         state: 'pending',
         totalProducts,
@@ -457,7 +511,7 @@ export async function updateOrder(order, id){
     delete orderObject.clientInfo
     delete orderObject.client
 
-    const algoliaObject={
+    const algoliaObject = {
         clientName: order.clientInfo.name,
         clinetId: order.clientInfo.id,
         country: order.clientInfo.country.translations.es || order.clientInfo.country.name,
@@ -465,8 +519,8 @@ export async function updateOrder(order, id){
     }
 
     const db = firebase.firestore()
-    await db.runTransaction((transaction)=>{
-        return new Promise(async (res, rej)=>{
+    await db.runTransaction((transaction) => {
+        return new Promise(async (res, rej) => {
             const clientRef = dbClients.doc(order.clientInfo.id)
             //const clientOrderRef = clientRef.collection(ORDERS).doc(orderId)
             const clientSnap = await transaction.get(clientRef)
@@ -474,7 +528,7 @@ export async function updateOrder(order, id){
             const client = clientSnap.data()
             const oldOrder = orderSnap.data()
 
-            if(!clientSnap.exists || !orderSnap.exists){
+            if (!clientSnap.exists || !orderSnap.exists) {
                 rej('El cliente y/o el pedido no existe')
                 return
             }
@@ -489,67 +543,80 @@ export async function updateOrder(order, id){
 
 
             const equalShipping = compareObjects(order.shipping, oldOrder.shipping)
-            const equalProducts = isTheArrayEqual(order.products, oldOrder.products, ['color','quantity','price','reference', 'size'])
-            const equalDescount = order.descount === oldOrder.descount 
+            const equalProducts = isTheArrayEqual(order.products, oldOrder.products, ['color', 'quantity', 'price', 'reference', 'size', 'mold', 'label'])
+            const equalDescount = order.descount === oldOrder.descount
             const edittinfMessage = []
             const timeLine = [...oldOrder.timeLine]
-           
-            if(!equalProducts){
+
+            if (!equalProducts) {
                 edittinfMessage.push(`Se modificaron las prendas`)
             }
-            if(!equalShipping){
+            if (!equalShipping) {
                 edittinfMessage.push('Se modificó la informacion de envio')
             }
-            if(!equalDescount){
+            if (!equalDescount) {
                 edittinfMessage.push(`Se modificó el descuento aplicado ${oldOrder.descount}% > ${order.descount}%`)
             }
-            if(!equalDescount || !equalProducts){
+            if (!equalDescount || !equalProducts) {
                 edittinfMessage.push(`valor anterior:  $${thousandSeparator(oldOrder.total)}, nuevo valor: $${thousandSeparator(order.total)}, Nuevo Saldo: $${thousandSeparator(order.total - (order.totalPayments || 0))}`)
             }
 
-            if(edittinfMessage.length){
+            if (edittinfMessage.length) {
                 timeLineObject['message'] = edittinfMessage.join(', ')
                 timeLine.push(timeLineObject)
-            }   
-            
+            }
+
 
             let totalValue = order.total
-            if(client.currency !== order.currency){
+            if (client.currency !== order.currency) {
                 totalValue = await convertCurrency(order.currency, client.currency, totalValue)
             }
 
 
-            if(order.payments && order.totalPayments){
+            if (order.payments && order.totalPayments) {
                 totalValue = totalValue - order.totalPayments
             }
 
 
-            if(!client.balance){
-                transaction.update(clientRef,{
-                    balance: totalValue, 
+            if (!client.balance) {
+                transaction.update(clientRef, {
+                    balance: totalValue,
                     updatedAt: new Date(),
                 })
-            }else{
+            } else {
                 const totalBalance = (client.balance - oldOrder.balance) + totalValue
                 transaction.update(clientRef, {
-                    balance: totalBalance, 
+                    balance: totalBalance,
                     updatedAt: new Date()
                 })
             }
-            transaction.update(oredrRef, {...orderObject, timeLine, balance: totalValue})
+
+
+            const notificationObject = {
+                type: 'UPDATED',
+                collection: ORDERS,
+                author: firebase.auth().currentUser.uid,
+                message: `Se edito el pedido ${oldOrder.serialCode} a nombre de  ${client.name} (${totalProducts} prendas)`,
+                link: `pedidos/${id}`,
+                date: new Date(),
+                seen: [firebase.auth().currentUser.uid]
+            }
+
+            transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
+            transaction.update(oredrRef, { ...orderObject, timeLine, balance: totalValue })
             res('completed')
-            return 
+            return
         })
     })
 
     await algolia.updateOrder(id, algoliaObject)
-    return 
+    return
 }
 
 
 
-export async function getAllOrders(){
-    const db = firebase.firestore().collection(ORDERS).orderBy('createdAt','desc').limit(30)
+export async function getAllOrders() {
+    const db = firebase.firestore().collection(ORDERS).orderBy('createdAt', 'desc').limit(30)
     const orders = {}
     const snap = await db.get()
     snap.forEach(order => {
@@ -558,34 +625,34 @@ export async function getAllOrders(){
     return orders
 }
 
-export async function getOrderbyId(id){
+export async function getOrderbyId(id) {
     const db = firebase.firestore().collection(ORDERS).doc(id)
     const snap = await db.get()
-    if(!snap.exists){
+    if (!snap.exists) {
         return Promise.reject('El Pedido no existe')
     }
-    return {...snap.data(), id: snap.id}
+    return { ...snap.data(), id: snap.id }
 }
 
 
-export async function getOrderByClient(clientId){
-    const db = firebase.firestore().collection(ORDERS).where('clientId','==',clientId).orderBy('createdAt', 'desc').limit(30)
+export async function getOrderByClient(clientId) {
+    const db = firebase.firestore().collection(ORDERS).where('clientId', '==', clientId).orderBy('createdAt', 'desc').limit(30)
     const orders = {}
     const snap = await db.get()
-    snap.forEach(order =>{
-        orders[order.id] = {...order.data(), id: order.id}
+    snap.forEach(order => {
+        orders[order.id] = { ...order.data(), id: order.id }
     })
     return orders
 }
 
 
-export async function getOrdersWithBalance(){
-    const db = firebase.firestore().collection(ORDERS).where('balance','>', 0)
+export async function getOrdersWithBalance() {
+    const db = firebase.firestore().collection(ORDERS).where('balance', '>', 0)
     const snap = await db.get()
     const result = {}
-    snap.forEach(order=>{
-        if(order.exists){
-            result[order.id] = {...order.data(), id: order.id}
+    snap.forEach(order => {
+        if (order.exists) {
+            result[order.id] = { ...order.data(), id: order.id }
         }
     })
     return result
@@ -595,96 +662,108 @@ export async function getOrdersWithBalance(){
 //----------------------------------------------Payments------------------------------------------
 
 
-export async function addPayment(payment){
+export async function addPayment(payment) {
     const db = firebase.firestore()
     const paymentref = db.collection(PAYMENTS).doc()
     const paymentId = paymentref.id
     const oredrRef = db.collection(ORDERS).doc(payment.order.value)
     let algoliaObject = {}
-    await db.runTransaction(async (transaction)=>{
-            const orderSnap = await transaction.get(oredrRef)
-            const order = orderSnap.data()
-            const clientId =  order.clientId
-            const clientRef = db.collection(CLIENTS).doc(clientId)
-            const clientSnap = await transaction.get(clientRef)
-            const client = clientSnap.data()
+    await db.runTransaction(async (transaction) => {
+        const orderSnap = await transaction.get(oredrRef)
+        const order = orderSnap.data()
+        const clientId = order.clientId
+        const clientRef = db.collection(CLIENTS).doc(clientId)
+        const clientSnap = await transaction.get(clientRef)
+        const client = clientSnap.data()
 
-            const newBalance = client.balance - payment.value
+        const newBalance = client.balance - payment.value
 
-            const paymentObject = {
-                id: paymentId,
-                value: payment.value,
-                paymentMethod: payment.paymentMethod,
-                reference: payment.reference,
-                orderId: payment.order.value,
-                orderSerialCode: order.serialCode,
-                clientId,
-                clientName: client.name,
-                clientColor: client.personalColor,
-                currency: client.currency,
-                totalOrder: order.total,
-                createdAt: new Date(),
-                updatedAt: new Date()
-            }
+        const paymentObject = {
+            id: paymentId,
+            value: payment.value,
+            paymentMethod: payment.paymentMethod,
+            reference: payment.reference,
+            orderId: payment.order.value,
+            orderSerialCode: order.serialCode,
+            clientId,
+            clientName: client.name,
+            clientColor: client.personalColor,
+            currency: client.currency,
+            totalOrder: order.total,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        }
 
-            algoliaObject = {
-                objectID: paymentId,
-                reference: paymentObject.reference,
-                method: paymentObject.paymentMethod,
-                clientName: client.name,
-                clientId,
-                orderId: payment.order.value,
-                serialCode: order.serialCode
-            }
+        algoliaObject = {
+            objectID: paymentId,
+            reference: paymentObject.reference,
+            method: paymentObject.paymentMethod,
+            clientName: client.name,
+            clientId,
+            orderId: payment.order.value,
+            serialCode: order.serialCode
+        }
 
-            const timeLine = order.timeLine
+        const timeLine = order.timeLine
 
-            let totalPayments = parseFloat(payment.value)
+        let totalPayments = parseFloat(payment.value)
 
-            const newOrderBalance = parseFloat(order.balance) - parseFloat(payment.value)
-            
-            if(order.payments){
-                const subTotal = Object.keys(order.payments)
-                                        .map(id=>order.payments[id])
-                                        .reduce((previus, current)=>{
-                                            return previus + parseFloat(current.value)
-                                        }, 0)
-                totalPayments += subTotal
-            }
+        const newOrderBalance = parseFloat(order.balance) - parseFloat(payment.value)
 
-            timeLine.push({
-                type: 'PAYMENT',
-                author: firebase.auth().currentUser.uid,
-                date: new Date(),
-                title: 'Pago Realizado',
-                message: `Se realizó un pago por ${client.currency} $${thousandSeparator(payment.value)}, Saldo: ${client.currency} $${thousandSeparator(newOrderBalance)}`
-            })
+        if (order.payments) {
+            const subTotal = Object.keys(order.payments)
+                .map(id => order.payments[id])
+                .reduce((previus, current) => {
+                    return previus + parseFloat(current.value)
+                }, 0)
+            totalPayments += subTotal
+        }
 
-            if(newOrderBalance <= 0){
-                    timeLine[timeLine.length-1].message = `Se realizo un pago por $${thousandSeparator(payment.value)} para completar el pago total del pedido (${client.currency} $${thousandSeparator(order.total)})`
-            }
+        timeLine.push({
+            type: 'PAYMENT',
+            author: firebase.auth().currentUser.uid,
+            date: new Date(),
+            title: 'Pago Realizado',
+            message: `Se realizó un pago por ${client.currency} $${thousandSeparator(payment.value)}, Saldo: ${client.currency} $${thousandSeparator(newOrderBalance)}`
+        })
 
-            paymentObject['orderBalance'] = newOrderBalance
+        if (newOrderBalance <= 0) {
+            timeLine[timeLine.length - 1].message = `Se realizo un pago por $${thousandSeparator(payment.value)} para completar el pago total del pedido (${client.currency} $${thousandSeparator(order.total)})`
+        }
 
-            const orderObject = {
-                [`payments.${paymentId}`]: paymentObject,
-                timeLine,
-                totalPayments,
-                balance: newOrderBalance,
-                updatedAt: new Date()
-            }
+        paymentObject['orderBalance'] = newOrderBalance
 
-            const clientObject = {
-                balance: newBalance,
-                updatedAt: new Date(),
-                lastPayment: new Date()
-            }
+        const orderObject = {
+            [`payments.${paymentId}`]: paymentObject,
+            timeLine,
+            totalPayments,
+            balance: newOrderBalance,
+            updatedAt: new Date()
+        }
 
-            transaction.update(clientRef, clientObject)
-            transaction.update(oredrRef, orderObject)
-            transaction.set(paymentref, paymentObject)
+        const clientObject = {
+            balance: newBalance,
+            updatedAt: new Date(),
+            lastPayment: new Date()
+        }
 
-            return
+        const notificationObject = {
+            type: 'CREATED',
+            collection: PAYMENTS,
+            author: firebase.auth().currentUser.uid,
+            message: `Se agrego pago a el pedido ${order.serialCode} a nombre de  ${client.name} por ${payment.currency} $${thousandSeparator(payment.value)}`,
+            link: `pedidos/${payment.order.value}`,
+            date: new Date(),
+            seen: [firebase.auth().currentUser.uid]
+        }
+
+
+        transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
+        transaction.update(clientRef, clientObject)
+        transaction.update(oredrRef, orderObject)
+        transaction.set(paymentref, paymentObject)
+
+        return
     })
 
     await algolia.addPayment(algoliaObject)
@@ -692,52 +771,52 @@ export async function addPayment(payment){
     return
 }
 
-export async function getPayments(id){
+export async function getPayments(id) {
     const db = firebase.firestore().collection(PAYMENTS)
-    if(id){
-        const snap = await db.where('clientId','==',id).orderBy('createdAt','desc').limit(20).get()
+    if (id) {
+        const snap = await db.where('clientId', '==', id).orderBy('createdAt', 'desc').limit(20).get()
         const results = []
-        snap.forEach(item=>{
-            results.push({...item.data(), id: item.id})
+        snap.forEach(item => {
+            results.push({ ...item.data(), id: item.id })
         })
         return results
     }
-    const allSnap = await db.orderBy('createdAt','desc').limit(30).get()
+    const allSnap = await db.orderBy('createdAt', 'desc').limit(30).get()
     const allResults = []
-    allSnap.forEach(item=>{
-        allResults.push({...item.data(), id: item.id})
+    allSnap.forEach(item => {
+        allResults.push({ ...item.data(), id: item.id })
     })
     return allResults
 }
 
-export async function getPaymentsByOrderId(orderId){
-    const db = firebase.firestore().collection(PAYMENTS).where('orderId','==',orderId).orderBy('createdAt','desc').limit(10)
+export async function getPaymentsByOrderId(orderId) {
+    const db = firebase.firestore().collection(PAYMENTS).where('orderId', '==', orderId).orderBy('createdAt', 'desc').limit(10)
     const snap = await db.get()
     const results = []
-    snap.forEach(item=>{
-        results.push({...item.data(), id: item.id})
+    snap.forEach(item => {
+        results.push({ ...item.data(), id: item.id })
     })
     return results
 }
 
-export async function getPaymentById(id){
+export async function getPaymentById(id) {
     const snap = await firebase.firestore().collection(PAYMENTS).doc(id).get()
-    return {...snap.data(), id: snap.id}
+    return { ...snap.data(), id: snap.id }
 }
 
-export async function getPendingOrders(){
-    const snap = await firebase.firestore().collection(ORDERS).where('state','==', 'pending').orderBy('serialCode','asc').get()
+export async function getPendingOrders() {
+    const snap = await firebase.firestore().collection(ORDERS).where('state', '==', 'pending').orderBy('serialCode', 'asc').get()
     const results = []
-    snap.forEach(item=>{
-        results.push({...item.data(), id: item.id})
+    snap.forEach(item => {
+        results.push({ ...item.data(), id: item.id })
     })
     return results
 }
 
 //-------------------------------------------- Shippinhg -------------------------------------------------
 
-export async function AddShipping(shipping){
-    const db =  firebase.firestore()
+export async function AddShipping(shipping) {
+    const db = firebase.firestore()
     const shippingRef = db.collection(SHIPPING).doc()
     const orderRef = db.collection(ORDERS).doc(shipping.order.id)
     const clientRef = db.collection(CLIENTS).doc(shipping.order.clientId)
@@ -774,20 +853,20 @@ export async function AddShipping(shipping){
         const clientSnap = await transaction.get(clientRef)
         const client = clientSnap.data()
         const order = orderSnap.data()
-        
+
 
         const timeLine = order.timeLine
-        
+
 
 
         let shippingPrice = parseFloat(shipping.price)
-        if(shipping.currency !== order.currency){
+        if (shipping.currency !== order.currency) {
             shippingPrice = await convertCurrency(shipping.currency, order.currency, shippingPrice)
         }
         shippingObject.price = shippingPrice
 
-        let orderBalance =  order.balance
-        if(shipping.paymentMethod === 'payHere'){
+        let orderBalance = order.balance
+        if (shipping.paymentMethod === 'payHere') {
             orderBalance += shippingPrice
         }
 
@@ -795,24 +874,24 @@ export async function AddShipping(shipping){
 
         orderShipments.push(shippingObject)
 
-        const shipmentsPrice = orderShipments.reduce((previus, current)=>{
-            const price = current.paymentMethod === 'payHere'? current.price : 0
+        const shipmentsPrice = orderShipments.reduce((previus, current) => {
+            const price = current.paymentMethod === 'payHere' ? current.price : 0
             return previus + price
         }, 0)
 
-        const totalProducts = shipping.shippingUnits.reduce((prev, current)=>{
+        const totalProducts = shipping.shippingUnits.reduce((prev, current) => {
             return prev + current.quantity
         }, 0)
 
-        const totalWeight = shipping.shippingUnits.reduce((prev, current)=>{
+        const totalWeight = shipping.shippingUnits.reduce((prev, current) => {
             return prev + current.weight
         }, 0)
 
-        shippingObject.totalProducts =  totalProducts
+        shippingObject.totalProducts = totalProducts
         shippingObject.totalWeight = totalWeight
 
         const shippedProducts = (order.shippedProducts || 0) + totalProducts
-        
+
         const timeLineObject = {
             type: 'SHIPPING',
             author: firebase.auth().currentUser.uid,
@@ -821,9 +900,9 @@ export async function AddShipping(shipping){
             message: `Se despacharon ${totalProducts} prendas por medio de ${shipping.company}, `
         }
 
-        if(shipping.trackingNumber){
+        if (shipping.trackingNumber) {
             timeLineObject.message += `con numero de guia ${shipping.trackingNumber}`
-        }else{
+        } else {
             timeLineObject.message += `guia pendiente por añadir`
         }
 
@@ -831,7 +910,7 @@ export async function AddShipping(shipping){
 
 
         const orderObject = {
-            balance:  orderBalance,
+            balance: orderBalance,
             shipments: orderShipments,
             shipmentsPrice,
             shippedProducts,
@@ -841,14 +920,25 @@ export async function AddShipping(shipping){
 
         let clientBalance = client.balance
 
-        if(shipping.paymentMethod === 'payHere'){
+        if (shipping.paymentMethod === 'payHere') {
             clientBalance += shippingObject.price
         }
-        
 
-        transaction.update(clientRef, {balance: clientBalance})
+
+        const notificationObject = {
+            type: 'CREATED',
+            collection: SHIPPING,
+            author: firebase.auth().currentUser.uid,
+            message: `Se agrego envio a el pedido ${order.serialCode} a nombre de ${client.name}. (${totalProducts}) prendas despachadas`,
+            link: `pedidos/${shipping.order.id}`,
+            date: new Date(),
+            seen: [firebase.auth().currentUser.uid]
+        }
+
+        transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
+        transaction.update(clientRef, { balance: clientBalance })
         transaction.set(shippingRef, shippingObject)
-        transaction.update(orderRef, orderObject )
+        transaction.update(orderRef, orderObject)
 
         return
     })
@@ -857,28 +947,28 @@ export async function AddShipping(shipping){
 }
 
 
-export async function getAllShipments(){
+export async function getAllShipments() {
     const db = firebase.firestore().collection(SHIPPING).orderBy('createdAt', 'desc').limit(30)
     const snap = await db.get()
     let results = []
-    snap.forEach(item=>{
-        results.push({...item.data(), id: item.id})
+    snap.forEach(item => {
+        results.push({ ...item.data(), id: item.id })
     })
     return results
 }
 
-export async function getAllShipmentsByClientId(clientId){
+export async function getAllShipmentsByClientId(clientId) {
     const db = firebase.firestore().collection(SHIPPING).where('clientId', '==', clientId).orderBy('createdAt', 'desc').limit(15)
     const snap = await db.get()
     let results = []
-    snap.forEach(item=>{
-        results.push({...item.data(), id: item.id})
+    snap.forEach(item => {
+        results.push({ ...item.data(), id: item.id })
     })
     return results
-}   
+}
 
 
-export async function updatetrackingNumber(id, trackingNumber){
+export async function updatetrackingNumber(id, trackingNumber) {
     const shippingRef = firebase.firestore().collection(SHIPPING).doc(id)
     const db = firebase.firestore()
 
@@ -886,13 +976,13 @@ export async function updatetrackingNumber(id, trackingNumber){
         objectID: id,
         trackingNumber
     }
-    
-    await db.runTransaction(async transaction=>{
+
+    await db.runTransaction(async transaction => {
         const shippingSnap = await transaction.get(shippingRef)
         const shipping = shippingSnap.data()
-        const orderRef =  firebase.firestore().collection(ORDERS).doc(shipping.orderId)
+        const orderRef = firebase.firestore().collection(ORDERS).doc(shipping.orderId)
         const orderSnap = await transaction.get(orderRef)
-        const order =  orderSnap.data()
+        const order = orderSnap.data()
 
         const timeLine = order.timeLine
         const orderShipments = order.shipments
@@ -907,13 +997,13 @@ export async function updatetrackingNumber(id, trackingNumber){
 
         timeLine.push(timeLineObject)
 
-        const indexEdit = orderShipments.findIndex(item =>item.id === shipping.id)
-        orderShipments[indexEdit] = {...orderShipments[indexEdit], trackingNumber}
+        const indexEdit = orderShipments.findIndex(item => item.id === shipping.id)
+        orderShipments[indexEdit] = { ...orderShipments[indexEdit], trackingNumber }
 
-        transaction.update(shippingRef, {trackingNumber})
-        transaction.update(orderRef, {timeLine, shipments: orderShipments} )
+        transaction.update(shippingRef, { trackingNumber })
+        transaction.update(orderRef, { timeLine, shipments: orderShipments })
 
-        return 
+        return
     })
     await algolia.updateshipping(id, algoliaObject)
     return 'UPDATED'
@@ -921,8 +1011,8 @@ export async function updatetrackingNumber(id, trackingNumber){
 
 
 
-export async function updateShipping(id, shipping){
-    const db =  firebase.firestore()
+export async function updateShipping(id, shipping) {
+    const db = firebase.firestore()
     const shippingRef = db.collection(SHIPPING).doc(id)
     const orderRef = db.collection(ORDERS).doc(shipping.order.id)
     const clientRef = db.collection(CLIENTS).doc(shipping.order.clientId)
@@ -961,53 +1051,53 @@ export async function updateShipping(id, shipping){
         const shippingSnap = await transaction.get(shippingRef)
         const client = clientSnap.data()
         const order = orderSnap.data()
-        const oldShipping =  shippingSnap.data()
+        const oldShipping = shippingSnap.data()
 
         const timeLine = order.timeLine
-        
+
         let shippingPrice = parseFloat(shipping.price)
-        if(shipping.currency !== order.currency){
+        if (shipping.currency !== order.currency) {
             shippingPrice = await convertCurrency(shipping.currency, order.currency, shippingPrice)
         }
         shippingObject.price = shippingPrice
 
         let clientBalance = client.balance
-        let orderBalance =  order.balance
-        if(oldShipping.paymentMethod === 'payHere' && shipping.paymentMethod === 'payHere'){
+        let orderBalance = order.balance
+        if (oldShipping.paymentMethod === 'payHere' && shipping.paymentMethod === 'payHere') {
             orderBalance = (orderBalance - oldShipping.price) + shippingPrice
             clientBalance = (clientBalance - oldShipping.price) + shippingPrice
-        } else if(oldShipping.paymentMethod === 'payThere' && shipping.paymentMethod === 'payHere'){
+        } else if (oldShipping.paymentMethod === 'payThere' && shipping.paymentMethod === 'payHere') {
             orderBalance += shippingPrice
             clientBalance += shippingPrice
-        }else if(oldShipping.paymentMethod === 'payHere' && shipping.paymentMethod === 'payThere'){
+        } else if (oldShipping.paymentMethod === 'payHere' && shipping.paymentMethod === 'payThere') {
             orderBalance = orderBalance - oldShipping.price
             clientBalance = clientBalance - oldShipping.price
         }
 
         const orderShipments = order.shipments
-        const indexEdit = orderShipments.findIndex(item =>item.id === shipping.id)
-        
-        
-        const shipmentsPrice = orderShipments.reduce((previus, current)=>{
-            const price = current.paymentMethod === 'payHere'? current.price : 0
+        const indexEdit = orderShipments.findIndex(item => item.id === shipping.id)
+
+
+        const shipmentsPrice = orderShipments.reduce((previus, current) => {
+            const price = current.paymentMethod === 'payHere' ? current.price : 0
             return previus + price
         }, 0)
-        
-        const totalProducts = shipping.shippingUnits.reduce((prev, current)=>{
+
+        const totalProducts = shipping.shippingUnits.reduce((prev, current) => {
             return prev + current.quantity
         }, 0)
-        
-        const totalWeight = shipping.shippingUnits.reduce((prev, current)=>{
+
+        const totalWeight = shipping.shippingUnits.reduce((prev, current) => {
             return prev + current.weight
         }, 0)
-        
-        shippingObject.totalProducts =  totalProducts
+
+        shippingObject.totalProducts = totalProducts
         shippingObject.totalWeight = totalWeight
-        
-        orderShipments[indexEdit] = {...shippingObject, createdAt: oldShipping.createdAt}
-        
+
+        orderShipments[indexEdit] = { ...shippingObject, createdAt: oldShipping.createdAt }
+
         const shippedProducts = (order.shippedProducts - oldShipping.totalProducts) + totalProducts
-        
+
         const timeLineObject = {
             type: 'SHIPPING',
             author: firebase.auth().currentUser.uid,
@@ -1016,9 +1106,9 @@ export async function updateShipping(id, shipping){
             message: `Se editó el envio realizado por medio de ${shipping.company}, `
         }
 
-        if(shipping.trackingNumber){
+        if (shipping.trackingNumber) {
             timeLineObject.message += `con numero de guia ${shipping.trackingNumber}`
-        }else{
+        } else {
             timeLineObject.message += `guia pendiente por añadir`
         }
 
@@ -1026,18 +1116,29 @@ export async function updateShipping(id, shipping){
 
 
         const orderObject = {
-            balance:  orderBalance,
+            balance: orderBalance,
             shipments: orderShipments,
             shipmentsPrice,
             shippedProducts,
             timeLine,
             updatedAt: new Date()
         }
-  
 
-        transaction.update(clientRef, {balance: clientBalance})
+
+        const notificationObject = {
+            type: 'UPDATED',
+            collection: SHIPPING,
+            author: firebase.auth().currentUser.uid,
+            message: `Se edito envio en el pedido ${order.serialCode} a nombre de ${client.name}. (${totalProducts}) prendas despachadas`,
+            link: `pedidos/${shipping.order.id}`,
+            date: new Date(),
+            seen: [firebase.auth().currentUser.uid]
+        }
+
+        transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
+        transaction.update(clientRef, { balance: clientBalance })
         transaction.update(shippingRef, shippingObject)
-        transaction.update(orderRef, orderObject )
+        transaction.update(orderRef, orderObject)
 
         return
     })
@@ -1046,17 +1147,17 @@ export async function updateShipping(id, shipping){
 }
 
 
-export async function deleteShipping(id){
-    const db =  firebase.firestore()
+export async function deleteShipping(id) {
+    const db = firebase.firestore()
     const shippingRef = db.collection(SHIPPING).doc(id)
-   
+
     await db.runTransaction(async transaction => {
         const shippingSnap = await transaction.get(shippingRef)
-        const oldShipping =  shippingSnap.data()
-        
+        const oldShipping = shippingSnap.data()
+
         const orderRef = db.collection(ORDERS).doc(oldShipping.orderId)
         const clientRef = db.collection(CLIENTS).doc(oldShipping.clientId)
-        
+
 
         const orderSnap = await transaction.get(orderRef)
         const clientSnap = await transaction.get(clientRef)
@@ -1064,30 +1165,30 @@ export async function deleteShipping(id){
         const order = orderSnap.data()
 
         const timeLine = order.timeLine
-        
+
         // restar el valor de la orden al pedido y al client balance
         //solo si el pedido era payHere
-        let clientBalance =  client.balance
+        let clientBalance = client.balance
         let orderBalance = order.balance
-        if(oldShipping.paymentMethod === 'payHere'){
-            orderBalance =  orderBalance - oldShipping.price
-            clientBalance =  clientBalance - oldShipping.price
+        if (oldShipping.paymentMethod === 'payHere') {
+            orderBalance = orderBalance - oldShipping.price
+            clientBalance = clientBalance - oldShipping.price
         }
 
 
         const orderShipments = order.shipments
-        const indexEdit = orderShipments.findIndex(item =>item.id === oldShipping.id)
+        const indexEdit = orderShipments.findIndex(item => item.id === oldShipping.id)
         orderShipments.splice(indexEdit, 1)
 
 
-        const shipmentsPrice = orderShipments.reduce((previus, current)=>{
-            const price = current.paymentMethod === 'payHere'? current.price : 0
+        const shipmentsPrice = orderShipments.reduce((previus, current) => {
+            const price = current.paymentMethod === 'payHere' ? current.price : 0
             return previus + price
         }, 0)
 
 
         const shippedProducts = (order.shippedProducts - oldShipping.totalProducts)
-        
+
         const timeLineObject = {
             type: 'SHIPPING',
             author: firebase.auth().currentUser.uid,
@@ -1096,9 +1197,9 @@ export async function deleteShipping(id){
             message: `Se eliminó el envio realizado por medio de ${oldShipping.company}, `
         }
 
-        if(oldShipping.trackingNumber){
+        if (oldShipping.trackingNumber) {
             timeLineObject.message += `con numero de guia ${oldShipping.trackingNumber}`
-        }else{
+        } else {
             timeLineObject.message += `guia pendiente por añadir`
         }
 
@@ -1106,17 +1207,28 @@ export async function deleteShipping(id){
 
 
         const orderObject = {
-            balance:  orderBalance,
+            balance: orderBalance,
             shipments: orderShipments,
             shipmentsPrice,
             shippedProducts,
             timeLine,
             updatedAt: new Date()
         }
-  
 
-        transaction.update(clientRef, {balance: clientBalance})
-        transaction.update(orderRef, orderObject )
+
+        const notificationObject = {
+            type: 'DELETED',
+            collection: SHIPPING,
+            author: firebase.auth().currentUser.uid,
+            message: `Se elimino envio en el pedido ${order.serialCode} a nombre de ${client.name}.`,
+            link: `pedidos/${oldShipping.orderId}`,
+            date: new Date(),
+            seen: [firebase.auth().currentUser.uid]
+        }
+
+        transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
+        transaction.update(clientRef, { balance: clientBalance })
+        transaction.update(orderRef, orderObject)
         transaction.delete(shippingRef)
 
         return
@@ -1126,29 +1238,35 @@ export async function deleteShipping(id){
 
 }
 
-export async function getShipmentsWithoutTrackingNumber(){
-    const db = firebase.firestore().collection(SHIPPING).where('trackingNumber','==','').orderBy('createdAt','desc').limit(20)
+export async function getShipmentsWithoutTrackingNumber() {
+    const db = firebase.firestore().collection(SHIPPING).where('trackingNumber', '==', '').orderBy('createdAt', 'desc').limit(20)
     const snap = await db.get()
     const results = []
-    snap.forEach(item=>{
-        results.push({...item.data(), id: item.id})
+    snap.forEach(item => {
+        results.push({ ...item.data(), id: item.id })
     })
     return results
 }
 
-export async function getShippingById(id){
+export async function getShippingById(id) {
     const db = firebase.firestore().collection(SHIPPING).doc(id)
     const snap = await db.get()
-    return {...snap.data(), id: snap.id}
+    return { ...snap.data(), id: snap.id }
+}
+
+//-----------------------------------------------Notidications ---------------------------
+
+async function addNotification(notification) {
+    return await firebase.firestore().collection(NOTIFICATIONS).add(notification)
 }
 
 
 //-------------------------------------------- Handle Error ----------------------------------------------
 
-const handleError = (cb) => (err) =>{
-    if(cb){
+const handleError = (cb) => (err) => {
+    if (cb) {
         cb(err)
-    }else{
+    } else {
         console.log(err)
     }
 }
