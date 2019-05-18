@@ -766,7 +766,7 @@ export async function addPayment(payment) {
             type: 'CREATED',
             collection: PAYMENTS,
             author: firebase.auth().currentUser.uid,
-            message: `Se agrego pago a el pedido ${order.serialCode} a nombre de  ${client.name} por ${payment.currency} $${thousandSeparator(payment.value)}`,
+            message: `Se agrego pago a el pedido ${order.serialCode} a nombre de  ${client.name} por ${client.currency} $${thousandSeparator(payment.value)}`,
             link: `pedidos/${payment.order.value}`,
             date: new Date(),
             seen: seenArray
@@ -1286,12 +1286,19 @@ export function getUnSeeNotifications(cb){
     const uid = firebase.auth().currentUser.uid
     const databaseRef = firebase.firestore().collection(NOTIFICATIONS)
     const queryRef = databaseRef.where('seen','array-contains', uid).orderBy('date','desc').limit(20)
+    let firsTime = true
     const cancelFunction = queryRef.onSnapshot(data=>{
+        
+        const newNotifications  = data.docChanges()
+                             .filter(item=>item.type === 'added')
+                             .map(item=>({...item.doc.data(), id: item.doc.id}))
+        
         const result = []
         data.forEach(item=>{
             result.push({...item.data(), id: item.id})
         })
-        cb(result)
+        cb(result, firsTime? []:newNotifications)
+        firsTime = !firsTime
     })
     return cancelFunction
 }
@@ -1304,6 +1311,21 @@ export async function getAllNotifications(){
         results.push({...item.data(), id: item.id})
     })
     return results
+}
+
+export async function setNotificationSeen(){
+    const uid = firebase.auth().currentUser.uid
+    const snap = await firebase.firestore().collection(NOTIFICATIONS).where('seen','array-contains', uid).get()
+    const promises = []
+    snap.forEach(item =>{
+        promises.push(
+            firebase.firestore().collection(NOTIFICATIONS).doc(item.id).update({
+                seen: firebase.firestore.FieldValue.arrayRemove(uid)
+            })
+        )
+    })
+    await Promise.all(promises)
+    return
 }
 
 

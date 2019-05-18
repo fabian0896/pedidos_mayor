@@ -8,7 +8,11 @@ import Badge from '@material-ui/core/Badge';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import MenuItem from '@material-ui/core/MenuItem'
-import { ArrowBack, Menu as MenuIcon } from '@material-ui/icons'
+import { 
+    ArrowBack, 
+    Menu as MenuIcon,
+    Notifications as NotificacionsIcon
+} from '@material-ui/icons'
 
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -18,6 +22,8 @@ import { Grow, Paper, ClickAwayListener, Popper, MenuList } from '@material-ui/c
 import Notificacions from './Notifications'
 
 import { getAllNotifications } from '../../actions'
+
+import { setNotificationSeen } from '../../lib/firebaseService'
 
 
 
@@ -109,6 +115,9 @@ class NavBar extends Component {
             } else {
                 if(menu==='notification'){
                     this.props.getAllNotifications()
+                    setTimeout(()=>{
+                        setNotificationSeen().then().catch(err=>console.log(err))
+                    }, 1000)
                     console.log('fetch!')
                 }
                 return {
@@ -168,7 +177,7 @@ class NavBar extends Component {
                                 onClick={this.handleOpenProfileMenu('notification')}
                             >
                                 <Badge color="secondary" badgeContent={this.props.notificationsCount}>
-                                    <MailIcon />
+                                    <NotificacionsIcon />
                                 </Badge>
                             </IconButton>
                             <Popper  open={this.state.open === 'notification'} anchorEl={this.anchorEl['notification']} transition disablePortal >

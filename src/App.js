@@ -11,6 +11,7 @@ import {
   asyncUpdateClients, 
   asyncAddSellers,
   setNotSeenNotificationsCount,
+  showAlert
  } from './actions'
 
 
@@ -45,18 +46,16 @@ class App extends Component {
 
   getUser = () => {
     firebase.auth().onAuthStateChanged((user) => {
-
       if (this.state.loading) {
         this.setState({ loading: false })
       }
-
       if (user) {
         //agregar el usuario al estado
-
         this.props.updateUser(user);
         this.props.history.push(this.ruta);
-        this.clearFunction = getUnSeeNotifications(data => {
-            this.props.setNotSeenNotificationsCount(data.length)
+        this.clearFunction = getUnSeeNotifications((data, newNoti) => {
+          this.handleShowNotification(newNoti)
+          this.props.setNotSeenNotificationsCount(data.length)
         })
       } else {
         //retirar el usuario del estado
@@ -65,6 +64,24 @@ class App extends Component {
       }
     });
   }
+
+
+  handleShowNotification = (notifications)=>{
+      if(!notifications.length){
+          return
+      }
+      const mapping = {
+        ADDED: 'success',
+        UPDATED: 'warning',
+        DELETED: 'error'
+      }
+      notifications.forEach(noti =>{
+        const type = mapping[noti.type]
+        this.props.showAlert(type, noti.message)
+      })
+      
+  }
+
 
   componentDidMount() {
     this.getUser();
@@ -124,6 +141,7 @@ const mapDispatchToProps = {
   asyncUpdateClients,
   asyncAddSellers,
   setNotSeenNotificationsCount,
+  showAlert
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
