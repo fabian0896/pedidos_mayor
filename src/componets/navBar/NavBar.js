@@ -17,7 +17,7 @@ import 'firebase/auth'
 import { Grow, Paper, ClickAwayListener, Popper, MenuList } from '@material-ui/core';
 import Notificacions from './Notifications'
 
-
+import { getAllNotifications } from '../../actions'
 
 
 
@@ -107,6 +107,10 @@ class NavBar extends Component {
                     open: ''
                 }
             } else {
+                if(menu==='notification'){
+                    this.props.getAllNotifications()
+                    console.log('fetch!')
+                }
                 return {
                     open: menu
                 }
@@ -163,7 +167,7 @@ class NavBar extends Component {
                                 buttonRef={node => { this.anchorEl['notification'] = node }}
                                 onClick={this.handleOpenProfileMenu('notification')}
                             >
-                                <Badge color="secondary" badgeContent={3}>
+                                <Badge color="secondary" badgeContent={this.props.notificationsCount}>
                                     <MailIcon />
                                 </Badge>
                             </IconButton>
@@ -176,7 +180,7 @@ class NavBar extends Component {
                                         >
                                             <Paper className={classes.notifications}>
                                                 <ClickAwayListener onClickAway={this.handleMenuClose('notification')}>
-                                                    <Notificacions/>
+                                                    <Notificacions uid={this.props.uid} notifications={this.props.notifications}/>
                                                 </ClickAwayListener>
                                             </Paper>
                                         </Grow>
@@ -221,8 +225,15 @@ class NavBar extends Component {
 function mapStateToProps(state, props) {
     return {
         showBackButtom: state.backButtom.activate,
-        path: state.backButtom.path
+        path: state.backButtom.path,
+        notificationsCount: state.notifications.notSeenCount,
+        notifications: state.notifications.all,
+        uid: state.user.uid
     }
 }
 
-export default connect(mapStateToProps)(withRouter(withStyles(styles)(NavBar)));
+const mapDispatchToProps = {
+    getAllNotifications
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles)(NavBar)));

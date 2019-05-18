@@ -1096,6 +1096,7 @@ export async function updateShipping(id, shipping) {
 
         const orderShipments = order.shipments
         const indexEdit = orderShipments.findIndex(item => item.id === shipping.id)
+        orderShipments[indexEdit] = { ...shippingObject, createdAt: oldShipping.createdAt }
 
 
         const shipmentsPrice = orderShipments.reduce((previus, current) => {
@@ -1114,7 +1115,6 @@ export async function updateShipping(id, shipping) {
         shippingObject.totalProducts = totalProducts
         shippingObject.totalWeight = totalWeight
 
-        orderShipments[indexEdit] = { ...shippingObject, createdAt: oldShipping.createdAt }
 
         const shippedProducts = (order.shippedProducts - oldShipping.totalProducts) + totalProducts
 
@@ -1294,6 +1294,16 @@ export function getUnSeeNotifications(cb){
         cb(result)
     })
     return cancelFunction
+}
+
+export async function getAllNotifications(){
+    const databaseRef =  firebase.firestore().collection(NOTIFICATIONS).orderBy('date', 'desc').limit(20)
+    const snap = await databaseRef.get()
+    const results = []
+    snap.forEach(item=>{
+        results.push({...item.data(), id: item.id})
+    })
+    return results
 }
 
 

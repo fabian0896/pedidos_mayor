@@ -4,7 +4,8 @@ import {
     getLastClients,
     getAllProducts,
     getLastProducts,
-    getAllOrders as firebaseGetAllOrders
+    getAllOrders as firebaseGetAllOrders,
+    getAllNotifications as firebaseGetNotifications
 } from '../lib/firebaseService';
 
 
@@ -180,3 +181,31 @@ export function getAllOrders(){
 }
 
 
+// --------------------- Notifications ----------------
+
+export function setNotSeenNotificationsCount(data){
+    return {
+        type: 'UPDATE_NOT_SEEN_COUNT',
+        payload:{
+            data
+        }
+    }
+}
+
+export function setAllNotifications(data){
+    return{
+        type: 'SET_ALL_NOTIFICATIONS',
+        payload:{
+            data
+        }
+    }
+}
+
+
+export function getAllNotifications(){
+    return dispatch =>{
+        firebaseGetNotifications().then(data=>{
+            dispatch(setAllNotifications(data))
+        })
+    }
+}

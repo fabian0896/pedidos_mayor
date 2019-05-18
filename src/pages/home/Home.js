@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth'
-import { getUnSeeNotifications } from '../../lib/firebaseService'
 
 class Home extends Component{
 
@@ -12,14 +11,12 @@ class Home extends Component{
     }
 
     componentDidMount(){
-        this.clearFunction = getUnSeeNotifications(data=>{
-            console.log(data)
-        })
+        
     }
 
 
     componentWillUnmount(){
-        this.clearFunction()
+       
     }
 
     render(){

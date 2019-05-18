@@ -6,6 +6,7 @@ import clients from './clients'
 import sellers from './sellers'
 import products from './products'
 import orders from './orders'
+import notifications from './notifications'
 
 const rootReducer = combineReducers({
     user,
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
     clients,
     sellers,
     products,
-    orders
+    orders,
+    notifications
 });
 
 export default rootReducer;
