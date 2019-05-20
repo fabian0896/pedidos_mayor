@@ -91,7 +91,7 @@ class Clientes extends Component{
 
     render(){
         const { checkValue, textValue, isSearching, results, loadingSearch } = this.state
-        const { clients, recent, classes } = this.props
+        const { clients, recent, classes, top } = this.props
         let clientList
         if(isSearching){
             clientList = results
@@ -150,7 +150,7 @@ class Clientes extends Component{
                         <TopClients
                             handleClick={this.handleClickVerMas} 
                             recent={recent} 
-                            top={recent}/>
+                            top={top}/>
                     </Grid>
                 </Grid>
             </div>
@@ -167,9 +167,10 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state, props) => {
     return {
-        userId: state.user.uid,
+        userId: state.user && state.user.uid,
         clients: state.clients.all,
-        recent: state.clients.recent
+        recent: state.clients.recent,
+        top: state.clients.top
     }
 } 
 

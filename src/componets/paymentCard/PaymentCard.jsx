@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, Fragment } from 'react'
-import { withStyles, Paper, Typography, Divider, IconButton, Fab } from '@material-ui/core'
+import { withStyles, Paper, Typography, Divider, IconButton } from '@material-ui/core'
 import NumberFormat from 'react-number-format';
 import moment from 'moment'
 import { limitName } from '../../lib/utilities'
@@ -161,6 +161,7 @@ const PaymentCard = withStyles((theme)=>({
     
     
     let counter = 0
+    let timer = null
     const handleDobleClick = useCallback(()=>{
         counter++
         if(counter === 2){
@@ -169,7 +170,7 @@ const PaymentCard = withStyles((theme)=>({
             clearTimeout(timer)
             return
         } 
-        const timer = setTimeout(()=>{
+        timer = setTimeout(()=>{
             counter = 0
         }, 300)
         return

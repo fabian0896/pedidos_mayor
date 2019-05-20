@@ -6,7 +6,6 @@ import IconButton from '@material-ui/core/IconButton'
 import { withStyles } from '@material-ui/core/styles'
 import Badge from '@material-ui/core/Badge';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
 import MenuItem from '@material-ui/core/MenuItem'
 import { 
     ArrowBack, 
@@ -118,7 +117,6 @@ class NavBar extends Component {
                     setTimeout(()=>{
                         setNotificationSeen().then().catch(err=>console.log(err))
                     }, 1000)
-                    console.log('fetch!')
                 }
                 return {
                     open: menu

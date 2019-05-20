@@ -2,7 +2,7 @@
 const initialState = {
     all: {},
     recent: {},
-    top: {}
+    top: []
 }
 
 function clients(state = initialState, action){
@@ -21,6 +21,12 @@ function clients(state = initialState, action){
                 recent:{
                     ...action.payload.data
                 }
+            }
+        }
+        case 'ADD_TOP_CLIENTS':{
+            return {
+                ...state,
+                top: action.payload.data
             }
         }
         default:{

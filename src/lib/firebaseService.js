@@ -1352,6 +1352,9 @@ export async function getAllNotifications(){
 }
 
 export async function setNotificationSeen(){
+    if(!firebase.auth().currentUser){
+        return
+    }
     const uid = firebase.auth().currentUser.uid
     const snap = await firebase.firestore().collection(NOTIFICATIONS).where('seen','array-contains', uid).get()
     const promises = []

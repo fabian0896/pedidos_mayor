@@ -83,6 +83,16 @@ export function updateClients(clients){
 }
 
 
+export function updateTopClients(clients){
+    return{
+        type: 'ADD_TOP_CLIENTS',
+        payload:{
+            data: clients
+        }
+    }
+}
+
+
 export const asyncUpdateClients = ()=>{
     return (dispatch) => {
         getAllClients((err, data)=>{
@@ -90,7 +100,15 @@ export const asyncUpdateClients = ()=>{
                 console.log(err)
                 return
             }
+
+            const clientList = Object.keys(data).map(id=>data[id])
+            const topClient = clientList.filter(item=>!!item.totalOrders).sort((a,b)=>{
+                return a - b
+            })
+            
+            dispatch(updateTopClients(topClient.slice(0,5)))
             dispatch(updateClients(data))
+
         })
         
     }
