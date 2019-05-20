@@ -1,9 +1,13 @@
-import React from 'react'
-import { withStyles, Paper, Typography, Divider } from '@material-ui/core'
+import React, { useState, useMemo, useCallback, Fragment } from 'react'
+import { withStyles, Paper, Typography, Divider, IconButton, Fab } from '@material-ui/core'
 import NumberFormat from 'react-number-format';
 import moment from 'moment'
 import { limitName } from '../../lib/utilities'
 import { getPaymentStyles } from '../../lib/enviroment'
+import classNames from 'classnames'
+import { Delete as DeleteIcon, Close as CloseIcon } from '@material-ui/icons'
+import ModalAlert from '../modalAlert/ModalAlert'
+import { deletePayment as firebaseDeletePayment  } from '../../lib/firebaseService'
 
 const MoneyValue = ({amount, children, currency})=>(
     <NumberFormat 
@@ -23,6 +27,7 @@ const MoneyValue = ({amount, children, currency})=>(
 const PaymentCard = withStyles((theme)=>({
     root: {
         //display: 'inline-block',
+        cursor: 'pointer',
         height: '100%',
         overflow: 'hidden',
         position: 'relative',
@@ -131,48 +136,126 @@ const PaymentCard = withStyles((theme)=>({
     },
     secondaryText:{
         opacity: .55
+    },
+    editContainer:{
+        minHeight: 178,
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative'
+    },
+    closeIcon:{
+        position: 'absolute',
+        right: theme.spacing.unit*1,
+        top: theme.spacing.unit*1
+    },
+    deleteIcon:{
+        fontSize: 60
     }
-}))(({payment, classes})=>{
-    const paymentStyle = getPaymentStyles(payment.paymentMethod)
-    return(
-        <Paper className={classes.root}>
-            <div style={{background: paymentStyle.background}} className={classes.hoverObject}></div>
-            <div className={classes.infoContainer}>
-                <div>
-                    <div style={{color: paymentStyle.color}} className={classes.resume}>
-                        <MoneyValue currency={payment.currency} amount={payment.value}>
-                            <Typography color="inherit" variant="h5"></Typography>
-                        </MoneyValue>
-                        <Typography className={classes.secondaryText} variant="subtitle2" >{payment.paymentMethod}</Typography>
-                        <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">{payment.reference}</Typography>
-                    </div>
-                        <Divider className={classes.divider}/>
-                    <div style={{color: paymentStyle.color}} className={classes.secondaryInfo}>
-                        <Typography className={classes.date} color="inherit" variant="overline">{limitName(payment.clientName)}</Typography>
-                        <Typography 
-                            className={classes.date} 
-                            color="inherit" 
-                            variant="overline">
-                                {moment(payment.createdAt.seconds*1000).format('DD/MM/YYYY')}
-                        </Typography>
-                    </div>
-                </div>
-                <div style={{background: paymentStyle.background, color: paymentStyle.color}} className={classes.detailInfo}>
-                    
-                    <Typography gutterBottom align="right" color="inherit" variant="h5">{payment.orderSerialCode}</Typography>
+}))(({payment, classes, onUpdate})=>{
+    const [edit, setEdit] = useState(false)
+    const [alert, setAlert] = useState(false)
+    const [loader, setLoader] = useState(false)
+    const paymentStyle = useMemo(()=>getPaymentStyles(payment.paymentMethod)) 
+    
+    
+    let counter = 0
+    const handleDobleClick = useCallback(()=>{
+        counter++
+        if(counter === 2){
+            counter = 0
+            setEdit(true)
+            clearTimeout(timer)
+            return
+        } 
+        const timer = setTimeout(()=>{
+            counter = 0
+        }, 300)
+        return
+    })
 
-                    <Typography className={classes.secondaryText} align="right" color="inherit" variant="body2">Total del pedido</Typography>
-                    <MoneyValue currency={payment.currency} amount={payment.totalOrder}>
-                        <Typography gutterBottom align="right" color="inherit" variant="body1"></Typography>
-                    </MoneyValue>
-                    
-                    <Typography className={classes.secondaryText} align="right" color="inherit" variant="body2">saldo</Typography>
-                    <MoneyValue currency={payment.currency} amount={payment.orderBalance}>
-                        <Typography gutterBottom align="right" color="inherit" variant="body1"></Typography>
-                    </MoneyValue>
-                </div>
-            </div>
-        </Paper>
+    const onCancelAlert = ()=>{
+        setAlert(false)
+        setEdit(false)
+    }
+
+
+    const confirmDelete = ()=>{
+        setAlert(true)
+    }
+    
+    const deletePayment = async ()=>{
+        setLoader(true)
+        await firebaseDeletePayment(payment.id, payment)
+        setLoader(false)
+        setAlert(false)
+        setEdit(false)
+        onUpdate && onUpdate()
+    }
+
+    return(
+        <Fragment>
+            <ModalAlert 
+                loading={loader}
+                open={alert}
+                onClose={()=>setAlert(false)}
+                type="error"
+                message="estas segur@ que deseas eliminar este pago?"
+                onConfirm={deletePayment}
+                onCancel={(onCancelAlert)}  
+            />
+            {
+                edit?
+                <Paper style={{background: paymentStyle.background, color: paymentStyle.color}} className={classNames(classes.root, classes.editContainer)}>
+                    <IconButton onClick={confirmDelete} color="inherit" >
+                        <DeleteIcon className={classes.deleteIcon} fontSize="inherit"/>
+                    </IconButton>
+                    <IconButton color="inherit" onClick={()=>setEdit(false)} className={classes.closeIcon}>
+                        <CloseIcon fontSize="small"/>
+                    </IconButton>
+                </Paper>
+                :
+                <Paper onClick={handleDobleClick} className={classes.root}>
+                    <div style={{background: paymentStyle.background}} className={classes.hoverObject}></div>
+                    <div className={classes.infoContainer}>
+                        <div>
+                            <div style={{color: paymentStyle.color}} className={classes.resume}>
+                                <MoneyValue currency={payment.currency} amount={payment.value}>
+                                    <Typography color="inherit" variant="h5"></Typography>
+                                </MoneyValue>
+                                <Typography className={classes.secondaryText} variant="subtitle2" >{payment.paymentMethod}</Typography>
+                                <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">{payment.reference}</Typography>
+                            </div>
+                                <Divider className={classes.divider}/>
+                            <div style={{color: paymentStyle.color}} className={classes.secondaryInfo}>
+                                <Typography className={classes.date} color="inherit" variant="overline">{limitName(payment.clientName)}</Typography>
+                                <Typography 
+                                    className={classes.date} 
+                                    color="inherit" 
+                                    variant="overline">
+                                        {moment(payment.createdAt.seconds*1000).format('DD/MM/YYYY')}
+                                </Typography>
+                            </div>
+                        </div>
+                        <div style={{background: paymentStyle.background, color: paymentStyle.color}} className={classes.detailInfo}>
+                            
+                            <Typography gutterBottom align="right" color="inherit" variant="h5">{payment.orderSerialCode}</Typography>
+
+                            <Typography className={classes.secondaryText} align="right" color="inherit" variant="body2">Total del pedido</Typography>
+                            <MoneyValue currency={payment.currency} amount={payment.totalOrder}>
+                                <Typography gutterBottom align="right" color="inherit" variant="body1"></Typography>
+                            </MoneyValue>
+                            
+                            <Typography className={classes.secondaryText} align="right" color="inherit" variant="body2">saldo</Typography>
+                            <MoneyValue currency={payment.currency} amount={payment.orderBalance}>
+                                <Typography gutterBottom align="right" color="inherit" variant="body1"></Typography>
+                            </MoneyValue>
+                        </div>
+                    </div>
+                </Paper>
+            }
+        </Fragment>
 )})
 
 

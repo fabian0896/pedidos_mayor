@@ -39,6 +39,13 @@ class Pagos extends Component{
         return
     }
 
+
+    getPayments = async ()=>{
+        const payments = await getPayments()
+        this.setState({payments})
+        return
+    }
+
     handleSearch = async (event, value)=>{
         if(!value){
             this.setState({searchResults: null, isSearching: false, loadingSearch: false})
@@ -103,7 +110,7 @@ class Pagos extends Component{
                                 searchList.map((payment)=>{
                                     return(
                                         <Grid key={payment.id} item xs={12} sm={6} md={4} xl={3}>
-                                            <PaymentCard payment={payment} />
+                                            <PaymentCard onUpdate={this.getPayments} payment={payment} />
                                         </Grid>
                                     )
                                 })

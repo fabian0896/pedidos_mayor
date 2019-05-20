@@ -786,6 +786,44 @@ export async function addPayment(payment) {
     return
 }
 
+
+export async function deletePayment(id, payment){
+    const seenArray =  await getSeenArray()
+    await firebase.firestore().runTransaction(async transaction=>{
+        const paymentRef = firebase.firestore().collection(PAYMENTS).doc(id)
+        const clientRef = firebase.firestore().collection(CLIENTS).doc(payment.clientId)
+        const orderRef = firebase.firestore().collection(ORDERS).doc(payment.orderId)
+        
+        const clientSnap = await transaction.get(clientRef)
+        const orderSnap = await transaction.get(orderRef)
+        
+        const client = clientSnap.data()
+        const order = orderSnap.data()
+
+        const orderBalance =  order.balance + parseFloat(payment.value) 
+        const clientBalance = client.balance + parseFloat(payment.value) 
+
+        const notificationObject = {
+            type: 'DELETED',
+            collection: PAYMENTS,
+            author: firebase.auth().currentUser.uid,
+            message: `Se cancelo el pago del pedido ${order.serialCode} a nombre de  ${client.name} por ${client.currency} $${thousandSeparator(payment.value)}`,
+            link: `pedidos/${payment.orderId}`,
+            date: new Date(),
+            seen: seenArray
+        }
+        transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
+        transaction.update(orderRef, {
+            balance: orderBalance, 
+            [`payments.${id}`]: firebase.firestore.FieldValue.delete()
+        })
+        transaction.update(clientRef, {balance: clientBalance})
+        transaction.delete(paymentRef)
+    })
+    await algolia.deletepayment(id)
+    return
+}
+
 export async function getPayments(id) {
     const db = firebase.firestore().collection(PAYMENTS)
     if (id) {
