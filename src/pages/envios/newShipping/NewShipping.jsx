@@ -107,7 +107,6 @@ class NewShipping extends React.Component {
     }
 
     handleComplete = async () => {
-        console.log("Completado!")
         this.setState({
             saving: true,
             loadingText: 'Se esta agregando el envio a la orden',
@@ -116,12 +115,9 @@ class NewShipping extends React.Component {
             loading: true,
         })
         if(this.state.isEditing){
-            console.log("se edita el pedido con id: ", this.state.formValues.id)
             await updateShipping(this.state.formValues.id, this.state.formValues)
-            console.log("se actualizo")
         }else{
             await AddShipping(this.state.formValues)
-            console.log("se agrego el pedido")
         }
         this.setState({success: true, loading: false})
         const routerState = this.props.location.state || {}
