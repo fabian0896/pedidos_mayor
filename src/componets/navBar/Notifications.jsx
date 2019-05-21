@@ -149,7 +149,6 @@ const Notificacions = withStyles(theme=>({
 }))(({classes, notifications, uid, sellers, history}) => {
 
     const handleClick = useCallback((link)=>()=>{
-        console.log(link)
         history.push({pathname: link})
     }, [history])
 

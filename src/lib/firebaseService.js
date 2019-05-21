@@ -1326,7 +1326,6 @@ export function getUnSeeNotifications(cb){
     const queryRef = databaseRef.where('seen','array-contains', uid).orderBy('date','desc').limit(20)
     let firsTime = true
     const cancelFunction = queryRef.onSnapshot(data=>{
-        
         const newNotifications  = data.docChanges()
                              .filter(item=>item.type === 'added')
                              .map(item=>({...item.doc.data(), id: item.doc.id}))
@@ -1336,7 +1335,7 @@ export function getUnSeeNotifications(cb){
             result.push({...item.data(), id: item.id})
         })
         cb(result, firsTime? []:newNotifications)
-        firsTime = !firsTime
+        firsTime = false
     })
     return cancelFunction
 }

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import Header from '../../../componets/headerLayout/HeaderLayout'
-import { Typography } from '@material-ui/core';
+import { Typography, withWidth } from '@material-ui/core';
 import MyStepper from '../../../componets/mystepper/MyStepper';
 import MyStep from '../../../componets/mystepper/MyStep';
 import ClientForm from './ClientForm';
@@ -12,7 +12,9 @@ import ShippingResume from './ShippingResume';
 import { AddShipping, updateShipping } from '../../../lib/firebaseService'
 import { Save as SaveIcon } from '@material-ui/icons'
 import Loader from '../../../componets/loader/Loader'
-
+import { compose } from 'redux'
+import MyMobileStepper from '../../../componets/myMobileStepper/MyMobileStepper';
+import MyMobileStep from '../../../componets/myMobileStepper/MyMobileStep';
 
 
 class NewShipping extends React.Component {
@@ -100,6 +102,10 @@ class NewShipping extends React.Component {
         this.submit[this.state.activeStep]()
     }
 
+    handleGoBack = () =>{
+        this.props.history.goBack()
+    }
+
     handleComplete = async () => {
         console.log("Completado!")
         this.setState({
@@ -134,10 +140,11 @@ class NewShipping extends React.Component {
             success, 
             loading,
             saving,
-            noRender
+            noRender,
         } = this.state
-
-        return (
+        const {width} = this.props
+ 
+        return (    
             <div>
                 {
                     !noRender &&
@@ -152,40 +159,94 @@ class NewShipping extends React.Component {
                                 loading={loading} />
                             :
                             <Fragment>
-                                <Header>
-                                    <Typography color="inherit" component="h2" variant="h2">Nuevo Envio</Typography>
-                                </Header>
-                                <MyStepper
-                                    activeStep={activeStep}
-                                    handleNext={this.handleNext}
-                                    handleBack={this.handleBack}>
-                                    <MyStep title="Pedido">
-                                        <ClientForm
-                                            initialvalues={this.state.formValues}
-                                            getSubmitRef={this.getSubmitRef(0)}
-                                            handleSubmit={this.handleSubmit}
-                                            options={options} />
-                                    </MyStep>
-                                    <MyStep title="Datos de Envio">
-                                        <ShippingForm
-                                            required
-                                            handleSubmit={this.handleSubmit}
-                                            saveSubmitRef={this.getSubmitRef(1)}
-                                            iniValues={formValues.shipping} />
-                                    </MyStep>
-                                    <MyStep title="Unidad de Empaque">
-                                        <ProductsShippingForm
-                                            initialvalues={formValues}
-                                            getSubmitRef={this.getSubmitRef(2)}
-                                            handleSubmit={this.handleSubmit}
-                                            order={formValues.order} />
-                                    </MyStep>
-                                    <MyStep
-                                        onFinish={this.handleComplete}
-                                        title="Resumen">
-                                        <ShippingResume shipping={formValues} />
-                                    </MyStep>
-                                </MyStepper>
+                                {
+                                    (width === 'xs' || width === 'sm') ?
+                                    <Fragment>
+                                        <MyMobileStepper
+                                            step={activeStep}
+                                            handleInitialBack={this.handleGoBack}
+                                            initialBackTitle="Cancelar">
+                                            <MyMobileStep
+                                                title="Pedido"
+                                                handleNext={this.handleNext}
+                                                handleBack={this.handleBack}>
+                                                    <ClientForm
+                                                    initialvalues={this.state.formValues}
+                                                    getSubmitRef={this.getSubmitRef(0)}
+                                                    handleSubmit={this.handleSubmit}
+                                                    options={options} />
+                                            </MyMobileStep>
+                                            
+                                            <MyMobileStep
+                                                title="Datos Envio"
+                                                handleNext={this.handleNext}
+                                                handleBack={this.handleBack}>
+                                                    <ShippingForm
+                                                    required
+                                                    handleSubmit={this.handleSubmit}
+                                                    saveSubmitRef={this.getSubmitRef(1)}
+                                                    iniValues={formValues.shipping} />
+                                            </MyMobileStep>
+                                            
+                                            <MyMobileStep
+                                                title="Empaque"
+                                                handleNext={this.handleNext}
+                                                handleBack={this.handleBack}>
+                                                    <ProductsShippingForm
+                                                    initialvalues={formValues}
+                                                    getSubmitRef={this.getSubmitRef(2)}
+                                                    handleSubmit={this.handleSubmit}
+                                                    order={formValues.order} />
+                                            </MyMobileStep>
+                                            
+                                            <MyMobileStep
+                                                title="Resumen"
+                                                buttonTitle="Guardar"
+                                                handleNext={this.handleComplete}
+                                                handleBack={this.handleBack}>
+                                                     <ShippingResume float shipping={formValues} />
+                                            </MyMobileStep>
+                                            
+                                        </MyMobileStepper>
+                                    </Fragment>
+                                    :
+                                    <Fragment>
+                                        <Header>
+                                            <Typography color="inherit" component="h2" variant="h2">Nuevo Envio</Typography>
+                                        </Header>
+                                        <MyStepper
+                                            activeStep={activeStep}
+                                            handleNext={this.handleNext}
+                                            handleBack={this.handleBack}>
+                                            <MyStep title="Pedido">
+                                                <ClientForm
+                                                    initialvalues={this.state.formValues}
+                                                    getSubmitRef={this.getSubmitRef(0)}
+                                                    handleSubmit={this.handleSubmit}
+                                                    options={options} />
+                                            </MyStep>
+                                            <MyStep title="Datos de Envio">
+                                                <ShippingForm
+                                                    required
+                                                    handleSubmit={this.handleSubmit}
+                                                    saveSubmitRef={this.getSubmitRef(1)}
+                                                    iniValues={formValues.shipping} />
+                                            </MyStep>
+                                            <MyStep title="Unidad de Empaque">
+                                                <ProductsShippingForm
+                                                    initialvalues={formValues}
+                                                    getSubmitRef={this.getSubmitRef(2)}
+                                                    handleSubmit={this.handleSubmit}
+                                                    order={formValues.order} />
+                                            </MyStep>
+                                            <MyStep
+                                                onFinish={this.handleComplete}
+                                                title="Resumen">
+                                                <ShippingResume shipping={formValues} />
+                                            </MyStep>
+                                        </MyStepper>
+                                    </Fragment>
+                                }
                             </Fragment>
                         }
                     </Fragment>
@@ -204,4 +265,7 @@ function mapStateToProps(state, props) {
 }
 
 
-export default connect(mapStateToProps)(NewShipping)
+export default compose(
+    connect(mapStateToProps),
+    withWidth()
+    )(NewShipping)

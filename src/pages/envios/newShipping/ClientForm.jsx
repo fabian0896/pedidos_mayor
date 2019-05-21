@@ -11,15 +11,18 @@ import {
     Divider
 } from '@material-ui/core'
 import MyAutocomplete from '../../../componets/myAutocomplete/MyAutocomplete'
-import { makeStyles } from '@material-ui/styles'
+import { withStyles } from '@material-ui/core'
 import * as Yup from 'yup'
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
     form: {
-        width: 450
+        width: 450,
+        [theme.breakpoints.down('sm')]:{
+            width: '100%'
+        }
     },
     input: {
-
+        //width: '100%'
     },
     divider:{
         marginTop: 16,
@@ -34,14 +37,14 @@ const useStyles = makeStyles(theme => ({
             paddingRight: 8
         }
     }
-}))
+})
 
 
 
 
 function ClientForm(props) {
 
-    const classes = useStyles()
+   
 
     const {
         handleSubmit,
@@ -52,7 +55,8 @@ function ClientForm(props) {
         options,
         handleChange,
         handleBlur,
-        submitForm
+        submitForm,
+        classes
     } = props
 
     useEffect(()=>{
@@ -63,8 +67,9 @@ function ClientForm(props) {
     return (
         <form className={classes.form} onSubmit={handleSubmit}>
             <Grid container spacing={24}>
-                <Grid item md={12}>
+                <Grid item xs={12} md={12}>
                     <Field
+                        fullWidth
                         disabled={isEditing}
                         error={errors.order && touched.order}
                         myPlaceholder="Pedido"
@@ -126,4 +131,4 @@ export default withFormik({
         order: Yup.object().required(),
         paymentMethod: Yup.string().required()
     })
-})(ClientForm)
+})(withStyles(styles)(ClientForm))

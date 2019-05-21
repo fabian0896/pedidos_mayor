@@ -74,7 +74,7 @@ const ShippingUnit = withFormik({
         <form onSubmit={handleSubmit}>
             <Grid container spacing={16}>
 
-                <Grid item md={2} >
+                <Grid item xs={4} md={2} >
                     <TextField
                         error={errors.width && touched.width}
                         disabled={!maxProducts}
@@ -88,7 +88,7 @@ const ShippingUnit = withFormik({
                         onChange={handleChange}
                         onBlur={handleBlur} />
                 </Grid>
-                <Grid item md={2} >
+                <Grid item xs={4} md={2} >
                     <TextField
                         error={errors.height && touched.height}
                         disabled={!maxProducts}
@@ -101,7 +101,7 @@ const ShippingUnit = withFormik({
                         onChange={handleChange}
                         onBlur={handleBlur} />
                 </Grid>
-                <Grid item md={2} >
+                <Grid item xs={4} md={2} >
                     <TextField
                         error={errors.large && touched.large}
                         disabled={!maxProducts}
@@ -114,7 +114,7 @@ const ShippingUnit = withFormik({
                         onChange={handleChange}
                         onBlur={handleBlur} />
                 </Grid>
-                <Grid item md={3} >
+                <Grid item xs={6} md={3} >
                     <TextField
                         error={errors.weight && touched.weight}
                         disabled={!maxProducts}
@@ -130,7 +130,7 @@ const ShippingUnit = withFormik({
                         onChange={handleChange}
                         onBlur={handleBlur} />
                 </Grid>
-                <Grid item md={3} >
+                <Grid item xs={6} md={3} >
                     <TextField
                         helperText={touched.quantity && errors.quantity}
                         error={errors.quantity && touched.quantity}
@@ -277,7 +277,10 @@ const ListShippingUnits = withStyles(theme=>({
 const styles =  theme =>({
     form:{
         width: 450,
-        marginTop: theme.spacing.unit*2
+        marginTop: theme.spacing.unit*2,
+        [theme.breakpoints.down('sm')]:{
+            width: '100%'
+        }
     },
     productInfo:{
         marginBottom: theme.spacing.unit*3
@@ -389,7 +392,7 @@ function ProductShippingForm(props){
 
             <Title style={{marginTop: 24}} size="small" primary="Precios" align="center"/>
             <Grid container spacing={24}>
-                <Grid item md={4}>
+                <Grid item xs={6} md={4}>
                     <TextField
                         error={errors.price && touched.price}
                         type="text"
@@ -406,7 +409,7 @@ function ProductShippingForm(props){
                         onChange={handleChange}
                         onBlur={handleBlur} />
                 </Grid>
-                <Grid item md={4}>
+                <Grid item xs={6} md={4}>
                     <TextField
                         error={errors.currency && touched.currency}
                         select
@@ -426,7 +429,7 @@ function ProductShippingForm(props){
                         </MenuItem>    
                     </TextField>
                 </Grid>
-                <Grid item md={4}>
+                <Grid item xs={6} md={4}>
                     <TextField
                         error={errors.company && touched.company}
                         type="text"
@@ -438,7 +441,7 @@ function ProductShippingForm(props){
                         onChange={handleChange}
                         onBlur={handleBlur} />
                 </Grid>
-                <Grid item md={12}>
+                <Grid item xs={6} md={12}>
                     <TextField
                         error={errors.trackingNumber && touched.trackingNumber}
                         type="text"

@@ -67,16 +67,19 @@ class App extends Component {
 
 
   handleShowNotification = (notifications)=>{
-      if(!notifications.length){
+    
+    if(!notifications.length){
           return
       }
       const mapping = {
         ADDED: 'success',
+        CREATED: 'success',
         UPDATED: 'warning',
         DELETED: 'error'
       }
       notifications.forEach(noti =>{
-        const type = mapping[noti.type]
+        const type = mapping[noti.type] 
+        
         this.props.showAlert(type, noti.message)
       })
       

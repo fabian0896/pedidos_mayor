@@ -43,9 +43,9 @@ class OrderDetails extends Component {
         return
     }
 
-    getPayments = async (id)=>{
+    getPayments = async (id) => {
         const payments = await getPaymentsByOrderId(id)
-        this.setState({payments})
+        this.setState({ payments })
     }
 
     getOrder = async (id) => {
@@ -120,7 +120,33 @@ class OrderDetails extends Component {
                                         data={order.timeLine}
                                     />
 
-                                    <Grid container spacing={16}>
+                                    <Title style={{ marginTop: 8 * 4 }} align="right" primary="Pagos" secondary="Pagos Realizados en este pedido" />
+                                    <OrderSlideList
+                                        width={350}
+                                        noItemTitle="No se han realizado pagos"
+                                        noItemMessage="Este Pedido no tiene pagos realizados" >
+                                        {
+                                            payments.map(payment => (
+                                                <PaymentCard key={payment.id} payment={payment} />
+                                            ))
+                                        }
+                                    </OrderSlideList>
+
+
+                                    <Title style={{ marginTop: 8 * 4 }} align="left" primary="Envios" secondary="Envios realizados de este pedido" />
+                                    <OrderSlideList
+                                        width={280}
+                                        noItemTitle="No se han realizado envios"
+                                        noItemMessage="Este pedido no tiene envios realizados" >
+                                        {
+                                            shippingList.map((shipping, index) => (
+                                                <ShippingCard key={index} width={280} shipping={shipping} />
+                                            ))
+                                        }
+                                    </OrderSlideList>
+
+
+                                    <Grid style={{marginTop: 24}} container spacing={16}>
                                         <Grid item sm={6} xs={12}>
                                             <ShippingInfoCard data={order} />
                                         </Grid>
@@ -144,8 +170,8 @@ class OrderDetails extends Component {
                                         <TimeLine
                                             data={order.timeLine}
                                         />
-                                        
-                                        <Title style={{marginTop: 8*4}} align="right" primary="Pagos" secondary="Pagos Realizados en este pedido" />
+
+                                        <Title style={{ marginTop: 8 * 4 }} align="right" primary="Pagos" secondary="Pagos Realizados en este pedido" />
                                         <OrderSlideList
                                             width={350}
                                             noItemTitle="No se han realizado pagos"
@@ -158,14 +184,14 @@ class OrderDetails extends Component {
                                         </OrderSlideList>
 
 
-                                        <Title style={{marginTop: 8*4}} align="left" primary="Envios" secondary="Envios realizados de este pedido" />
+                                        <Title style={{ marginTop: 8 * 4 }} align="left" primary="Envios" secondary="Envios realizados de este pedido" />
                                         <OrderSlideList
                                             width={280}
                                             noItemTitle="No se han realizado envios"
                                             noItemMessage="Este pedido no tiene envios realizados" >
                                             {
                                                 shippingList.map((shipping, index) => (
-                                                    <ShippingCard key={index} width={280}  shipping={shipping} />
+                                                    <ShippingCard key={index} width={280} shipping={shipping} />
                                                 ))
                                             }
                                         </OrderSlideList>
