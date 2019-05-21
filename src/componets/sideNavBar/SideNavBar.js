@@ -15,7 +15,6 @@ class SideNavBar extends React.Component {
     render() {
 
         const { classes, links, open, handleToggle, ...rest } = this.props
-
         const drawer = (
             <Fragment>
                 <div className={classes.logoContainer}>
@@ -29,12 +28,13 @@ class SideNavBar extends React.Component {
                                     to={route}
                                     key={text}
                                     style={{ textDecoration: 'none' }}
-                                    activeClassName={classes.selectedRoute}
+                                    activeClassName={classes.slectedRoute}
                                     onClick={handleToggle}
                                 >
-                                    <ListItem button >
-                                        <ListItemIcon><Icon /></ListItemIcon>
-                                        <ListItemIText primary={text} />
+                                    <ListItem className={classes.selected} button>
+                                        <ListItemIcon  ><Icon  /></ListItemIcon>
+                                        <ListItemIText
+                                            primary={text} />
                                     </ListItem>
                                 </NavLink>
                             )
