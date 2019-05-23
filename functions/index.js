@@ -19,102 +19,78 @@ const PRODUCTS = 'products'
 const ORDERS = 'orders'
 const PAYMENTS = 'payments'
 const SHIPPING = 'shipping'
+const STATS = 'stats'
 
 
-function thousandSeparator(value){
-    const temp = value.toString().split('').reverse()
-    const withPionts = temp.map((val, index)=>{
-        if((index+1)%3 === 0){
-            if(index === (temp.length-1)){
-                return val
-            }
-            return '.' + val
-        }else{
-            return val
+function addProductsToStats(products){
+    const productsObject = products.reduce((prev, current) =>{
+        const quantity = parseInt(prev[current.id]?prev[current.id].quantity : 0) 
+        prev[current.id] = {
+            id: current.id,
+            name: current.name,
+            quantity: quantity + parseInt(current.quantity)
         }
-    })
-    return withPionts.reverse().join('')
-} 
-
-
-
-function getAction(type){
-    switch(type){
-        case 'CREATED':{
-            return 'agregó'
-        }
-        case 'UPDATED':{
-            return 'actualizó'
-        }
-        case 'DELETED':{
-            return 'borró'
-        }
-        default:{
-            break
-        }
-    }
-    return null
+        return prev
+    }, {})
+    const productsresult = Object.keys(productsObject).map(id => productsObject[id]).reduce((prev, current)=>{
+         prev[current.id] = Object.assign({}, current, {quantity: admin.firestore.FieldValue.increment(parseInt(current.quantity))})
+         return prev
+    }, {})
+    return productsresult
 }
 
 
-function createNotifiaction(collection, docId, data, type){    
-    switch(collection){
-        case CLIENTS:{
-            const clientName = data.name
-            const clientCountry = data.country.translations.es || data.country.name
-            return{
-                type,
-                collection,
-                link: `clientes/${docId}`,
-                message: `Se ${getAction(type)} el cliente ${clientName} de ${clientCountry}`,
-                date: new Date()
-            }
+//------------------------- Fuctions ---------------
+
+
+
+exports.addOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onCreate((snap, context)=>{
+
+    const order = snap.data()
+
+    const productsObject = order.products.reduce((prev, current) =>{
+        const quantity = parseInt(prev[current.id]?prev[current.id].quantity : 0) 
+        prev[current.id] = {
+            id: current.id,
+            name: current.name,
+            quantity: quantity + parseInt(current.quantity)
         }
-        case SHIPPING:{
-            const orderId = data.order.orderId
-            const serialCode = data.order.label
-            const clientName = data.order.secondary
-            return{
-                type,
-                collection,
-                link: `pedidos/${orderId}`,
-                message: `Se ${getAction(type)} un envio del pedido ${serialCode} a nombre de ${clientName}`,
-                date: new Date()
-            }
-        }
-        case ORDERS:{
-            const orderId = data.id 
-            return{
-                type,
-                collection,
-                link: `pedidos/${orderId}`,
-                message: `Se ${getAction(type)} el pedido ${data.serialCode}, ${data.totalProducts} prendas`,
-                date: new Date()
-            }
-        }
-        case PAYMENTS:{
-            const orderId =  data.orderId
-            return{
-                type,
-                collection,
-                link: `pedidos/${orderId}`,
-                message: `Se ${getAction(type)} pago del pedido ${data.orderSeralCode} por valor de ${data.currency} $${thousandSeparator(data.value)}`,
-                date: new Date()
-            }
-        }
-        default:{
-            break;
-        }
+        return prev
+    }, {})
+    const products = Object.keys(productsObject).map(id => productsObject[id]).reduce((prev, current)=>{
+         prev[current.id] = Object.assign({}, current, {quantity: admin.firestore.FieldValue.increment(parseInt(current.quantity))})
+         return prev
+    }, {})
+
+    const totalProducts = admin.firestore.FieldValue.increment(order.totalProducts)
+    const totalOrders = admin.firestore.FieldValue.increment(1)  
+
+    const clients = {}
+    clients[order.clientId] = {
+        quantity: admin.firestore.FieldValue.increment(1),
+        id: order.clientId
     }
-    return null
-}
+
+    return admin.firestore().collection(STATS).doc('fechaPrueba').set({
+        products,
+        totalProducts,
+        totalOrders,
+        clients
+    },{merge:true})
+})
 
 
 
 
+exports.updateOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onUpdate((snap, context)=>{
+    //console.log(context, snap)
+    return 'OK'
+})
 
 
-exports.orderCreated = functions.firestore.document('{collection}/{doc}').onWrite((snap, context)=>{
-    console.log(context.params.collection, context.params.doc, context.eventType)
+
+
+exports.deleteOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onDelete((snap, context)=>{
+    //console.log(context, snap)
     return 'OK'
 })

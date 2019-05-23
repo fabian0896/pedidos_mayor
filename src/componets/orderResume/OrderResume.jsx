@@ -13,6 +13,7 @@ const styles = theme =>({
         //height: 200,
         display: 'flex',
         overflow: 'hidden',
+        height: '100%'
     },
     header:{
         background: theme.palette.primary.dark,
@@ -119,7 +120,7 @@ function OrderResume(props){
                         
                         <Typography align="right" variant="body2" color="textSecondary">Pagado:</Typography>
                         <NumberFormat 
-                            value={order.totalPayments} 
+                            value={order.totalPayments || 0} 
                             displayType={'text'} 
                             thousandSeparator={true} 
                             prefix={`$`} 

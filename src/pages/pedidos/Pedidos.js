@@ -132,14 +132,14 @@ class Pedidos extends Component {
                     <StatsCard
                         icon={<AssignmentLateIcon />}
                         title="Pedidos Pendientes"
-                        value="10"
+                        value={pendingOrders.length}
                         secondary="Despacharlos!"
                     />
                     <StatsCard
                         icon={<WidgetsIcon />}
                         title="Pedidos Totales"
                         value="139"
-                        secondary="30 por mes"
+                        secondary="Año 2019"
                     />
                     <StatsCard
                         icon={<EventIcon />}
@@ -151,7 +151,7 @@ class Pedidos extends Component {
                         icon={<AccessibilityNewIcon />}
                         title="Total Prendas"
                         value="4093"
-                        secondary="40 por pedido"
+                        secondary="Año 2019"
                     />
                 </StatsCardList>
                 
