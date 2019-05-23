@@ -4,8 +4,9 @@ import { Paper, Typography, Divider  } from '@material-ui/core'
 import NumberFormat from 'react-number-format';
 import moment from 'moment'
 import { limitName } from '../../lib/utilities'
-import { ORDER_STATUS } from '../../lib/enviroment'
-
+import { STATES } from '../../lib/enviroment'
+import classNames from 'classnames'
+import { green, amber } from '@material-ui/core/colors'
 
 const styles = theme =>({
     root:{
@@ -49,6 +50,18 @@ const styles = theme =>({
     moneyInfo:{
 
     },
+    pending:{
+        background: theme.palette.grey[500]
+    },
+    production:{
+        background: theme.palette.primary.dark
+    },
+    readyToShip:{
+        background: amber[700]  
+    },
+    shipped:{
+        background: green[600]
+    },
     flag:{
         height: 25,
         borderRadius: 4,
@@ -56,18 +69,17 @@ const styles = theme =>({
     }
 })
 
-const status = {
-    ...ORDER_STATUS
-}
+
 
 function OrderResume(props){
     const { classes, order, client, onClick } = props
     const date = moment(order.createdAt.seconds*1000).format('DD/MM/YYYY')
     const country = client.country.translations.es || client.country
     
+
     return(
         <Paper  className={classes.root}>
-            <div onClick={onClick} className={classes.header}>
+            <div onClick={onClick} className={classNames(classes.header, classes[order.state])}>
                 <Typography align="center" color="inherit" component="h6" variant="h5">{order.serialCode}</Typography>
                 <Typography align="center" color="inherit" component="p" variant="overline">Prendas</Typography>    
                 <Typography className={classes.productNumber} align="center" color="inherit" component="p" variant="overline">{order.totalProducts}</Typography>    
@@ -85,8 +97,8 @@ function OrderResume(props){
                 <Divider/>
                 <div className={classes.info}>
                     <div className={classes.basicInfo}>
-                        <Typography variant="body2" color="textSecondary">Estao:</Typography>
-                        <Typography gutterBottom  variant="body1">{status[order.state]}</Typography>
+                        <Typography variant="body2" color="textSecondary">Estado:</Typography>
+                        <Typography gutterBottom  variant="body1">{STATES[order.state].short}</Typography>
                         
                         <Typography  variant="body2" color="textSecondary">Fecha:</Typography>
                         <Typography  gutterBottom variant="body1">{date}</Typography>

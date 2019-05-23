@@ -43,6 +43,12 @@ class OrderDetails extends Component {
         return
     }
 
+    handleUpdate = async () =>{
+        const id = this.props.match.params.id
+        await this.getOrder(id)
+        await this.getPayments(id)
+    }
+
     getPayments = async (id) => {
         const payments = await getPaymentsByOrderId(id)
         this.setState({ payments })
@@ -105,6 +111,7 @@ class OrderDetails extends Component {
                             width === 'xs' || width === 'sm' ?
                                 <Fragment>
                                     <OrderDetailCard
+                                        onUpdate={this.handleUpdate}
                                         order={order}
                                         client={client}
                                     />
@@ -127,7 +134,10 @@ class OrderDetails extends Component {
                                         noItemMessage="Este Pedido no tiene pagos realizados" >
                                         {
                                             payments.map(payment => (
-                                                <PaymentCard key={payment.id} payment={payment} />
+                                                <PaymentCard
+                                                    onUpdate={this.handleUpdate} 
+                                                    key={payment.id} 
+                                                    payment={payment} />
                                             ))
                                         }
                                     </OrderSlideList>
@@ -140,7 +150,11 @@ class OrderDetails extends Component {
                                         noItemMessage="Este pedido no tiene envios realizados" >
                                         {
                                             shippingList.map((shipping, index) => (
-                                                <ShippingCard key={index} width={280} shipping={shipping} />
+                                                <ShippingCard
+                                                    onUpdate={this.handleUpdate} 
+                                                    key={index} 
+                                                    width={280} 
+                                                    shipping={shipping} />
                                             ))
                                         }
                                     </OrderSlideList>
@@ -178,7 +192,10 @@ class OrderDetails extends Component {
                                             noItemMessage="Este Pedido no tiene pagos realizados" >
                                             {
                                                 payments.map(payment => (
-                                                    <PaymentCard key={payment.id} payment={payment} />
+                                                    <PaymentCard
+                                                        onUpdate={this.handleUpdate} 
+                                                        key={payment.id} 
+                                                        payment={payment} />
                                                 ))
                                             }
                                         </OrderSlideList>
@@ -191,7 +208,11 @@ class OrderDetails extends Component {
                                             noItemMessage="Este pedido no tiene envios realizados" >
                                             {
                                                 shippingList.map((shipping, index) => (
-                                                    <ShippingCard key={index} width={280} shipping={shipping} />
+                                                    <ShippingCard
+                                                        onUpdate={this.handleUpdate} 
+                                                        key={index} 
+                                                        width={280} 
+                                                        shipping={shipping} />
                                                 ))
                                             }
                                         </OrderSlideList>
@@ -200,6 +221,7 @@ class OrderDetails extends Component {
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={3}>
                                         <OrderDetailCard
+                                            onUpdate={this.handleUpdate}
                                             order={order}
                                             client={client}
                                         />

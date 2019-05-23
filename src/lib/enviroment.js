@@ -154,3 +154,24 @@ export function getPaymentStyles(payment){
     const _payment = payment.toLowerCase().trim().replace(' ','')
     return PaymentsMethods[_payment]? PaymentsMethods[_payment] : PaymentsMethods['default']
 }
+
+
+
+export const STATES = {
+    pending: {
+        name: 'Pendiente',
+        short: 'Pendiente'
+    },
+    production: {
+        name: 'En Producción',
+        short: 'Producción'
+    },
+    readyToShip: {
+        name: 'Listo Para enviar',
+        short: 'Por despachar'
+    },
+    shipped: {
+        name: 'Despachado',
+        short: 'Despachado'
+    },
+}

@@ -12,7 +12,7 @@ import {
 } from './utilities'
 import * as algolia from './algoliaService'
 import { convertCurrency } from './currencyService'
-
+import { STATES } from './enviroment'
 
 
 
@@ -670,6 +670,54 @@ export async function getOrdersWithBalance() {
     return result
 }
 
+export async function getUnShippedOrders(){
+    const pending = firebase.firestore().collection(ORDERS).where('state','==', 'pending').get()
+    const production = firebase.firestore().collection(ORDERS).where('state','==', 'production').get()
+    const readyToShip = firebase.firestore().collection(ORDERS).where('state','==', 'readyToShip').get()
+    const snaps = await Promise.all([pending, production, readyToShip])
+    const results = []
+    
+    snaps.forEach(snap=>{ 
+        snap.forEach(item=>{
+            results.push({...item.data(), id: item.id})
+        })
+    })
+    return results                  
+}
+
+export async function changeOrderState(id,state){
+    const orderRef = firebase.firestore().collection(ORDERS).doc(id)
+    const seenArray =  await getSeenArray()
+    await firebase.firestore().runTransaction( async transaction=>{
+        const orderSnap = await transaction.get(orderRef)
+        const order = orderSnap.data()
+
+        const timeLineObject = {
+            type: 'UPDATED',
+            author: firebase.auth().currentUser.uid,
+            date: new Date(),
+            title: 'Cambio de estado',
+            message: `Se cambio el estado del pedido de ${STATES[order.state].name} a ${STATES[state].name}`
+        }
+
+        const notificationObject = {
+            type: 'UPDATED',
+            collection: ORDERS,
+            author: firebase.auth().currentUser.uid,
+            message: `Se cambio el estado del pedido ${order.serialCode} a ${STATES[state].name}`,
+            link: `pedidos/${id}`,
+            date: new Date(),
+            seen: seenArray
+        }
+
+        transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
+        transaction.update(orderRef,{
+            timeLine: firebase.firestore.FieldValue.arrayUnion(timeLineObject),
+            state
+        })
+    })
+    return
+}
 
 //----------------------------------------------Payments------------------------------------------
 
@@ -812,10 +860,21 @@ export async function deletePayment(id, payment){
             date: new Date(),
             seen: seenArray
         }
+
+        const timeLineObject = {
+            type: 'DELETED',
+            author: firebase.auth().currentUser.uid,
+            date: new Date(),
+            title: 'Pago Cancelado',
+            message: `se canceló el pago por medio de ${payment.paymentMethod} (${payment.reference}), por valor de ${payment.currency} $${thousandSeparator(payment.value)}`
+        }
+
+
         transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
         transaction.update(orderRef, {
             balance: orderBalance, 
-            [`payments.${id}`]: firebase.firestore.FieldValue.delete()
+            [`payments.${id}`]: firebase.firestore.FieldValue.delete(),
+            timeLine: firebase.firestore.FieldValue.arrayUnion(timeLineObject)
         })
         transaction.update(clientRef, {balance: clientBalance})
         transaction.delete(paymentRef)
@@ -970,6 +1029,7 @@ export async function AddShipping(shipping) {
             shipments: orderShipments,
             shipmentsPrice,
             shippedProducts,
+            state: shippedProducts >= order.totalProducts? 'shipped' : order.state,
             timeLine,
             updatedAt: new Date()
         }
@@ -1179,6 +1239,7 @@ export async function updateShipping(id, shipping) {
             shipmentsPrice,
             shippedProducts,
             timeLine,
+            state: shippedProducts >= order.totalProducts? 'shipped' : order.state,
             updatedAt: new Date()
         }
 

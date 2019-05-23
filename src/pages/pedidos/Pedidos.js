@@ -14,7 +14,7 @@ import OrederGrid from '../../componets/orderResume/OrderGrid';
 import Section from '../../componets/section/Section';
 import OrderSlideList from '../../componets/orderResume/OrderSlideList';
 import {connect } from 'react-redux'
-import { getAllOrders } from '../../lib/firebaseService'
+import { getAllOrders, getUnShippedOrders } from '../../lib/firebaseService'
 
 import Title from '../../componets/title/Title'
 import { searchOrder } from '../../lib/searchService'
@@ -29,6 +29,7 @@ class Pedidos extends Component {
     state = {
         noRender: true,
         orders: [],
+        pendingOrders: [],
         isSearching: false,
         searchResult: [],
         loadingSearch: false
@@ -36,8 +37,9 @@ class Pedidos extends Component {
 
     async componentDidMount(){
         const orders = await getAllOrders()
+        const pendingOrders = await getUnShippedOrders()
         const orderList = Object.keys(orders).map(id=>orders[id])
-        this.setState({orders: orderList})
+        this.setState({orders: orderList, pendingOrders})
         document.title = "Pedidos"
         return
     }
@@ -74,7 +76,15 @@ class Pedidos extends Component {
 
     render() {
         const { clients } = this.props
-        const { orders, loadingSearch, isSearching, searchResult } = this.state
+        const { 
+            orders, 
+            loadingSearch, 
+            isSearching, 
+            searchResult,
+            pendingOrders
+         } = this.state
+
+
         return (
             <div>
                 <HeaderLayout>
@@ -153,7 +163,7 @@ class Pedidos extends Component {
                         noItemTitle="No hay pedidos pendientes" 
                         noItemMessage="En el momento no hay pedidos pendientes por despachar">
                     {
-                        orders.map(order=>{
+                        pendingOrders.map(order=>{
                             return(
                                 <OrderResume
                                     onClick={this.handleOrderDetail(order.id)} 
