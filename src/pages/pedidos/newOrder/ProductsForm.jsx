@@ -348,7 +348,9 @@ class ProductFrom extends React.Component{
             size: edittingProduct.size,
             color: edittingProduct.color,
             quantity: edittingProduct.quantity,
-            price: edittingProduct.price
+            price: edittingProduct.price,
+            label: edittingProduct.label,
+            mold: edittingProduct.mold
         })
     }
 

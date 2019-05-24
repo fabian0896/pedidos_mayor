@@ -40,7 +40,7 @@ function addProductsToStats(products){
 }
 
 
-//------------------------- Fuctions ---------------
+//--------------------------------------- Fuctions -------------------------------
 
 
 
@@ -48,35 +48,41 @@ exports.addOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onCreate(
 
     const order = snap.data()
 
-    const productsObject = order.products.reduce((prev, current) =>{
-        const quantity = parseInt(prev[current.id]?prev[current.id].quantity : 0) 
-        prev[current.id] = {
-            id: current.id,
-            name: current.name,
-            quantity: quantity + parseInt(current.quantity)
+    return admin.firestore().collection(CLIENTS).doc(order.clientId).get().then(clientSnap=>{
+        const client = clientSnap.data()
+        
+        const products = addProductsToStats(order.products)
+    
+        const totalProducts = admin.firestore.FieldValue.increment(order.totalProducts)
+        const totalOrders = admin.firestore.FieldValue.increment(1)  
+    
+        const clients = {}
+        clients[order.clientId] = {
+            quantity: admin.firestore.FieldValue.increment(1),
+            id: order.clientId,
+            name: client.name
         }
-        return prev
-    }, {})
-    const products = Object.keys(productsObject).map(id => productsObject[id]).reduce((prev, current)=>{
-         prev[current.id] = Object.assign({}, current, {quantity: admin.firestore.FieldValue.increment(parseInt(current.quantity))})
-         return prev
-    }, {})
+    
+        const countries ={}
+        countries[client.country.alpha3Code] = {
+            quantity: admin.firestore.FieldValue.increment(1),
+            name: client.country.translations.es || client.country.name
+        }
 
-    const totalProducts = admin.firestore.FieldValue.increment(order.totalProducts)
-    const totalOrders = admin.firestore.FieldValue.increment(1)  
+        return admin.firestore().collection(STATS).doc('fechaPrueba').set({
+            products,
+            totalProducts,
+            totalOrders,
+            clients,
+            countries
+        },{merge:true})
+    
+    }).catch(err => {
+        console.log('Error:' + err)
+    })
 
-    const clients = {}
-    clients[order.clientId] = {
-        quantity: admin.firestore.FieldValue.increment(1),
-        id: order.clientId
-    }
+    
 
-    return admin.firestore().collection(STATS).doc('fechaPrueba').set({
-        products,
-        totalProducts,
-        totalOrders,
-        clients
-    },{merge:true})
 })
 
 

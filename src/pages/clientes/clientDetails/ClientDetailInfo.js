@@ -9,8 +9,8 @@ import {
     Phone,
     AttachMoney as Money
  } from '@material-ui/icons'
-
-
+import moment from 'moment'
+import MoneyValue from '../../../componets/moneyText/MoneyText'
 
 
 const styles = theme => ({
@@ -139,15 +139,17 @@ function ClientDetailInfo(props){
                     <div className={classes.stats}>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">Saldo Pendiente:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">$1.000.000</Typography>
+                            <MoneyValue align="left" component="span" variant="subtitle1" color="textPrimary">{client.balance || 0}</MoneyValue>
+                        </div>
+                        <div className={classes.statItem}>
+                            <Typography component="span" variant="subtitle2" color="textSecondary">Moneda</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.currency === 'COP' ? 'Peso Colombiano': 'Dolares'}</Typography>
                         </div>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">Ultimo pedido:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">20/04/18</Typography>
-                        </div>
-                        <div className={classes.statItem}>
-                            <Typography component="span" variant="subtitle2" color="textSecondary">Ultimo Pago:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">25/04/18</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">
+                                { client.lastOrder? moment(client.lastOrder.seconds).format('DD/MM/YYYY') : '---'}
+                            </Typography>
                         </div>
                     </div>
                 </Paper>
