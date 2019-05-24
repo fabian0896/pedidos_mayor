@@ -482,7 +482,7 @@ export async function addOrder(order) {
                 type: 'CREATED',
                 collection: ORDERS,
                 author: firebase.auth().currentUser.uid,
-                message: `Se añadio el pedido ${serialCode} a nombre de  ${client.name} (${totalProducts} prendas)`,
+                message: `Se añadio el pedido ${serialCodeText} a nombre de  ${client.name} (${totalProducts} prendas)`,
                 link: `pedidos/${orderId}`,
                 date: new Date(),
                 seen: seenArray

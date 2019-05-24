@@ -62,7 +62,7 @@ function PaymentSummary(props) {
             </div>
 
             <Typography color="textSecondary" align="center" variant="subtitle2">Total</Typography>
-              <MoneyValue amount={data.shipmentsPrice + data.total}>
+              <MoneyValue amount={(data.shipmentsPrice || 0) + data.total}>
                 <Typography align="center" variant="h5"></Typography>
             </MoneyValue>  
 
