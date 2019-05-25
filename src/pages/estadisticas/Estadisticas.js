@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import Header from '../../componets/headerLayout/HeaderLayout'
 import StatsCardList from '../../componets/statsCard/StatsCardList'
-import { Typography } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import StatsCard from '../../componets/statsCard/StatsCard'
 import {
     AttachMoney as MoneyIcon,
@@ -11,6 +11,7 @@ import {
 import { getYearStats } from '../../lib/statsService'
 import moment from 'moment'
 import YearSelector from './YearSelector';
+import LineChart from './LineChart';
 
 class Estadisticas extends Component {
 
@@ -84,6 +85,14 @@ class Estadisticas extends Component {
                         </StatsCardList>
                     }
                 </Fragment>
+                <Grid container spacing={24}>
+                    <Grid item xs={12} md={6}>
+                        <LineChart/>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <LineChart/>
+                    </Grid>
+                </Grid>
             </div>
         )
     }
