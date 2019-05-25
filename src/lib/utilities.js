@@ -140,8 +140,15 @@ export function compareObjects(obj1, obj2, keysArray){
 }
 
 
-export function thousandSeparator(value){
-    const temp = value.toString().split('').reverse()
+export function thousandSeparator(value, simbol=false){
+    let negative = false
+    let tempValue = value
+    if(value<0){
+        //valor negativo
+        negative = true
+        tempValue = tempValue * -1
+    }
+    const temp = tempValue.toString().split('').reverse()
     const withPionts = temp.map((val, index)=>{
         if((index+1)%3 === 0){
             if(index === (temp.length-1)){
@@ -152,7 +159,7 @@ export function thousandSeparator(value){
             return val
         }
     })
-    return withPionts.reverse().join('')
+    return  (negative? '-':'') + (simbol? '$' : '') + withPionts.reverse().join('')
 } 
 
 //-------------------- Internal functions --------------------
