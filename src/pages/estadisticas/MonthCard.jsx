@@ -1,7 +1,7 @@
 import React from 'react'
 import { withStyles, Paper, Typography } from '@material-ui/core';
 import classNames from 'classnames'
-import { Book } from '@material-ui/icons';
+
 
 const MonthCard = withStyles(theme=>({
     root:{
