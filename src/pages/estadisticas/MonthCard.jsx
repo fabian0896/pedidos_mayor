@@ -33,7 +33,6 @@ const MonthCard = withStyles(theme=>({
         color: theme.palette.grey[100]
     }
 }))(({classes, month, monthName})=>{
-    console.log(month)
     return(
         <Paper className={classNames({[classes.root]: Boolean(month)}, {[classes.desable]: !Boolean(month) })}>
             <div className={classes.header}>
