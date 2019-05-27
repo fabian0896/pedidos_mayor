@@ -9,7 +9,7 @@ function StatsCardList(props){
             {
                 React.Children.map(children, child =>{
                     return(
-                        <Grid item xs={6} sm={6} md={3} lg={3}>
+                        <Grid item xs={12} sm={6} md={3} lg={3}>
                             {child}
                         </Grid>
                     )

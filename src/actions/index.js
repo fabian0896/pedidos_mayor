@@ -103,7 +103,7 @@ export const asyncUpdateClients = ()=>{
 
             const clientList = Object.keys(data).map(id=>data[id])
             const topClient = clientList.filter(item=>!!item.totalOrders).sort((a,b)=>{
-                return a - b
+                return b - a
             })
             
             dispatch(updateTopClients(topClient.slice(0,5)))

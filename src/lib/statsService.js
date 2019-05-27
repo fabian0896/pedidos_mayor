@@ -24,3 +24,15 @@ export async function getYearStats(year){
         }
     }
 }
+
+
+export async function getMonthsOfYear(year){
+    const db = firebase.firestore().collection(STATS).where('year','==', year).orderBy('month', 'asc')
+    const snap = await db.get()
+    const result = {}
+    snap.forEach(item =>{
+        const data = item.data()
+        result[data.month] = data
+    })
+    return result
+}
