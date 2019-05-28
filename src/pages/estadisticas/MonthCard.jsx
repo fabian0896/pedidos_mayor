@@ -32,9 +32,9 @@ const MonthCard = withStyles(theme=>({
         overflow: 'hidden',
         color: theme.palette.grey[100]
     }
-}))(({classes, month, monthName})=>{
+}))(({classes, month, monthName, handleMonthClick})=>{
     return(
-        <Paper className={classNames({[classes.root]: Boolean(month)}, {[classes.desable]: !Boolean(month) })}>
+        <Paper onClick={month? handleMonthClick(month): ()=>{}} className={classNames({[classes.root]: Boolean(month)}, {[classes.desable]: !Boolean(month) })}>
             <div className={classes.header}>
                 <Typography color="inherit" variant="h4">{monthName}</Typography>
             </div>

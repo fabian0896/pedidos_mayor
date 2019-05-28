@@ -77,6 +77,13 @@ class Estadisticas extends Component {
     }
 
 
+    handleMonthClick = (month) => () => {
+        this.props.history.push({
+            pathname: `estadisticas/${month.year}/${month.month}`,
+            state: month
+        })
+    }
+
     render() {
 
         const {
@@ -86,6 +93,10 @@ class Estadisticas extends Component {
             months,
             limit
         } = this.state
+
+
+        const productsPerOrder = year? (year.totalProducts/year.totalOrders).toFixed(0) : 0
+
 
         return (
             <div>
@@ -103,13 +114,13 @@ class Estadisticas extends Component {
                                 icon={<WidgetsIcon />}
                                 title="Pedidos Totales"
                                 value={year.totalOrders}
-                                secondary="Año 2019"
+                                secondary={`${months[moment().month()+1].totalOrders} este mes`}
                             />
                             <StatsCard
                                 icon={<AccessibilityNewIcon />}
                                 title="Prendas Totales"
                                 value={year.totalProducts}
-                                secondary="Año 2019"
+                                secondary={`${productsPerOrder} prendas por pedido`}
                             />
                             <StatsCard
                                 icon={<MoneyIcon />}
@@ -186,6 +197,7 @@ class Estadisticas extends Component {
                         Object.keys(MONTHS).map(id=>(
                             <Grid key={id} item xs={12} sm={4} md={3}>
                                 <MonthCard
+                                    handleMonthClick={this.handleMonthClick}
                                     monthName={MONTHS[id]} 
                                     month={months[id]} />
                             </Grid>

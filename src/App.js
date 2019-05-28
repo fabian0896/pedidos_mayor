@@ -34,6 +34,7 @@ import OrderDetails from './pages/pedidos/orderDetails/OrderDetails';
 import NewOrder from './pages/pedidos/newOrder/NewOrder';
 import Shipping from './pages/envios/Shipping';
 import NewShipping from './pages/envios/newShipping/NewShipping';
+import StatsMonths from './pages/estadisticas/StatsMonth'
 
 import { getUnSeeNotifications } from './lib/firebaseService'
 
@@ -109,6 +110,7 @@ class App extends Component {
             <PrivateRoute title="Nuevo Cliente" exact path="/clientes/nuevo" component={NewClient} />
             <PrivateRoute title="Clientes" exact path="/clientes/:id" component={ClientDetail} />
             <PrivateRoute title="Clientes" exact path="/clientes" component={Clientes} />
+            <PrivateRoute title="Estadisticas" exact path="/estadisticas/:year/:month" component={StatsMonths} />
             <PrivateRoute title="Estadisticas" exact path="/estadisticas" component={Estadisticas} />
             <PrivateRoute title="Pagos" exact path="/pagos" component={Pagos} />
             <PrivateRoute title="Pedidos" exact path="/pedidos/nuevo" component={NewOrder} />
