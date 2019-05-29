@@ -15,7 +15,7 @@ import Loader from '../../../componets/loader/Loader'
 import { compose } from 'redux'
 import MyMobileStepper from '../../../componets/myMobileStepper/MyMobileStepper';
 import MyMobileStep from '../../../componets/myMobileStepper/MyMobileStep';
-
+import { showBackButtom, hideBackButtom } from '../../../actions'
 
 class NewShipping extends React.Component {
 
@@ -36,7 +36,9 @@ class NewShipping extends React.Component {
 
     submit = Array(5).fill(null)
 
+
     async componentDidMount() {
+        this.props.showBackButtom()
         const options = await this.getOrderOptions()
         this.setState({ options })
         const editShipping = this.props.location.state
@@ -47,6 +49,10 @@ class NewShipping extends React.Component {
             })
         }
         this.setState({noRender: false})
+    }
+
+    componentWillUnmount(){
+        this.props.hideBackButtom()
     }
 
     getOrderOptions = async () => {
@@ -260,8 +266,12 @@ function mapStateToProps(state, props) {
     }
 }
 
+const mapDispatchToProps = {
+    showBackButtom,
+    hideBackButtom
+}
 
 export default compose(
-    connect(mapStateToProps),
+    connect(mapStateToProps, mapDispatchToProps),
     withWidth()
     )(NewShipping)

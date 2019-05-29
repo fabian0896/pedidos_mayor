@@ -107,35 +107,34 @@ class Estadisticas extends Component {
                         getYear={this.handleChangeYear} />
                 </Header>
                 <Fragment>
-                    {
-                        year &&
+                 
                         <StatsCardList style={{ marginBottom: 50 }}>
                             <StatsCard
                                 icon={<WidgetsIcon />}
                                 title="Pedidos Totales"
-                                value={year.totalOrders}
-                                secondary={`${months[moment().month()+1].totalOrders} este mes`}
+                                value={ year? (year.totalOrders || 0): 0}
+                                secondary={`${year? months[moment().month()+1].totalOrders : 'No hay datos'} este mes`}
                             />
                             <StatsCard
                                 icon={<AccessibilityNewIcon />}
                                 title="Prendas Totales"
-                                value={year.totalProducts}
+                                value={year? (year.totalProducts || 0):0}
                                 secondary={`${productsPerOrder} prendas por pedido`}
                             />
                             <StatsCard
                                 icon={<MoneyIcon />}
                                 title="Igresos COP"
-                                value={`${year.income.COP}`}
+                                value={`${year?(year.income.COP || 0):0}`}
                                 secondary="Ingreso en Pesos"
                             />
                             <StatsCard
                                 icon={<MoneyIcon />}
                                 title="Ingresos USD"
-                                value={`${year.income.USD}`}
+                                value={`${year? (year.income.USD || 0):0}`}
                                 secondary="ingresos en Dolares"
                             />
                         </StatsCardList>
-                    }
+            
                 </Fragment>
 
                 <Title
@@ -148,7 +147,7 @@ class Estadisticas extends Component {
                 <Grid style={{ marginTop: 24 }} container spacing={24}>
                     <Grid item xs={12} md={6}>
                         <LineChart
-                            title="Pedidos Del Año"
+                            title="PEDIDOS DEL AÑO"
                             label="Pedidos Realizados"
                             limit={limit}
                             type='totalOrders'
@@ -156,7 +155,7 @@ class Estadisticas extends Component {
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <LineChart
-                            title="Prendas Del Año"
+                            title="PRENDAS DEL AÑO"
                             label="Prendas Vendidas"
                             limit={limit}
                             type='totalProducts'
@@ -164,21 +163,21 @@ class Estadisticas extends Component {
                     </Grid>
                     <Grid item xs={12}>
                         <PieChart
-                            title="Prendas mas vendidas"
+                            title="PRENDAS MAS VENDIDAS"
                             type="products"
                             data={year}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <PieChart
-                            title="Top Tallas"
+                            title="TOP TALLAS"
                             type="sizes"
                             data={year}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <PieChart
-                            title="Ciudades con mas pedidos"
+                            title="PAISES CON MAS PEDIDOS"
                             type="countries"
                             data={year}
                         />

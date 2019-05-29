@@ -53,7 +53,9 @@ const LineChart = withStyles(theme => ({
             </div>
             <div>
                 <Line
+                    height={280}
                     options={{
+                        maintainAspectRatio: false,
                         scales: {
                             yAxes: [{
                                 ticks: {
