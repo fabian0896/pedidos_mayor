@@ -45,6 +45,9 @@ class ClientDetail extends Component {
         }
         const payments = await getPayments(clientId)
         this.setState({payments})
+
+        document.title = "Clientes | " + client.name
+
         return
     }
 

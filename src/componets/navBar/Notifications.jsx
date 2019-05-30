@@ -94,7 +94,7 @@ const Item = withStyles(theme=>({
     const Icon = icons[data.collection]
 
     return(
-        <div onClick={handleClick(data.link)} className={classNames(classes.root,{[classes.notSeen]: !data.seen})}>
+        <div onClick={handleClick("/"+data.link)} className={classNames(classes.root,{[classes.notSeen]: !data.seen})}>
            <div className={classNames(classes.iconWrapper, classes[data.type])}>
                 <Icon className={classes.icon}/>
            </div>

@@ -49,6 +49,7 @@ class NewShipping extends React.Component {
             })
         }
         this.setState({noRender: false})
+        document.title = `${this.state.isEditing?'Editando':'Nuevo'} envio`
     }
 
     componentWillUnmount(){
@@ -214,7 +215,7 @@ class NewShipping extends React.Component {
                                     :
                                     <Fragment>
                                         <Header>
-                                            <Typography color="inherit" component="h2" variant="h2">Nuevo Envio</Typography>
+                                            <Typography color="inherit" component="h2" variant="h2">{`${this.state.isEditing?'Editando':'Nuevo'} Envio`}</Typography>
                                         </Header>
                                         <MyStepper
                                             activeStep={activeStep}

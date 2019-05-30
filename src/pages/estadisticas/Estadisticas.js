@@ -74,6 +74,7 @@ class Estadisticas extends Component {
             months,
             limit: (year === moment().year())
         })
+        document.title = "Estadisticas | " + year
     }
 
 

@@ -88,6 +88,13 @@ class OrderDetails extends Component {
         })
     }
 
+    componentDidUpdate(prevProps){
+        const id = this.props.match.params.id
+        const oldId = prevProps.match.params.id
+        if(oldId !== id){
+            this.componentDidMount()
+        }
+    }
 
     componentWillUnmount() {
         this.props.hideBackButtom()
@@ -99,6 +106,11 @@ class OrderDetails extends Component {
 
     hanldeClosePayModal = ()=>{
         this.setState({openPayModal: false})
+        this.handleUpdate()
+    }
+
+    handleAddShipping = ()=>{
+        this.props.history.push("/envios/nuevo")
     }
 
     render() {
@@ -179,7 +191,7 @@ class OrderDetails extends Component {
 
                                     <Grid style={{marginTop: 24}} container spacing={16}>
                                         <Grid item sm={6} xs={12}>
-                                            <ShippingInfoCard data={order} />
+                                            <ShippingInfoCard handleAddShipping={this.handleAddShipping} data={order} />
                                         </Grid>
                                         <Grid item sm={6} xs={12}>
                                             <PaymentSummary handleAddPayment={this.handleOpenPayModal} data={order} />
@@ -243,7 +255,7 @@ class OrderDetails extends Component {
                                             client={client}
                                         />
                                         <PaymentSummary handleAddPayment={this.handleOpenPayModal} data={order} />
-                                        <ShippingInfoCard data={order} />
+                                        <ShippingInfoCard handleAddShipping={this.handleAddShipping} data={order} />
                                     </Grid>
                                 </Grid>
                         }

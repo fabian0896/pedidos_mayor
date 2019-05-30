@@ -64,6 +64,7 @@ function StatMonth({ match: { params: { year, month } }, location, showBackButto
 
     useEffect(()=>{
         showBackButtom()
+        document.title = `Estadisticas | ${MONTHS[month]}-${year} `
         return hideBackButtom
     }, [])
 

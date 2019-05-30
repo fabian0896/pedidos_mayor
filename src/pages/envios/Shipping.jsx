@@ -29,6 +29,7 @@ const useFetchData = (fn) => {
     }
     useEffect(() => {
         getData()
+        document.title = "Envios"
     }, [])
     return [data, getData, loading, setLoading]
 }

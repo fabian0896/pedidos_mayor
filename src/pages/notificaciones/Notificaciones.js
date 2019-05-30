@@ -5,8 +5,13 @@ import NotificationHistory from './NotificationHistory';
 import { setNotificationSeen } from '../../lib/firebaseService' 
 
 class Notificaciones extends Component{
-    
+
+    componentDidMount(){
+        document.title = "Notificaciones"
+    }
+
     componentWillUnmount(){
+
         setNotificationSeen().then().catch()
     }
     

@@ -26,6 +26,7 @@ class Home extends Component {
     }
 
     async componentDidMount() {
+        document.title = "Inicio | Pedidos Bethel"
         const [orders, payments, shipments, orderWithBalance] = await Promise.all([
             getReadyToShipOrders(),
             getLastPayments(),

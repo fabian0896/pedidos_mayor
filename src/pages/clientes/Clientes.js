@@ -84,6 +84,7 @@ class Clientes extends Component{
 
     
     componentDidMount(){
+        document.title = 'Clientes'
         this.props.addRecentClients()
         //getAllClients()
         //this.props.asyncUpdateClients()

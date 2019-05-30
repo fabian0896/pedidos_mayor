@@ -100,6 +100,7 @@ class Prendas extends Component{
     }
     
     async componentDidMount(){
+        document.title = "Prendas"
         this.props.addAllProducts()
         this.props.addRecentProducts()
         this.getLines()

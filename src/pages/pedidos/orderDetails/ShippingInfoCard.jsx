@@ -95,7 +95,7 @@ class ShippingInfoCard extends React.Component {
     }
 
     render() {
-        const { classes, data } = this.props
+        const { classes, data, handleAddShipping } = this.props
         const { showMore } = this.state
         const shippingList =  data.shipments || []
         return (
@@ -164,6 +164,7 @@ class ShippingInfoCard extends React.Component {
                         {showMore ? 'mostrar menos' : 'mostrar mas'}
                     </Button>
                     <Button
+                        onClick={handleAddShipping}
                         disabled={!(data.totalProducts - (data.shippedProducts || 0))}
                         color="primary"
                         size="small"

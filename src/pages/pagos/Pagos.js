@@ -34,6 +34,7 @@ class Pagos extends Component{
 
 
     async componentDidMount(){
+        document.title = "Pagos"
         const payments = await getPayments()
         this.setState({payments})
         return
