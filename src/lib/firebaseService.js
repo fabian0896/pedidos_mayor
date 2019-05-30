@@ -658,15 +658,20 @@ export async function getOrderByClient(clientId) {
 }
 
 
-export async function getOrdersWithBalance() {
+export async function getOrdersWithBalance(array=false) {
     const db = firebase.firestore().collection(ORDERS).where('balance', '>', 0)
     const snap = await db.get()
     const result = {}
+    const arrayResult = []
     snap.forEach(order => {
         if (order.exists) {
+            arrayResult.push({ ...order.data(), id: order.id })
             result[order.id] = { ...order.data(), id: order.id }
         }
     })
+    if(array){
+        return arrayResult
+    }
     return result
 }
 
@@ -683,6 +688,15 @@ export async function getUnShippedOrders(){
         })
     })
     return results                  
+}
+
+export async function getReadyToShipOrders(){
+    const readyToShip = await firebase.firestore().collection(ORDERS).where('state','==', 'readyToShip').get()
+    const results = []
+    readyToShip.forEach(item=>{
+        results.push({...item.data(), id: item.id})
+    })
+    return results
 }
 
 export async function changeOrderState(id,state){
@@ -923,6 +937,16 @@ export async function getPendingOrders() {
         results.push({ ...item.data(), id: item.id })
     })
     return results
+}
+
+export async function getLastPayments(){
+    const db = firebase.firestore().collection(PAYMENTS).orderBy('createdAt','desc').limit(10)
+    const snap = await db.get()
+    const result = []
+    snap.forEach(item =>{
+        result.push({...item.data(), id: item.id})
+    })
+    return result
 }
 
 //-------------------------------------------- Shippinhg -------------------------------------------------
@@ -1357,6 +1381,16 @@ export async function deleteShipping(id) {
     await algolia.deleteshipping(id)
     return 'DELETED'
 
+}
+
+export async function getLastShipments(){
+    const db = firebase.firestore().collection(SHIPPING).orderBy('createdAt', 'desc').limit(10)
+    const snap = await db.get()
+    const result = []
+    snap.forEach(item=>{
+        result.push({...item.data(), id: item.id})
+    })
+    return result
 }
 
 export async function getShipmentsWithoutTrackingNumber() {

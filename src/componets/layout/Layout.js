@@ -58,7 +58,8 @@ const styles = theme => ({
         [theme.breakpoints.down('xs')]:{
             //padding: theme.spacing.unit,
             padding: 12,
-        }
+        },
+        marginBottom: 40
     },
     slectedRoute:{
         '&  $selected':{
