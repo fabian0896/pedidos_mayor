@@ -1102,8 +1102,11 @@
         ]
     },
     {
-        "message": 2,
-        "author": ""
+        "message": [
+            "El recordar que estaré muerto pronto es la herramienta más importante que he encontrado para ayudarme a tomar las grandes decisiones en la vida",
+            "Recordar que uno va a morir es la mejor manera que conozco para evitar la trampa de pensar que hay algo por perder. Ya se está indefenso. No hay razón alguna para no seguir los consejos del corazón"
+        ],
+        "author": "Steve Jobs"
     },
     {
         "author": "Steve Jobs",
@@ -2074,7 +2077,9 @@
         ]
     },
     {
-        "message": 2,
+        "message": [
+            "No hay camino a la felicidad. La felicidad es el camino"
+        ],
         "author": "Thich Nhat Hanh"
     },
     {
@@ -2184,11 +2189,5 @@
         "message": [
             "Crece con disciplina. Balancea tu intuición con rigor. Innova alrededor del núcleo. No aceptes el status quo. Encuentra nuevas formas de ver. Nunca esperes la bala de plata. Ensucia tus manos. Escucha con empatía y comunica con transparencia"
         ]
-    },
-    {
-        "message": [
-            ""
-        ],
-        "continue": true
     }
 ]

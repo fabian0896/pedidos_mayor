@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth'
+import Header from '../../componets/headerLayout/HeaderLayout'
+import { Typography } from '@material-ui/core';
+import Frases from '../../componets/frases/Frases'
+import Title from '../../componets/title/Title'
 
 class Home extends Component{
-
-    logOut = ()=>{
-        firebase.auth().signOut()
-            .then(()=> console.log("salida correcta"))
-            .catch(err => console.log(err));
-    }
 
     componentDidMount(){
         
@@ -22,7 +20,11 @@ class Home extends Component{
     render(){
         return(
             <div >
-                Hola desde Home 
+                <Header>
+                    <Typography variant="h1" color="inherit">Inicio</Typography>
+                </Header>
+                <Frases/>
+                <Title align="right" primary="Pedidos" secondary="Pedidos Listo para despachar" />
             </div>
         )
     }

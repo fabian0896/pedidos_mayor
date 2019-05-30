@@ -1,4 +1,4 @@
-
+import frases from './frases.json'
 
 
 export function formatPhone(phone, callCode){
@@ -161,6 +161,14 @@ export function thousandSeparator(value, simbol=false){
     })
     return  (negative? '-':'') + (simbol? '$' : '') + withPionts.reverse().join('')
 } 
+
+
+export const randomFrase = ()=>{
+    const randomIndex = Math.floor(Math.random() * frases.length)
+    return frases[randomIndex]
+}
+
+
 
 //-------------------- Internal functions --------------------
 
