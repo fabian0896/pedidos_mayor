@@ -58,7 +58,7 @@ class AddPaymentModal extends Component{
     }
 
     render(){
-        const { open, onClose } = this.props
+        const { open, onClose, order } = this.props
         const { noRender, optionsOrders, loading, success, loadingModal } = this.state
         return(
         <MyModal
@@ -72,6 +72,8 @@ class AddPaymentModal extends Component{
                 {
                     !loading?
                     <PaymentForm
+                        onClose={onClose}
+                        order={order}
                         handleSubmit={this.handleSubmit} 
                         options={optionsOrders}
                     />

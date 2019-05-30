@@ -17,6 +17,7 @@ import OrderSlideList from '../../../componets/orderResume/OrderSlideList'
 import PaymentCard from '../../../componets/paymentCard/PaymentCard'
 import Title from '../../../componets/title/Title'
 import ShippingCard from '../../../componets/shippingCard/ShippingCard';
+import AddPaymentModal from '../../pagos/AddPaymentModal';
 
 class OrderDetails extends Component {
 
@@ -26,7 +27,8 @@ class OrderDetails extends Component {
         order: {},
         noRender: true,
         loading: true,
-        payments: []
+        payments: [],
+        openPayModal: false
     }
 
     async componentDidMount() {
@@ -91,15 +93,29 @@ class OrderDetails extends Component {
         this.props.hideBackButtom()
     }
 
+    handleOpenPayModal = ()=>{
+        this.setState({openPayModal: true})
+    }
+
+    hanldeClosePayModal = ()=>{
+        this.setState({openPayModal: false})
+    }
+
     render() {
         const { width } = this.props
-        const { products, client, noRender, order, payments } = this.state
+        const { products, client, noRender, order, payments, openPayModal } = this.state
         const shippingList = order.shipments || []
         return (
             <div>
                 {
                     !noRender &&
                     <Fragment>
+                        <AddPaymentModal
+                            order={order}
+                            open={openPayModal}
+                            onClose={this.hanldeClosePayModal} 
+                            title="Agregar Pago"          
+                        />
                         <HeaderLayout
                             auxButton
                             onClick={this.handleEdit}
@@ -110,6 +126,7 @@ class OrderDetails extends Component {
                         {
                             width === 'xs' || width === 'sm' ?
                                 <Fragment>
+                                    
                                     <OrderDetailCard
                                         onUpdate={this.handleUpdate}
                                         order={order}
@@ -165,7 +182,7 @@ class OrderDetails extends Component {
                                             <ShippingInfoCard data={order} />
                                         </Grid>
                                         <Grid item sm={6} xs={12}>
-                                            <PaymentSummary data={order} />
+                                            <PaymentSummary handleAddPayment={this.handleOpenPayModal} data={order} />
                                         </Grid>
                                     </Grid>
                                 </Fragment>
@@ -225,7 +242,7 @@ class OrderDetails extends Component {
                                             order={order}
                                             client={client}
                                         />
-                                        <PaymentSummary data={order} />
+                                        <PaymentSummary handleAddPayment={this.handleOpenPayModal} data={order} />
                                         <ShippingInfoCard data={order} />
                                     </Grid>
                                 </Grid>

@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react'
-import { Paper, withStyles, Typography } from '@material-ui/core';
+import { Paper, withStyles, Typography, IconButton } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
-
+import { Add as AddIcon } from '@material-ui/icons'
 
 
 const MoneyValue = ({amount, children})=>(
@@ -29,6 +29,7 @@ const styles = theme => ({
         background: theme.palette.secondary.dark,
         color: theme.palette.secondary.contrastText,
         marginBottom: theme.spacing.unit*2,
+        position: 'relative'
     },
     content: {
         //marginTop: theme.spacing.unit*2,
@@ -46,18 +47,31 @@ const styles = theme => ({
         padding: theme.spacing.unit*2,
         background: theme.palette.grey[300],
         //color: theme.palette.secondary.contrastText
+    },
+    iconButton:{
+        position: 'absolute',
+        right: 2,
+        top: '50%',
+        transform: 'translateY(-50%)',
+        color: '#FFF'
     }
 })
 
 
 function PaymentSummary(props) {
-    const { classes, data } = props
+    const { classes, data, handleAddPayment } = props
 
     const payments = Object.keys(data.payments || {}).map(id=>data.payments[id])
 
     return (
         <Paper className={classes.root}>
             <div className={classes.header}>
+                <IconButton
+                    disabled={data.balance <= 0 }
+                    onClick={handleAddPayment} 
+                    className={classes.iconButton}>
+                    <AddIcon/>
+                </IconButton>
                 <Typography color="inherit" align="center" variant="h6">PAGOS</Typography>
             </div>
 

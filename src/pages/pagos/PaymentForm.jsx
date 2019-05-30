@@ -71,7 +71,8 @@ function PaymentForm(props){
         options,
         handleSubmit,
         handleChange,
-        handleBlur
+        handleBlur,
+        onClose
     } = props
     return(
         <form onSubmit={handleSubmit}>
@@ -139,6 +140,7 @@ function PaymentForm(props){
 
                 <Grid item xs={6}>
                     <Button
+                        onClick={onClose}
                         size="large"
                         color="secondary"
                         fullWidth
@@ -170,12 +172,16 @@ function PaymentForm(props){
 
 export default compose(
     withFormik({
-        mapPropsToValues: ()=>({
-            order: null,
-            value: 0,
-            paymentMethod: '',
-            reference: ''
-        }),
+        mapPropsToValues: (props)=>{
+            const orderId = props.order? props.order.id : ''
+            const order = props.options.find(item=>item.value === orderId)
+            return{
+                order,
+                value: 0,
+                paymentMethod: '',
+                reference: ''
+            }
+        },
         handleSubmit: (values, actions)=>{
             actions.props.handleSubmit(values, actions)
         },

@@ -15,12 +15,30 @@ import Section from '../../componets/section/Section';
 import OrderSlideList from '../../componets/orderResume/OrderSlideList';
 import {connect } from 'react-redux'
 import { getAllOrders, getUnShippedOrders } from '../../lib/firebaseService'
+import { getYearStats, getMonthStats } from '../../lib/statsService'
 
 import Title from '../../componets/title/Title'
 import { searchOrder } from '../../lib/searchService'
 import { Paper } from '@material-ui/core';
 import Loader from '../../componets/loader/Loader';
 import { Search as SearchIcon } from '@material-ui/icons'
+import moment from 'moment'
+
+
+const MONTHS ={
+    1:'Enero',
+    2:'Febrero',
+    3:'Marzo',
+    4:'Abril',
+    5:'Mayo',
+    6:'Junio',
+    7:'Julio',
+    8:'Agosto',
+    9:'Septiembre',
+    10:'Octubre',
+    11:'Noviembre',
+    12:'Diciembre',
+}
 
 
 
@@ -32,14 +50,25 @@ class Pedidos extends Component {
         pendingOrders: [],
         isSearching: false,
         searchResult: [],
-        loadingSearch: false
+        loadingSearch: false,
+        yearStats: null,
+        montStats: null
     }
 
     async componentDidMount(){
         const orders = await getAllOrders()
         const pendingOrders = await getUnShippedOrders()
         const orderList = Object.keys(orders).map(id=>orders[id])
-        this.setState({orders: orderList, pendingOrders})
+        const [yearStats, montStats] = await Promise.all([
+                getYearStats(moment().year()),
+                getMonthStats(moment().year(), moment().month()+1)
+        ])
+        this.setState({
+            orders: orderList, 
+            pendingOrders,
+            yearStats,
+            montStats
+        })
         document.title = "Pedidos"
         return
     }
@@ -81,7 +110,9 @@ class Pedidos extends Component {
             loadingSearch, 
             isSearching, 
             searchResult,
-            pendingOrders
+            pendingOrders,
+            yearStats,
+            montStats
          } = this.state
 
 
@@ -138,20 +169,20 @@ class Pedidos extends Component {
                     <StatsCard
                         icon={<WidgetsIcon />}
                         title="Pedidos Totales"
-                        value="139"
-                        secondary="Año 2019"
+                        value={yearStats? (yearStats.totalOrders||0) : 0}
+                        secondary={`Año ${moment().year()}`}
                     />
                     <StatsCard
                         icon={<EventIcon />}
                         title="Este Mes"
-                        value="34"
-                        secondary="4 nuevos hoy"
+                        value={montStats? (montStats.totalOrders||0) : 0}
+                        secondary={`Mes de ${MONTHS[moment().month()+1]}`}
                     />
                     <StatsCard
                         icon={<AccessibilityNewIcon />}
                         title="Total Prendas"
-                        value="4093"
-                        secondary="Año 2019"
+                        value={yearStats? (yearStats.totalProducts||0) : 0}
+                        secondary={`Año ${moment().year()}`}
                     />
                 </StatsCardList>
                 
