@@ -724,6 +724,12 @@ export async function changeOrderState(id,state){
             seen: seenArray
         }
 
+        if(state === 'shipped'){
+            notificationObject['message'] = `Se despacho el pedido ${order.serialCode} !`
+            notificationObject['type'] = 'CREATED'
+            timeLineObject['message'] = 'Se despacho el pedido !'
+        }
+
         transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
         transaction.update(orderRef,{
             timeLine: firebase.firestore.FieldValue.arrayUnion(timeLineObject),

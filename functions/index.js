@@ -393,3 +393,74 @@ exports.deletePayment = functions.firestore.document(`${PAYMENTS}/{payment}`).on
     ])
 
 })
+
+
+
+exports.addShipping = functions.firestore.document(`${SHIPPING}/{doc}`).onCreate((snap,context)=>{
+        const shipping = snap.data()
+        const [month, year] = getDate(shipping.createdAt.seconds*1000)
+        let updatingObject = {}
+        if(shipping.paymentMethod === 'payHere'){
+            updatingObject[shipping.currency] = admin.firestore.FieldValue.increment(-shipping.price)    
+        }else{
+            updatingObject[shipping.currency] = admin.firestore.FieldValue.increment(0)    
+        }
+
+        return Promise.all([
+            admin.firestore().collection(STATS).doc(`${year}-${month}`).set({
+                income: updatingObject
+            }, {merge: true}),
+            admin.firestore().collection(STATS).doc(`${year}`).set({
+                income: updatingObject
+            }, {merge: true})
+        ])
+})
+
+
+exports.updateShipping = functions.firestore.document(`${SHIPPING}/{doc}`).onUpdate((change,context)=>{
+    const newShipping = change.after.data()
+    const oldShipping = change.before.data()
+    const [month, year] = getDate(oldShipping.createdAt.seconds*1000)
+    let updatingObject = {}
+    if(oldShipping.paymentMethod === 'payHere' && newShipping.paymentMethod === "payHere"){
+        //todo sigue igual
+        updatingObject[newShipping.currency] = admin.firestore.FieldValue.increment(newShipping.price - oldShipping.price)
+    }else if( oldShipping.paymentMethod === 'payHere' && newShipping.paymentMethod !== 'payHere'){
+        //toca descintar el valor del envios
+        updatingObject[newShipping.currency] = admin.firestore.FieldValue.increment(oldShipping.price)
+    }else if(oldShipping.paymentMethod !== 'payHere' && newShipping.paymentMethod === 'payHere'){
+        //toca agregar el valor del envio
+        updatingObject[newShipping.currency] = admin.firestore.FieldValue.increment(-newShipping.price)
+    }
+
+    return Promise.all([
+        admin.firestore().collection(STATS).doc(`${year}-${month}`).set({
+            income: updatingObject
+        }, {merge: true}),
+        admin.firestore().collection(STATS).doc(`${year}`).set({
+            income: updatingObject
+        }, {merge: true})
+    ])
+
+})
+
+
+exports.deleteShipping = functions.firestore.document(`${SHIPPING}/{doc}`).onDelete((snap,context)=>{
+        const shipping = snap.data()
+        const [month, year] = getDate(shipping.createdAt.seconds*1000)
+        let updatingObject = {}
+        if(shipping.paymentMethod === 'payHere'){
+            updatingObject[shipping.currency] = admin.firestore.FieldValue.increment(shipping.price)    
+        }else{
+            updatingObject[shipping.currency] = admin.firestore.FieldValue.increment(0)    
+        }
+
+        return Promise.all([
+            admin.firestore().collection(STATS).doc(`${year}-${month}`).set({
+                income: updatingObject
+            }, {merge: true}),
+            admin.firestore().collection(STATS).doc(`${year}`).set({
+                income: updatingObject
+            }, {merge: true})
+        ])
+})
