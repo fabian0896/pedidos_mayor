@@ -8,6 +8,7 @@ import { Print as PrintIcon, Timeline as TimelineIcon } from '@material-ui/icons
 import { STATES } from '../../../lib/enviroment'
 import { changeOrderState } from '../../../lib/firebaseService'
 
+
 const styles = theme => ({
     root: {
         width: '100%',
@@ -86,7 +87,7 @@ const styles = theme => ({
 
 function OrderDetailsCard(props) {
     const [anchorEl, setAnchorEl] = useState(null)
-    const { classes, order, client, onUpdate } = props
+    const { classes, order, client, onUpdate, handlePrintResume } = props
     const country = client.country.translations.es || client.country.name
     const date = moment(order.createdAt.seconds * 1000).format('DD/MM/YYYY')
 
@@ -106,6 +107,7 @@ function OrderDetailsCard(props) {
         onUpdate && onUpdate()
     })
 
+    
 
     return (
         <Paper className={classes.root}>
@@ -127,7 +129,7 @@ function OrderDetailsCard(props) {
                         ))
                     }
                 </Menu>
-                <IconButton className={classes.printButton}>
+                <IconButton onClick={handlePrintResume} className={classes.printButton}>
                     <PrintIcon fontSize="large" />
                 </IconButton>
                 <div className={classes.flagContainer}>

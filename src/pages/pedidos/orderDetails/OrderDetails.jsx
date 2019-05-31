@@ -18,6 +18,8 @@ import PaymentCard from '../../../componets/paymentCard/PaymentCard'
 import Title from '../../../componets/title/Title'
 import ShippingCard from '../../../componets/shippingCard/ShippingCard';
 import AddPaymentModal from '../../pagos/AddPaymentModal';
+import { getResumePdf } from '../../../lib/jsReportService'
+
 
 class OrderDetails extends Component {
 
@@ -113,6 +115,11 @@ class OrderDetails extends Component {
         this.props.history.push("/envios/nuevo")
     }
 
+
+    handlePrintResume = ()=>{
+        getResumePdf(this.state.order, this.state.client)
+    }
+
     render() {
         const { width } = this.props
         const { products, client, noRender, order, payments, openPayModal } = this.state
@@ -140,6 +147,7 @@ class OrderDetails extends Component {
                                 <Fragment>
                                     
                                     <OrderDetailCard
+                                        handlePrintResume={this.handlePrintResume}
                                         onUpdate={this.handleUpdate}
                                         order={order}
                                         client={client}
@@ -250,6 +258,7 @@ class OrderDetails extends Component {
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={3}>
                                         <OrderDetailCard
+                                            handlePrintResume={this.handlePrintResume}
                                             onUpdate={this.handleUpdate}
                                             order={order}
                                             client={client}

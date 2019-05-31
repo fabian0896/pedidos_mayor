@@ -33,7 +33,6 @@ class Home extends Component {
             getLastShipments(),
             getOrdersWithBalance(true)
         ])
-        console.log(orderWithBalance)
         this.setState({ orders, payments, shipments, orderWithBalance })
         return
     }
