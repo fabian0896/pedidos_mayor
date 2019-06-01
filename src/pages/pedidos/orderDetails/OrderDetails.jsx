@@ -19,7 +19,7 @@ import Title from '../../../componets/title/Title'
 import ShippingCard from '../../../componets/shippingCard/ShippingCard';
 import AddPaymentModal from '../../pagos/AddPaymentModal';
 import { getResumePdf } from '../../../lib/jsReportService'
-
+import Notes from './Notes'
 
 class OrderDetails extends Component {
 
@@ -116,8 +116,10 @@ class OrderDetails extends Component {
     }
 
 
-    handlePrintResume = ()=>{
-        getResumePdf(this.state.order, this.state.client)
+    handlePrintResume =  (setLoading) => async () =>{
+        setLoading && setLoading(true)
+        await getResumePdf(this.state.order, this.state.client)
+        setLoading && setLoading(false)
     }
 
     render() {
@@ -159,6 +161,8 @@ class OrderDetails extends Component {
                                         currency={order.currency}
                                         order={order}
                                         data={products} />
+
+                                    <Notes onUpdate={this.handleUpdate} order={order}/>
 
                                     <TimeLine
                                         data={order.timeLine}
@@ -217,6 +221,8 @@ class OrderDetails extends Component {
                                             data={products} />
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={9}>
+
+                                        <Notes onUpdate={this.handleUpdate} order={order}/>
 
                                         <TimeLine
                                             data={order.timeLine}

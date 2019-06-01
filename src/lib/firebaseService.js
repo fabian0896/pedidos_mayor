@@ -626,6 +626,38 @@ export async function updateOrder(order, id) {
 }
 
 
+export async function updateOrdersNotes(order, notes){
+    const seenArray =  await getSeenArray()
+    await firebase.firestore().runTransaction(async transaction => {
+        
+        const notificationObject = {
+            type: 'UPDATED',
+            collection: ORDERS,
+            author: firebase.auth().currentUser.uid,
+            message: `Se editaron las notas del pedido ${order.serialCode}`,
+            link: `pedidos/${order.id}`,
+            date: new Date(),
+            seen: seenArray
+        }
+
+        const timeLineObject = {
+            type: 'UPDATED',
+            author: firebase.auth().currentUser.uid,
+            date: new Date(),
+            title: 'Notas actualizadas',
+            message: 'Se editaron las notas del pedido'
+        }
+
+        transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
+        transaction.update(firebase.firestore().collection(ORDERS).doc(order.id), {
+            timeLine: firebase.firestore.FieldValue.arrayUnion(timeLineObject),
+            notes
+        })
+        return
+    })
+    return 'OK'
+}
+
 
 export async function getAllOrders() {
     const db = firebase.firestore().collection(ORDERS).orderBy('createdAt', 'desc').limit(30)

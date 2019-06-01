@@ -114,7 +114,7 @@ class Estadisticas extends Component {
                                 icon={<WidgetsIcon />}
                                 title="Pedidos Totales"
                                 value={ year? (year.totalOrders || 0): 0}
-                                secondary={`${year? months[moment().month()+1].totalOrders : 'No hay datos'} este mes`}
+                                secondary={`${months[moment().month()+1]? months[moment().month()+1].totalOrders : 'No hay datos'} este mes`}
                             />
                             <StatsCard
                                 icon={<AccessibilityNewIcon />}

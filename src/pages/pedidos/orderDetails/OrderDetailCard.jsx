@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import { Paper, withStyles, Avatar, Typography, Divider, IconButton, MenuItem, Menu } from '@material-ui/core';
+import { Paper, withStyles, Avatar, Typography, Divider, IconButton, MenuItem, Menu, CircularProgress } from '@material-ui/core';
 import { getNameLetters } from '../../../lib/utilities'
 import NumberFormat from 'react-number-format';
 import { ORDER_STATUS } from '../../../lib/enviroment'
@@ -87,6 +87,7 @@ const styles = theme => ({
 
 function OrderDetailsCard(props) {
     const [anchorEl, setAnchorEl] = useState(null)
+    const [loadinResume, setLoadingResume] = useState(false) 
     const { classes, order, client, onUpdate, handlePrintResume } = props
     const country = client.country.translations.es || client.country.name
     const date = moment(order.createdAt.seconds * 1000).format('DD/MM/YYYY')
@@ -129,9 +130,14 @@ function OrderDetailsCard(props) {
                         ))
                     }
                 </Menu>
-                <IconButton onClick={handlePrintResume} className={classes.printButton}>
-                    <PrintIcon fontSize="large" />
-                </IconButton>
+                {
+                    loadinResume?
+                    <CircularProgress className={classes.printButton} color="inherit"/>
+                    :
+                    <IconButton onClick={handlePrintResume(setLoadingResume)} className={classes.printButton}>
+                        <PrintIcon fontSize="large" />
+                    </IconButton>
+                }
                 <div className={classes.flagContainer}>
                     <img className={classes.flag} src={client.country.flag} alt={client.country.name} />
                 </div>

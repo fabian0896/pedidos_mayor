@@ -41,7 +41,7 @@ export async function getMonthStats(year, month){
     const db = firebase.firestore().collection(STATS).doc(`${year}-${month}`)
     const snap = await db.get()
     if(!snap.exists){
-        return Promise.reject('No hay informacion de esta fecha :(')  
+        return {}  
     }
     return snap.data()
 }

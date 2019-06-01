@@ -45,9 +45,6 @@ class ClientDetail extends Component {
         }
         const payments = await getPayments(clientId)
         this.setState({payments})
-
-        document.title = "Clientes | " + client.name
-
         return
     }
 
@@ -57,6 +54,7 @@ class ClientDetail extends Component {
         const orders = await getOrderByClient(client.id)
         const shipments =  await getAllShipmentsByClientId(client.id)
         this.setState({ loading: false, client, orders, shipments })
+        document.title = "Clientes | " + client.name
         return
     }
 
