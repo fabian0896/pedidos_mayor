@@ -1,6 +1,7 @@
 import React from 'react'
 import { withStyles, Paper, Typography } from '@material-ui/core';
 import MoneyText from '../../componets/moneyText/MoneyText'
+import { connect } from 'react-redux'
 
 const Item = withStyles(theme =>({
     root:{
@@ -26,7 +27,7 @@ const Item = withStyles(theme =>({
         <div className={classes.root}>
             <div>
                 <Typography style={{fontWeight: 500, lineHeight: 1.2}} variant="subtitle1">{order.serialCode}</Typography>
-                <Typography color="textSecondary">Fabian David dueñas</Typography>
+                <Typography color="textSecondary">{client.name}</Typography>
             </div>
             <MoneyText currency={order.currency} >{order.balance}</MoneyText>
         </div>
@@ -55,7 +56,7 @@ const OrderWithBalance = withStyles(theme=>({
         height: 200,
         padding: theme.spacing.unit*2
     }
-}))(({classes,data})=>{
+}))(({classes,data, clients})=>{
 
     return(
         <Paper className={classes.root}>
@@ -66,7 +67,7 @@ const OrderWithBalance = withStyles(theme=>({
                 !!data.length?
                 <div className={classes.content}>
                     {
-                        data.map(order =>(<Item key={order.id} order={order}/>))
+                        data.map(order =>(<Item client={clients[order.clientId]} key={order.id} order={order}/>))
                     }
                 </div>
                 :
@@ -78,5 +79,10 @@ const OrderWithBalance = withStyles(theme=>({
     )
 })
 
+function mapStateToProps(state){
+    return{
+        clients: state.clients.all
+    }
+}
 
-export default OrderWithBalance
+export default connect(mapStateToProps)(OrderWithBalance)

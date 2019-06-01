@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react'
 import { Paper, withStyles, Avatar, Typography, Divider, IconButton, MenuItem, Menu, CircularProgress } from '@material-ui/core';
 import { getNameLetters } from '../../../lib/utilities'
 import NumberFormat from 'react-number-format';
-import { ORDER_STATUS } from '../../../lib/enviroment'
 import moment from 'moment'
 import { Print as PrintIcon, Timeline as TimelineIcon } from '@material-ui/icons'
 import { STATES } from '../../../lib/enviroment'
@@ -150,8 +149,8 @@ function OrderDetailsCard(props) {
 
                     <div className={classes.resumeContent}>
                         <div>
-                            <Typography variant="subtitle2" align="center">{order.totalProducts}</Typography>
-                            <Typography color="textSecondary" variant="body1" align="center">Prendas</Typography>
+                            <Typography variant="subtitle2" align="center">{order.descount}%</Typography>
+                            <Typography color="textSecondary" variant="body1" align="center">Descuento</Typography>
                         </div>
                         <div>
                             <NumberFormat
@@ -173,7 +172,7 @@ function OrderDetailsCard(props) {
                     <Divider className={classes.divider} />
 
                     <Typography component="span" variant="subtitle2" color="textSecondary">Estado:</Typography>
-                    <Typography gutterBottom component="span" variant="subtitle1">{ORDER_STATUS[order.state]}</Typography>
+                    <Typography gutterBottom component="span" variant="subtitle1">{STATES[order.state].short}</Typography>
 
                     <Typography component="span" variant="subtitle2" color="textSecondary">Fecha:</Typography>
                     <Typography gutterBottom component="span" variant="subtitle1">{date}</Typography>
