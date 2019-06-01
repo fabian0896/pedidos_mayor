@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react'
 import { withStyles, Paper, Typography, IconButton, TextField, CircularProgress } from '@material-ui/core'
-import { Edit, Save, Close, Flare } from '@material-ui/icons';
+import { Edit, Save, Close } from '@material-ui/icons';
 import { updateOrdersNotes } from '../../../lib/firebaseService'
 
 const Notes = withStyles(theme => ({

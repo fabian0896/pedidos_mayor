@@ -648,6 +648,8 @@ export async function updateOrdersNotes(order, notes){
             message: 'Se editaron las notas del pedido'
         }
 
+
+
         transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
         transaction.update(firebase.firestore().collection(ORDERS).doc(order.id), {
             timeLine: firebase.firestore.FieldValue.arrayUnion(timeLineObject),
@@ -656,6 +658,39 @@ export async function updateOrdersNotes(order, notes){
         return
     })
     return 'OK'
+}
+
+
+export async function deleteOrder(order){
+    const seenArray =  await getSeenArray()
+    await firebase.firestore().runTransaction(async transaction =>{
+        
+        const clientref = firebase.firestore().collection(CLIENTS).doc(order.clientId)
+        const orderRef = firebase.firestore().collection(ORDERS).doc(order.id)
+        
+        const clientSnap = await transaction.get(clientref)
+        const client = clientSnap.data()
+
+        const notificationObject = {
+            type: 'DELETE',
+            collection: ORDERS,
+            author: firebase.auth().currentUser.uid,
+            message: `Se elimino el pedido ${order.serialCode} a nombre de ${client.name}`,
+            link: `pedidos/${order.id}`,
+            date: new Date(),
+            seen: seenArray
+        }
+
+        transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
+        transaction.update(clientref,{
+            balance: client.balance - order.total,
+            totalOrders: client.totalOrders -1 
+        })
+        transaction.delete(orderRef)
+        return
+    })
+    await algolia.deleteOrder(order.id)
+    return
 }
 
 

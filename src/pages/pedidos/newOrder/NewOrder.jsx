@@ -1,22 +1,31 @@
 import React, { Component, Fragment } from 'react'
 import HeaderLayout from '../../../componets/headerLayout/HeaderLayout';
-import { Typography, withWidth } from '@material-ui/core';
+import { Typography, withWidth, withStyles, Button } from '@material-ui/core';
 import MyStepper from '../../../componets/mystepper/MyStepper';
 import MyStep from '../../../componets/mystepper/MyStep';
 import ClientForm from './ClientForm';
 import { connect } from 'react-redux'
+import { compose } from 'redux'
 import { showBackButtom, hideBackButtom, addAllProducts, getAllOrders } from '../../../actions'
 import ShippingForm from './ShippingForm';
 import ProductsForm from './ProductsForm'
 import DiscountForm from './DiscountForm';
 import OrderResume from './OrderResume';
-import { addOrder, updateOrder } from '../../../lib/firebaseService'
+import { addOrder, updateOrder, deleteOrder } from '../../../lib/firebaseService'
 import Loader from '../../../componets/loader/Loader';
 import { Save as SaveIcon } from '@material-ui/icons'
 import MyMobileStepper from '../../../componets/myMobileStepper/MyMobileStepper';
 import MyMobileStep from '../../../componets/myMobileStepper/MyMobileStep'
+import ModalAlert from '../../../componets/modalAlert/ModalAlert';
 
 
+const styles = theme=>({
+    deleteButton: {
+        position: 'absolute',
+        right: `${theme.spacing.unit * 2}px`,
+        top: `${theme.spacing.unit * 2}px`
+    }
+})
 
 
 
@@ -37,7 +46,9 @@ class NewOrder extends Component {
         success: false,
         saving: false,
         noRender: true,
-        isEditing: false
+        isEditing: false,
+        modalAlertOpen: false,
+        loadingDeletOrder: false
     }
 
     submit = Array(4).fill(null)
@@ -198,8 +209,25 @@ class NewOrder extends Component {
         this.props.history.goBack()
     }
 
+    handleDeleteOrder = ( )=>{
+        this.setState({modalAlertOpen: true})
+    }
+
+    deleteOrder = async () => {
+        this.setState({loadingDeletOrder: true})
+        // aqui va la funcion para eliminar el pedido
+        await deleteOrder(this.state.formValues)
+        this.setState({loadingDeletOrder: false})
+        this.handleCloseDeleteModal()
+        this.props.history.push('/pedidos')
+    }
+
+    handleCloseDeleteModal = ()=>{
+        this.setState({modalAlertOpen: false})
+    }
+
     render() {
-        const { clientsList, products, width } = this.props
+        const { clientsList, products, width, classes} = this.props
         const {
             activeStep,
             formValues,
@@ -212,8 +240,21 @@ class NewOrder extends Component {
             noRender,
             isEditing
         } = this.state
+
+        const isDeleteable = (formValues.payments? !Object.keys(formValues.payments).length: true) &&
+                             (formValues.shipments? !formValues.shipments.length: true) &&
+                             isEditing &&
+                             formValues.state !== '"shipped"'
         return (
             <div>
+                <ModalAlert
+                    type="error"
+                    message="Esta segur@ que desea eliminar este pedido?"
+                    open={this.state.modalAlertOpen}
+                    onClose={this.handleCloseDeleteModal}
+                    loading={this.state.loadingDeletOrder}
+                    onConfirm={this.deleteOrder}
+                />
                 {
                     !noRender &&
                     <Fragment>
@@ -239,7 +280,20 @@ class NewOrder extends Component {
                                                     handleBack={this.handleBack}
                                                     onComplete={this.handleComplete}
                                                 >
+
                                                     <MyStep title="Cliente">
+                                                        <div>
+                                                            {
+                                                                (isDeleteable) &&
+                                                                <Button
+                                                                    onClick={this.handleDeleteOrder}
+                                                                    className={classes.deleteButton}
+                                                                    color="secondary"
+                                                                    variant="outlined">
+                                                                    Eliminar
+                                                            </Button>
+                                                            }
+                                                        </div>
                                                         <ClientForm
                                                             isEditing={isEditing}
                                                             clients={this.props.clients}
@@ -382,4 +436,10 @@ function mapStateToProps(state, props) {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withWidth()(NewOrder))
+
+
+export default compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    withWidth(),
+    withStyles(styles)
+)(NewOrder)
