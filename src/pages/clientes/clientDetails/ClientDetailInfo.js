@@ -2,7 +2,7 @@ import React from 'react'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
-import { Paper, Grid } from '@material-ui/core';
+import { Paper, Grid, Divider } from '@material-ui/core';
 import { yellow, teal, blue } from '@material-ui/core/colors'
 import {
     Place,
@@ -11,6 +11,29 @@ import {
  } from '@material-ui/icons'
 import moment from 'moment'
 import MoneyValue from '../../../componets/moneyText/MoneyText'
+
+
+const UnPayItems = withStyles(theme=>({
+    root:{
+        padding: theme.spacing.unit*1,
+        display: 'flex',
+        alignItems: 'center',
+        '& > :first-child':{
+            flex: 1,
+        }
+    }
+}))(({classes, order})=>{
+    return(
+        <div className={classes.root}>
+            <div>
+                <Typography variant="h6">{order.serialCode}</Typography>
+                <Typography style={{lineHeight: 1}} color="textSecondary">{moment(order.createdAt.seconds*1000).format('DD/MM/YYYY')}</Typography>
+            </div>
+            <MoneyValue variant="body2" color="textSecondary">{order.balance}</MoneyValue>
+        </div>
+    )
+})
+
 
 
 const styles = theme => ({
@@ -70,11 +93,25 @@ const styles = theme => ({
     },
     blue:{
         background: blue[800],
+    },
+    unPayItems:{
+        flex: 1,
+        overflow: 'auto',
+        maxHeight: 175
+    },
+    noUnpayItems:{
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    balanceItem:{
+        marginBottom: theme.spacing.unit
     }
 })
 
 function ClientDetailInfo(props){
-    const { classes, client } = props
+    const { classes, client, unPayOrders } = props
     return(
         <Grid container spacing={24}>
 
@@ -137,20 +174,25 @@ function ClientDetailInfo(props){
                         <Typography align="center" color="inherit" component="span" variant="h6" >Resumen</Typography>
                     </div>
                     <div className={classes.stats}>
-                        <div className={classes.statItem}>
-                            <Typography component="span" variant="subtitle2" color="textSecondary">Saldo Pendiente:</Typography>
-                            <MoneyValue align="left" component="span" variant="subtitle1" color="textPrimary">{client.balance || 0}</MoneyValue>
+                        <div className={classes.balanceItem}>
+                            <MoneyValue align="center" component="span" variant="h5" color="textPrimary">{client.balance || 0}</MoneyValue>
+                            <Typography component="span" align="center" variant="subtitle2" color="textSecondary">Saldo Pendiente:</Typography>
                         </div>
-                        <div className={classes.statItem}>
-                            <Typography component="span" variant="subtitle2" color="textSecondary">Moneda</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.currency === 'COP' ? 'Peso Colombiano': 'Dolares'}</Typography>
-                        </div>
-                        <div className={classes.statItem}>
-                            <Typography component="span" variant="subtitle2" color="textSecondary">Ultimo pedido:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">
-                                { client.lastOrder? moment(client.lastOrder.seconds).format('DD/MM/YYYY') : '---'}
-                            </Typography>
-                        </div>
+                        <Divider/>
+                        {
+                            !!unPayOrders.length?
+                            <div className={classes.unPayItems}>
+                                {
+                                    unPayOrders.map(order=>(
+                                        <UnPayItems key={order.id} order={order}/>
+                                    ))
+                                }
+                            </div>
+                            :
+                            <div className={classes.noUnpayItems}>
+                                <Typography align="center" variant="overline">No hay pedidos sin pagar :)</Typography>
+                            </div>
+                        }
                     </div>
                 </Paper>
             </Grid>

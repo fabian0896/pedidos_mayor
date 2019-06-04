@@ -806,6 +806,21 @@ export async function changeOrderState(id,state){
     return
 }
 
+
+export async function getOrdersWithBalanceByClientId(id){
+    const db = firebase.firestore().collection(ORDERS)
+    const query  = db.where('clientId','==', id)
+    const [snap1, snap2] = await Promise.all([
+        query.where('balance', '>', 0).get(),
+        query.where('balance', '<', 0).get()
+    ])
+
+    const result1 = snap1.docs.map(item=> ({...item.data(), id: item.id}))
+    const result2 = snap2.docs.map(item=> ({...item.data(), id: item.id}))
+
+    return [...result1, ...result2]
+}
+
 //----------------------------------------------Payments------------------------------------------
 
 

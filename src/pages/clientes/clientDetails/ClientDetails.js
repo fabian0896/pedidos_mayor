@@ -4,7 +4,13 @@ import ClientDetailInfo from './ClientDetailInfo';
 import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom, showBackbuttonWithPath } from '../../../actions'
 import ClientDetailHeader from './ClientDetailHeader';
-import { getClientById, getOrderByClient, getPayments, getAllShipmentsByClientId } from '../../../lib/firebaseService'
+import { 
+    getClientById, 
+    getOrderByClient, 
+    getPayments, 
+    getAllShipmentsByClientId,
+    getOrdersWithBalanceByClientId 
+} from '../../../lib/firebaseService'
 import OrderSlideList from '../../../componets/orderResume/OrderSlideList';
 import OrderResume from '../../../componets/orderResume/OrderResume';
 import Section from '../../../componets/section/Section';
@@ -29,7 +35,8 @@ class ClientDetail extends Component {
         client: null,
         orders: [],
         payments: [],
-        shipments: []
+        shipments: [],
+        unPayOrders: []
     }
 
     async componentDidMount() {
@@ -44,7 +51,8 @@ class ClientDetail extends Component {
             this.getClient(clientId)
         }
         const payments = await getPayments(clientId)
-        this.setState({payments})
+        const unPayOrders = await getOrdersWithBalanceByClientId(clientId)
+        this.setState({payments, unPayOrders})
         return
     }
 
@@ -53,6 +61,7 @@ class ClientDetail extends Component {
         const client = await getClientById(id).catch(err => console.log(err))
         const orders = await getOrderByClient(client.id)
         const shipments =  await getAllShipmentsByClientId(client.id)
+        
         this.setState({ loading: false, client, orders, shipments })
         document.title = "Clientes | " + client.name
         return
@@ -96,7 +105,7 @@ class ClientDetail extends Component {
                     <Fragment>
                         <ClientDetailHeader handleEdit={this.handleEdit(client)} client={client} />
                         <div className={classes.content}>
-                            <ClientDetailInfo client={{...client, seller: sellers[client.seller]}} />
+                            <ClientDetailInfo unPayOrders={this.state.unPayOrders} client={{...client, seller: sellers[client.seller]}} />
                         </div>
                         <Section background='#E9E9E9'>
                         <Title align="center" primary="Pedidos" secondary="Todos los pedidos del cliente"/>
