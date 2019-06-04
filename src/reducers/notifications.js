@@ -18,6 +18,9 @@ function notifications(state=initialState, action){
                 all: action.payload.data
             }
         }
+        case 'RESET_NOTIFICATIONS':{
+            return initialState
+        }
         default:{
             return state
         }

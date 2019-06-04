@@ -316,7 +316,7 @@ class NewOrder extends Component {
                                                             initialValues={formValues.products}
                                                             handleSubmit={this.handleSubmit}
                                                             saveSubmitRef={this.saveSubmitRef(2)}
-                                                            customPrices={{ '6RlzAuoMKsCqyMEVoCtn': { cop: 84000 } }}
+                                                            customPrices={{}}
                                                             allProducts={products} />
                                                     </MyStep>
                                                     <MyStep title="Cobro">
@@ -373,7 +373,7 @@ class NewOrder extends Component {
                                                         initialValues={formValues.products}
                                                         handleSubmit={this.handleSubmit}
                                                         saveSubmitRef={this.saveSubmitRef(2)}
-                                                        customPrices={{ '6RlzAuoMKsCqyMEVoCtn': { cop: 84000 } }}
+                                                        customPrices={{}}
                                                         allProducts={products} />
                                                 </MyMobileStep>
 

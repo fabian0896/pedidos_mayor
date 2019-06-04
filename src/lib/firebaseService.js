@@ -174,7 +174,7 @@ export function createUpdateClient(client, id) {
 
 
 export function getAllClients(cb) {
-    firebase.firestore().collection(CLIENTS).orderBy('name', 'asc')
+    return firebase.firestore().collection(CLIENTS).orderBy('name', 'asc')
         .onSnapshot(querySnapshot => {
             const clientsList = {}
             querySnapshot.forEach(doc => {

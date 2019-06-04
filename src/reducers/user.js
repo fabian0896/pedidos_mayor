@@ -11,6 +11,9 @@ function user(state = initialState, action){
         case 'DELETE_USER': {
             return null
         }
+        case 'RESET_USER':{
+            return initialState
+        }
         default:
             return state;
     }

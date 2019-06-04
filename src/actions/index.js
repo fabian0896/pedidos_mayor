@@ -93,9 +93,9 @@ export function updateTopClients(clients){
 }
 
 
-export const asyncUpdateClients = ()=>{
+export const asyncUpdateClients = (cb)=>{
     return (dispatch) => {
-        getAllClients((err, data)=>{
+        return getAllClients((err, data)=>{
             if(err){
                 console.log(err)
                 return
@@ -108,7 +108,7 @@ export const asyncUpdateClients = ()=>{
             
             dispatch(updateTopClients(topClient.slice(0,5)))
             dispatch(updateClients(data))
-
+            cb()
         })
         
     }
@@ -224,6 +224,29 @@ export function getAllNotifications(){
     return dispatch =>{
         firebaseGetNotifications().then(data=>{
             dispatch(setAllNotifications(data))
+        })
+    }
+}
+
+
+//-------------------- Resets -----------------
+
+export function resetAll(){
+    return dispatch =>{
+        dispatch({
+            type: 'RESET_CLIENTS'
+        })
+        dispatch({
+            type: 'RESET_ORDERS'
+        })
+        dispatch({
+            type: 'RESET_SELLERS'
+        })
+        dispatch({
+            type: 'RESET_NOTIFICATIONS'
+        })
+        dispatch({
+            type: 'RESET_USER'
         })
     }
 }

@@ -5,6 +5,9 @@ function sellers(state = initialState, action){
         case 'ADD_SELLERS':{
             return action.payload.data
         }
+        case 'RESET_SELLERS':{
+            return initialState
+        }
         default:{
             return state
         }

@@ -22,7 +22,8 @@ const Notes = withStyles(theme => ({
         transform: 'translateY(-50%)'
     },
     content: {
-        padding: theme.spacing.unit * 3
+        padding: theme.spacing.unit * 3,
+        minHeight: 150
     },
     buttonContainer: {
         display: 'flex',
@@ -95,7 +96,7 @@ const Notes = withStyles(theme => ({
                         {
                             note?
                             <div className={classes.content}>
-                                <Typography variant="subtitle1" >{note}</Typography>
+                                <Typography color="textSecondary" variant="subtitle1" >{note}</Typography>
                             </div>
                             :
                             <div className={classes.noContent}>

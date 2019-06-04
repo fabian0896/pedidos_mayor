@@ -14,6 +14,9 @@ function orders(state=initialState, action){
                 }
             }
         }
+        case 'RESET_ORDER':{
+            return initialState
+        }
         default:{
             return state
         }

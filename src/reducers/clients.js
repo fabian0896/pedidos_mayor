@@ -29,6 +29,9 @@ function clients(state = initialState, action){
                 top: action.payload.data
             }
         }
+        case 'RESET_CLIENTS':{
+            return initialState
+        }
         default:{
             return state
         }

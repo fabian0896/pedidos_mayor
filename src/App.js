@@ -11,7 +11,8 @@ import {
   asyncUpdateClients, 
   asyncAddSellers,
   setNotSeenNotificationsCount,
-  showAlert
+  showAlert,
+  resetAll
  } from './actions'
 
 
@@ -46,22 +47,30 @@ class App extends Component {
   }
 
   getUser = () => {
-    firebase.auth().onAuthStateChanged((user) => {
+    this.unSubAuth = firebase.auth().onAuthStateChanged((user) => {
       if (this.state.loading) {
-        this.setState({ loading: false })
+        //this.setState({ loading: false })
       }
       if (user) {
         //agregar el usuario al estado
+       this.unSubClients = this.props.asyncUpdateClients(()=>{
+          this.setState({ loading: false })
+        })
+        
         this.props.updateUser(user);
         this.props.history.push(this.ruta);
         this.clearFunction = getUnSeeNotifications((data, newNoti) => {
           this.handleShowNotification(newNoti)
           this.props.setNotSeenNotificationsCount(data.length)
         })
+        this.props.asyncAddSellers()
       } else {
         //retirar el usuario del estado
+        this.unSubClients && this.unSubClients()
         this.props.deleteUser();
         this.clearFunction && this.clearFunction()
+        this.setState({ loading: false })
+        this.props.resetAll()
       }
     });
   }
@@ -88,15 +97,12 @@ class App extends Component {
 
 
   componentDidMount() {
-    this.getUser();
-    this.props.asyncUpdateClients()
-    this.props.asyncAddSellers()
+    this.getUser(); 
     this.ruta = this.props.location.pathname;
-
   }
 
   componentWillUnmount() {
-
+    
   }
 
   render() {
@@ -104,7 +110,7 @@ class App extends Component {
       <div className="App">
         <Alert />
         {
-          !this.state.loading &&
+          (!this.state.loading) &&
           <Switch>
             <PrivateRoute title="Inicio" exact path="/inicio" component={Home} />
             <PrivateRoute title="Nuevo Cliente" exact path="/clientes/nuevo" component={NewClient} />
@@ -136,7 +142,8 @@ class App extends Component {
 
 function mapStateToProps(state, props) {
   return {
-    user: state.user
+    user: state.user,
+    clients: state.clients.all
   }
 }
 
@@ -146,7 +153,8 @@ const mapDispatchToProps = {
   asyncUpdateClients,
   asyncAddSellers,
   setNotSeenNotificationsCount,
-  showAlert
+  showAlert,
+  resetAll
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
