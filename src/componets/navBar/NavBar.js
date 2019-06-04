@@ -5,7 +5,6 @@ import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import { withStyles } from '@material-ui/core/styles'
 import Badge from '@material-ui/core/Badge';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem'
 import { 
     ArrowBack, 
@@ -17,13 +16,13 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import { Grow, Paper, ClickAwayListener, Popper, MenuList } from '@material-ui/core';
+import { Grow, Paper, ClickAwayListener, Popper, MenuList, Avatar } from '@material-ui/core';
 import Notificacions from './Notifications'
 
 import { getAllNotifications } from '../../actions'
 
 import { setNotificationSeen } from '../../lib/firebaseService'
-
+import {getNameLetters, limitName} from '../../lib/utilities'
 
 
 
@@ -65,7 +64,13 @@ const styles = theme => ({
             borderLeft: '10px solid transparent',
             borderRight: '10px solid transparent',
             top: -20,
-            right: 82
+            right: 167,
+            [theme.breakpoints.down('sm')]:{
+                right: 87,
+            },
+            [theme.breakpoints.down('xs')]:{
+                right: 79,
+            }
         }
     },
     profile:{
@@ -81,9 +86,32 @@ const styles = theme => ({
             borderLeft: '10px solid transparent',
             borderRight: '10px solid transparent',
             top: -20,
-            right: 33
+            right: 88,
+            [theme.breakpoints.down('sm')]:{
+                right: 36,
+            },
+            [theme.breakpoints.down('xs')]:{
+                right: 28,
+            }
         }
     },
+    actions:{
+        display: 'flex',
+        alignItems: 'center',
+        color: theme.palette.primary.contrastText
+    },
+    avatar:{
+        width: 30,
+        height: 30,
+        fontSize: 14,
+        background: theme.palette.secondary.dark
+    },
+    userName:{
+        display: 'block',
+        [theme.breakpoints.down('sm')]:{
+            display: 'none'
+        }
+    }
     
 })
 
@@ -140,8 +168,7 @@ class NavBar extends Component {
 
     render() {
 
-        const { classes, className, title, showBackButtom, handleToggle } = this.props
-
+        const { classes, className, title, showBackButtom, handleToggle, actualUser } = this.props
 
         return (
             <div className={''} >
@@ -168,7 +195,7 @@ class NavBar extends Component {
 
                         <div className={classes.grow}></div>
 
-                        <div className="">
+                        <div className={classes.actions}>
                             <IconButton
                                 color="inherit"
                                 buttonRef={node => { this.anchorEl['notification'] = node }}
@@ -196,14 +223,15 @@ class NavBar extends Component {
                             </Popper>
 
 
-
-                            <IconButton
-                                color="inherit"
-                                onClick={this.handleOpenProfileMenu('profile')}
-                                buttonRef={node => { this.anchorEl['profile'] = node }}
-                            >
-                                <AccountCircle />
-                            </IconButton>
+                                <IconButton
+                                    color="inherit"
+                                    onClick={this.handleOpenProfileMenu('profile')}
+                                    buttonRef={node => { this.anchorEl['profile'] = node }}
+                                >
+                                    {/* <AccountCircle /> */}
+                                    <Avatar className={classes.avatar}>{getNameLetters(actualUser? actualUser.name: '')}</Avatar>
+                                </IconButton>
+                                <Typography variant="body2" className={classes.userName} color="inherit">{limitName(actualUser? actualUser.name: '')}</Typography>
                             <Popper open={this.state.open === 'profile'} anchorEl={this.anchorEl['profile']} transition disablePortal >
                                 {
                                     ({ TransitionProps, placement }) => (
@@ -235,7 +263,8 @@ function mapStateToProps(state, props) {
         path: state.backButtom.path,
         notificationsCount: state.notifications.notSeenCount,
         notifications: state.notifications.all,
-        uid: state.user.uid
+        uid: state.user.uid,
+        actualUser:  state.sellers[state.user.uid]
     }
 }
 

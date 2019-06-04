@@ -115,7 +115,7 @@ function addGrupBy(products, key){
         const quantity = parseInt(prev[current[key]] ? prev[current[key]].quantity : 0)
         prev[current[key]] = {
             id: current[key],
-
+            name: current[key],
             quantity: quantity + parseInt(current.quantity)
         }
         return prev
@@ -134,6 +134,7 @@ function deleteGrupBy(products, key) {
         const quantity = parseInt(prev[current[key]] ? prev[current[key]].quantity : 0)
         prev[current[key]] = {
             id: current[key],
+            name: current[key],
             quantity: quantity + parseInt(current.quantity)
         }
         return prev
@@ -162,6 +163,7 @@ function updateGrupBy(newProducts, oldProducts, key){
         const quantity = parseInt(prev[current[key]] ? prev[current[key]].quantity : 0)
         prev[current[key]] = {
             id: current[key],
+            name: current[key],
             quantity: quantity + parseInt(current.quantity)
         }
         return prev
@@ -174,6 +176,7 @@ function updateGrupBy(newProducts, oldProducts, key){
         const oldQuantity = oldProductsObject[productId] ? oldProductsObject[productId].quantity : 0
         productsresult[productId] = {
             id: productId,
+            name: productId,
             quantity: newQuantity - oldQuantity
         }
     })
@@ -183,6 +186,7 @@ function updateGrupBy(newProducts, oldProducts, key){
         }
         productsresult[productId] = {
             id: productId,
+            name: productId,
             quantity: -oldProductsObject[productId].quantity
         }
     })

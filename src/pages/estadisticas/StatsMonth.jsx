@@ -92,13 +92,13 @@ function StatMonth({ match: { params: { year, month } }, location, showBackButto
                             <StatsCard
                                 icon={<MoneyIcon />}
                                 title="Igresos COP"
-                                value={`${data.income.COP}`}
+                                value={`${data.income? (data.income.COP||0): 0}`}
                                 secondary="Ingreso en Pesos"
                             />
                             <StatsCard
                                 icon={<MoneyIcon />}
                                 title="Ingresos USD"
-                                value={`${data.income.USD}`}
+                                value={`${data.income? (data.income.USD||0): 0}`}
                                 secondary="ingresos en Dolares"
                             />
                         </StatsCardList>

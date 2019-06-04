@@ -1,4 +1,4 @@
-const initialState = null
+const initialState = {}
 
 function sellers(state = initialState, action){
     switch(action.type){
