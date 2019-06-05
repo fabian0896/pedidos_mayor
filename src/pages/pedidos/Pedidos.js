@@ -93,7 +93,6 @@ class Pedidos extends Component {
         }
         this.setState({loadingSearch: true})        
         const res = await searchOrder(value)
-        console.log(res)
         this.setState({
             loadingSearch: false,
             searchResult: res,

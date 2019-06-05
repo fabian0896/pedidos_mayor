@@ -156,7 +156,7 @@ function ClientDetailInfo(props){
                         </div>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">correo:</Typography>
-                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.email}</Typography>
+                            <Typography align="left" component="span" variant="subtitle1" color="textPrimary">{client.email || 'No tiene'}</Typography>
                         </div>
                         <div className={classes.statItem}>
                             <Typography component="span" variant="subtitle2" color="textSecondary">vendedor encargado:</Typography>

@@ -62,7 +62,7 @@ function NewClientResume(props){
                     </div>
                     <div className={classes.info}>
                         <Typography component="span" variant="subtitle2" color="textSecondary">Correo electronico:</Typography>
-                        <Typography component="span" variant="subtitle1" color="textPrimary">{email}</Typography>
+                        <Typography component="span" variant="subtitle1" color="textPrimary">{email || 'No tiene'}</Typography>
                     </div>
                     <div className={classes.info}>
                         <Typography component="span" variant="subtitle2" color="textSecondary">Codigo Postal:</Typography>

@@ -88,6 +88,15 @@ class ClientDetail extends Component {
         this.props.history.push('/pedidos/'+id)
     }
 
+    handleAddOrder = ()=>{
+        this.props.history.push({
+            pathname: '/pedidos/nuevo',
+            state:{
+                clientId: this.state.client.id
+            }
+        })
+    }
+
     render() {
         const { classes, sellers } = this.props
         const { loading, client, orders, payments, shipments } = this.state
@@ -103,7 +112,7 @@ class ClientDetail extends Component {
                 {
                     (client && !loading) &&
                     <Fragment>
-                        <ClientDetailHeader handleEdit={this.handleEdit(client)} client={client} />
+                        <ClientDetailHeader handleAddOrder={this.handleAddOrder} handleEdit={this.handleEdit(client)} client={client} />
                         <div className={classes.content}>
                             <ClientDetailInfo unPayOrders={this.state.unPayOrders} client={{...client, seller: sellers[client.seller]}} />
                         </div>

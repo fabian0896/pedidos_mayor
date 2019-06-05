@@ -2,7 +2,6 @@ import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
-import * as moment from 'moment'
 import { limitName } from '../../../lib/utilities'
 import { Hidden } from '@material-ui/core'
 
@@ -16,11 +15,11 @@ const styles = theme => ({
          fontWeight: 400
     },
     subTitle:{
-         marginTop: `${theme.spacing.unit}px`,
+         marginTop: `${theme.spacing.unit*2}px`,
          position: 'relative',
          zIndex: 2,
          color: '#FFF',
-         //width: '300px'
+         width: '250px'
     },
     header:{
         display: 'flex',
@@ -76,8 +75,6 @@ const styles = theme => ({
 
 function ClientDetailHeader(props){
     const { classes, client, handleEdit } = props
-    const timeStamp = client.createdAt.seconds
-    const date = moment(timeStamp*1000).format("DD/MM/YYYY")
     return(
         <div className={classes.header}>
             <div className={ classes.headerContent }>
@@ -88,8 +85,9 @@ function ClientDetailHeader(props){
                 <Hidden smUp implementation="js">
                     <Typography className={classes.title} component="h2" variant="h3">{limitName(client.name)}</Typography>
                 </Hidden>
-                <Typography className={classes.subTitle} component="span" variant="subtitle1">Estado: Pedido pendiente</Typography>
-                <Typography style={{marginTop: 0}} className={classes.subTitle} component="span" variant="subtitle1">ultima actualización: { date }</Typography>
+                <Button onClick={props.handleAddOrder} size="small" variant="outlined" className={classes.subTitle} color="inherit">Agregar Pedido</Button>
+                {/* <Typography className={classes.subTitle} component="span" variant="subtitle1">Estado: Pedido pendiente</Typography>
+                <Typography style={{marginTop: 0}} className={classes.subTitle} component="span" variant="subtitle1">ultima actualización: { date }</Typography> */}
             </div>
             <div className={classes.headerActions}>
                 <Button

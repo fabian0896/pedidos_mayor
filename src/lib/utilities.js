@@ -4,8 +4,10 @@ import frases from './frases.json'
 export function formatPhone(phone, callCode){
     
     let phoneNumber = ""
+
+
     
-    for(let letter of phone){
+    for(let letter of phone.replace(' ','')){
         if(!isNaN(letter)){
             phoneNumber += letter
         }

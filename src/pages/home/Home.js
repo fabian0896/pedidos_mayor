@@ -15,6 +15,8 @@ import { connect } from 'react-redux'
 import PaymentCard from '../../componets/paymentCard/PaymentCard'
 import ShippingCard from '../../componets/shippingCard/ShippingCard'
 import OrderWithBalance from './OrderWithBalance'
+import { convertCurrency } from '../../lib/currencyService'
+
 
 class Home extends Component {
 
@@ -26,6 +28,7 @@ class Home extends Component {
     }
 
     async componentDidMount() {
+
         document.title = "Inicio | Pedidos Bethel"
         const [orders, payments, shipments, orderWithBalance] = await Promise.all([
             getReadyToShipOrders(),

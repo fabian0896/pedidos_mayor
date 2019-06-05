@@ -8,6 +8,7 @@ import TopListItem from '../../componets/topList/TopListItem'
 import MyModal from '../../componets/myModal/MyModal'
 import NewProductForm from './NewProductForm'
 import { deletProduct, addOrUpdateProduct } from '../../lib/firebaseService'
+import { getYearStats} from '../../lib/statsService'
 import Loader from '../../componets/loader/Loader'
 import {    
     Save as SaveIcon,
@@ -21,7 +22,7 @@ import {
  import withWidth from '@material-ui/core/withWidth';
  import { searchProduct } from '../../lib/searchService'
 import NoFindMessage from '../../componets/noFindMessage/NoFindMessage.jsx';
-
+import moment from 'moment'
 
 class Prendas extends Component{    
     
@@ -39,7 +40,8 @@ class Prendas extends Component{
         deleteId: null,
         searchresults: null,
         isSearching: false,
-        loadingSearch: false
+        loadingSearch: false,
+        topProducts: []
     }
 
     handleOpenModal= ()=>{
@@ -101,12 +103,30 @@ class Prendas extends Component{
     
     async componentDidMount(){
         document.title = "Prendas"
+        
         this.props.addAllProducts()
         this.props.addRecentProducts()
         this.getLines()
-        await this.getLines()
-        
+        await Promise.all([
+            this.getLines(),
+            this.getTopProducts()
+        ])
         return
+    }
+
+
+    getTopProducts = async ()=>{
+        const yearStats = await getYearStats(moment().year())
+        const { allProducts } = this.props
+        const topProducts = Object.keys(yearStats.products)
+                                    .sort((a,b)=>allProducts[b].quantity - allProducts[a].quantity)
+                                    .slice(0,5)
+                                    .map(id => ({
+                                        primary: allProducts[id].name,
+                                        secondary: allProducts[id].line,
+                                        id
+                                    }))
+        this.setState({topProducts})
     }
 
     handleOpenAlert = (id)=>()=>{
@@ -192,7 +212,8 @@ class Prendas extends Component{
             deleteId,
             searchresults,
             isSearching,
-            loadingSearch
+            loadingSearch,
+            topProducts
         } = this.state
 
         const { allProducts, recentProducts } = this.props
@@ -295,7 +316,7 @@ class Prendas extends Component{
                         <TopList handleClick={(id) => () =>{console.log(id)}}>
                             <TopListItem
                                 title="Prendas Más Vendidas"
-                                data={[]}
+                                data={topProducts}
                                 withNumbers
                             />   
                             <TopListItem

@@ -1,10 +1,10 @@
-import React, {Fragment} from 'react'
+import React, {Fragment, useState, useEffect} from 'react'
 import { Paper, withStyles, Typography, IconButton } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
 import { Add as AddIcon } from '@material-ui/icons'
+import { convertCurrency} from '../../../lib/currencyService'
 
-
-const MoneyValue = ({amount, children})=>(
+const MoneyValue = ({amount, children, prefix})=>(
     <NumberFormat 
         value={amount} 
         displayType={'text'} 
@@ -12,7 +12,7 @@ const MoneyValue = ({amount, children})=>(
         prefix={'$'} 
         renderText={value => (
             React.cloneElement(children, {
-                children: value
+                children: value + (prefix? ` (${prefix})`:'')
             })
         )}
         />
@@ -59,9 +59,22 @@ const styles = theme => ({
 
 
 function PaymentSummary(props) {
-    const { classes, data, handleAddPayment } = props
+    const [localValue, setLocalValue] = useState(0)
+    const { classes, data, handleAddPayment, client } = props
 
+    const clientCurrency = client.country.currencies[0].code
     const payments = Object.keys(data.payments || {}).map(id=>data.payments[id])
+
+
+    useEffect(()=>{
+        convertCurrency(data.currency, clientCurrency , data.balance).then(value=>{
+            setLocalValue(value.toFixed(1))
+        }).catch(err=>{
+            console.log(err)
+            setLocalValue(0)
+        })
+    }, [data.balance, clientCurrency, data.currency])
+
 
     return (
         <Paper className={classes.root}>
@@ -121,7 +134,10 @@ function PaymentSummary(props) {
                 <MoneyValue amount={data.balance} >
                     <Typography color="inherit" align="center" variant="h6"></Typography>
                 </MoneyValue>
-                <Typography align="center" color="inherit" variant="overline">$15 (USD)</Typography>
+                <MoneyValue prefix={clientCurrency} amount={localValue} >
+                    <Typography align="center" color="inherit" variant="overline"></Typography>
+                </MoneyValue>
+                
             </div>
 
         </Paper>

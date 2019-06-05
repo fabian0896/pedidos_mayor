@@ -206,7 +206,7 @@ class OrderDetails extends Component {
                                             <ShippingInfoCard handleAddShipping={this.handleAddShipping} data={order} />
                                         </Grid>
                                         <Grid item sm={6} xs={12}>
-                                            <PaymentSummary handleAddPayment={this.handleOpenPayModal} data={order} />
+                                            <PaymentSummary client={client} handleAddPayment={this.handleOpenPayModal} data={order} />
                                         </Grid>
                                     </Grid>
                                 </Fragment>
@@ -269,7 +269,7 @@ class OrderDetails extends Component {
                                             order={order}
                                             client={client}
                                         />
-                                        <PaymentSummary handleAddPayment={this.handleOpenPayModal} data={order} />
+                                        <PaymentSummary client={client} handleAddPayment={this.handleOpenPayModal} data={order} />
                                         <ShippingInfoCard handleAddShipping={this.handleAddShipping} data={order} />
                                     </Grid>
                                 </Grid>
