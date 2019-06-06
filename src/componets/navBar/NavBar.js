@@ -32,9 +32,8 @@ import {getNameLetters, limitName} from '../../lib/utilities'
 const ProfileOptions = ({signOut}) => {
     return (
         <div>
-            <MenuList>
+            <MenuList style={{width: 195}}>
                 <MenuItem>Perfil</MenuItem>
-                <MenuItem>My Acount alsjdl aslkjd</MenuItem>
                 <MenuItem onClick={signOut}>Salir</MenuItem>
             </MenuList>
         </div>

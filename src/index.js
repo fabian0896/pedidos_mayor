@@ -12,6 +12,18 @@ import { BrowserRouter } from 'react-router-dom'
 import ReduxThunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import 'firebase/firestore'
+import moment from 'moment'
+
+moment.updateLocale('es', {
+    months : [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+        "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ],
+    monthsShort : [
+        "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+        "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
+    ]
+  });
 
 //
 

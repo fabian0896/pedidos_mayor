@@ -343,7 +343,7 @@ const ShippingCard = withStyles(theme=>({
                     <MoneyValue amount={shipping.price}>
                         <Typography align="center" variant="h6"/>
                     </MoneyValue>
-                    <Typography color="textSecondary" variant="overline" align="right">{moment(shipping.createdAt.seconds*1000).format('DD/MM/YYYY')}</Typography>
+                    <Typography color="textSecondary" variant="overline" align="right">{moment(shipping.createdAt.seconds*1000).format('DD/MMM/YYYY')}</Typography>
                 </div>
             </Paper>
         </Fragment>

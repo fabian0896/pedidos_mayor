@@ -235,7 +235,7 @@ const PaymentCard = withStyles((theme)=>({
                                     className={classes.date} 
                                     color="inherit" 
                                     variant="overline">
-                                        {moment(payment.createdAt.seconds*1000).format('DD/MM/YYYY')}
+                                        {moment(payment.createdAt.seconds*1000).format('DD/MMM/YYYY')}
                                 </Typography>
                             </div>
                         </div>

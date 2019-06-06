@@ -109,7 +109,7 @@ const NotificationItem = withStyles(theme=>({
                 <div className={classNames(classes.iconWrapper, classes[data.type])}>
                     <Icon className={classes.icon}/>
                 </div>
-                <Typography className={classes.date} color="textSecondary">{moment(data.date.seconds*1000).format('DD/MM/YY - hh:mm A')}</Typography>
+                <Typography className={classes.date} color="textSecondary">{moment(data.date.seconds*1000).format('DD/MMMM/YYYY - hh:mm A')}</Typography>
                 {
                     !data.seen &&
                     <div className={classes.notSeenDot}/>

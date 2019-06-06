@@ -27,7 +27,7 @@ const UnPayItems = withStyles(theme=>({
         <div className={classes.root}>
             <div>
                 <Typography variant="h6">{order.serialCode}</Typography>
-                <Typography style={{lineHeight: 1}} color="textSecondary">{moment(order.createdAt.seconds*1000).format('DD/MM/YYYY')}</Typography>
+                <Typography style={{lineHeight: 1}} color="textSecondary">{moment(order.createdAt.seconds*1000).format('DD/MMM/YYYY')}</Typography>
             </div>
             <MoneyValue variant="body2" color="textSecondary">{order.balance}</MoneyValue>
         </div>

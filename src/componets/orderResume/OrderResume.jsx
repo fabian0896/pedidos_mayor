@@ -74,7 +74,7 @@ const styles = theme =>({
 
 function OrderResume(props){
     const { classes, order, client, onClick } = props
-    const date = moment(order.createdAt.seconds*1000).format('DD/MM/YYYY')
+    const date = moment(order.createdAt.seconds*1000).format('DD/MMMM/YYYY')
     const country = client.country.translations.es || client.country
     
 
