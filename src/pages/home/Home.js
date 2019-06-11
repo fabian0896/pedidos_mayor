@@ -15,7 +15,9 @@ import { connect } from 'react-redux'
 import PaymentCard from '../../componets/paymentCard/PaymentCard'
 import ShippingCard from '../../componets/shippingCard/ShippingCard'
 import OrderWithBalance from './OrderWithBalance'
-import { convertCurrency } from '../../lib/currencyService'
+import WeekStats from '../../componets/weekStats/WeekStats'
+import moment from 'moment'
+import { getYearStats } from '../../lib/statsService'
 
 
 class Home extends Component {
@@ -30,13 +32,14 @@ class Home extends Component {
     async componentDidMount() {
 
         document.title = "Inicio | Pedidos Bethel"
-        const [orders, payments, shipments, orderWithBalance] = await Promise.all([
+        const [orders, payments, shipments, orderWithBalance, year] = await Promise.all([
             getReadyToShipOrders(),
             getLastPayments(),
             getLastShipments(),
-            getOrdersWithBalance(true)
+            getOrdersWithBalance(true),
+            getYearStats(moment().year())
         ])
-        this.setState({ orders, payments, shipments, orderWithBalance })
+        this.setState({ orders, payments, shipments, orderWithBalance, year })
         return
     }
 
@@ -50,7 +53,7 @@ class Home extends Component {
 
     render() {
 
-        const { orders, payments, shipments, orderWithBalance } = this.state
+        const { orders, payments, shipments, orderWithBalance, year} = this.state
         const { clients } = this.props
 
         return (
@@ -59,7 +62,8 @@ class Home extends Component {
                     <Typography variant="h1" color="inherit">Inicio</Typography>
                 </Header>
                 <Frases />
-                <Grid container spacing={16}>
+                <WeekStats year={year}/>
+                <Grid style={{marginTop: 40}} container spacing={16}>
                     <Grid item xs={12} md={9}>
                         <Title align="center" primary="Pedidos" secondary="Pedidos Listo para despachar" />
                         <OrderSlideList

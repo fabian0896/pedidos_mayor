@@ -16,6 +16,7 @@ import LineChart from './LineChart';
 import Title from '../../componets/title/Title'
 import PieChart from './PieChart';
 import MonthCard from './MonthCard';
+import WeekStats from '../../componets/weekStats/WeekStats';
 
 
 
@@ -135,9 +136,9 @@ class Estadisticas extends Component {
                                 secondary="ingresos en Dolares"
                             />
                         </StatsCardList>
-            
-                </Fragment>
 
+                </Fragment>
+                <WeekStats year={year}/>
                 <Title
                     style={{ marginTop: 32 }}
                     align="left"

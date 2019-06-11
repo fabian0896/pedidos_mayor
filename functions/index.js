@@ -207,7 +207,8 @@ function getDate(userDate) {
     const date = moment(userDate).tz('America/Bogota')
     const month = date.month() + 1
     const year = date.year()
-    return [month, year, date]
+    const week = date.week()
+    return [month, year, week, date]
 }
 
 
@@ -219,7 +220,7 @@ function getDate(userDate) {
 exports.addOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onCreate((snap, context) => {
 
     const order = snap.data()
-    const [month, year] = getDate()
+    const [month, year, week] = getDate()
 
     return admin.firestore().collection(CLIENTS).doc(order.clientId).get().then(clientSnap => {
         const client = clientSnap.data()
@@ -262,7 +263,13 @@ exports.addOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onCreate(
                 totalOrders,
                 clients,
                 countries,
-                sizes
+                sizes,
+                weeks:{
+                    [week]: {
+                        totalOrders,
+                        totalProducts
+                    }
+                }
             }, { merge: true })
         ])
     }).catch(err => {
@@ -279,7 +286,7 @@ exports.updateOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onUpda
     const oldOrder = change.before.data()
     const newOrder = change.after.data()
 
-    const [month, year] = getDate(oldOrder.createdAt.seconds * 1000)
+    const [month, year, week] = getDate(oldOrder.createdAt.seconds * 1000)
 
     const sizes = updateGrupBy(newOrder.products, oldOrder.products, 'size')
     const products = updateProductsToStats(newOrder.products, oldOrder.products)
@@ -294,7 +301,12 @@ exports.updateOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onUpda
         admin.firestore().collection(STATS).doc(`${year}`).set({
             products,
             totalProducts,
-            sizes
+            sizes,
+            weeks:{
+                [week]: {
+                    totalProducts
+                }
+            }
         }, { merge: true })
     ])
 
@@ -305,7 +317,7 @@ exports.updateOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onUpda
 
 exports.deleteOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onDelete((snap, context) => {
     const order = snap.data()
-    const [month, year] = getDate(order.createdAt.seconds * 1000)
+    const [month, year, week] = getDate(order.createdAt.seconds * 1000)
     return admin.firestore().collection(CLIENTS).doc(order.clientId).get().then(clientSnap => {
         const client = clientSnap.data()
 
@@ -343,7 +355,13 @@ exports.deleteOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onDele
                 countries,
                 totalOrders,
                 totalProducts,
-                sizes
+                sizes,
+                weeks:{
+                    [week]: {
+                        totalOrders,
+                        totalProducts
+                    }
+                }
             }, { merge: true })
         ])
 
