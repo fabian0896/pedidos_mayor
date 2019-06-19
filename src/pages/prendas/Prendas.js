@@ -117,13 +117,14 @@ class Prendas extends Component{
 
     getTopProducts = async ()=>{
         const yearStats = await getYearStats(moment().year())
-        const { allProducts } = this.props
-        const topProducts = Object.keys(yearStats.products)
-                                    .sort((a,b)=>allProducts[b].quantity - allProducts[a].quantity)
+        //const { allProducts } = this.props
+        //console.log(yearStats.products)
+        const topProducts = Object.keys(yearStats? yearStats.products: {})
+                                    .sort((a,b)=>yearStats.products[b].quantity - yearStats.products[a].quantity)
                                     .slice(0,5)
                                     .map(id => ({
-                                        primary: allProducts[id].name,
-                                        secondary: allProducts[id].line,
+                                        primary: yearStats.products[id].name,
+                                        secondary: yearStats.products[id].line,
                                         id
                                     }))
         this.setState({topProducts})

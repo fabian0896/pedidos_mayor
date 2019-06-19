@@ -28,6 +28,7 @@ function addProductsToStats(products) {
         prev[current.id] = {
             id: current.id,
             name: current.name,
+            line: current.line,
             quantity: quantity + parseInt(current.quantity)
         }
         return prev
@@ -47,6 +48,7 @@ function deleteProductsToStats(products) {
         prev[current.id] = {
             id: current.id,
             name: current.name,
+            line: current.line,
             quantity: quantity + parseInt(current.quantity)
         }
         return prev
@@ -65,6 +67,7 @@ function updateProductsToStats(newProducts, oldProducts){
         prev[current.id] = {
             id: current.id,
             name: current.name,
+            line: current.line,
             quantity: quantity + parseInt(current.quantity)
         }
         return prev
@@ -74,6 +77,7 @@ function updateProductsToStats(newProducts, oldProducts){
         prev[current.id] = {
             id: current.id,
             name: current.name,
+            line: current.line,
             quantity: quantity + parseInt(current.quantity)
         }
         return prev
@@ -87,6 +91,7 @@ function updateProductsToStats(newProducts, oldProducts){
         productsresult[productId] = {
             id: productId,
             name: newProductsObject[productId].name,
+            line: newProductsObject[productId].line,
             quantity: newQuantity - oldQuantity
         }
     })
@@ -97,6 +102,7 @@ function updateProductsToStats(newProducts, oldProducts){
         productsresult[productId] = {
             id: productId,
             name: oldProductsObject[productId].name,
+            line: oldProductsObject[productId].line,
             quantity: -oldProductsObject[productId].quantity
         }
     })
