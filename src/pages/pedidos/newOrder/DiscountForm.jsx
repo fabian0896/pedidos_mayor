@@ -75,7 +75,7 @@ class DescountForm extends React.Component {
                     <Typography align={align} color="textSecondary" variant="subtitle1" >Descuento</Typography>
                     <Typography align={align} variant="h5" >{`${values.descount || 0}%`}</Typography>
                     <NumberFormat
-                        value={(values.descount/100)*values.subTotal}
+                        value={((values.descount/100)*values.subTotal).toFixed(2)}
                         displayType={'text'}
                         thousandSeparator={true}
                         prefix={'-$'}
@@ -85,7 +85,7 @@ class DescountForm extends React.Component {
 
                     <Typography align={align} color="textSecondary" variant="subtitle1" >Total</Typography>
                     <NumberFormat
-                        value={values.total || values.subTotal}
+                        value={(values.total || values.subTotal)}
                         displayType={'text'}
                         thousandSeparator={true}
                         prefix={'$'}
@@ -102,10 +102,12 @@ class DescountForm extends React.Component {
 
 DescountForm = withFormik({
     mapPropsToValues: (props) => { 
-        const subTotal = props.initialValues.products
+        let subTotal = props.initialValues.products
                                     .map(({quantity, price})=> parseInt(quantity)*parseFloat(price))
                                     .reduce((prev,curr)=> prev + curr)
-        const total = props.initialValues.descount? subTotal - (subTotal*( props.initialValues.descount/100)) : subTotal
+
+        subTotal = subTotal.toFixed(2)
+        const total = props.initialValues.descount? (subTotal - (subTotal*( props.initialValues.descount/100))).toFixed(2) : subTotal
         return{
             descount: props.initialValues.descount || 0,
             total,

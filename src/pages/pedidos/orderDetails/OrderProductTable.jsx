@@ -69,7 +69,7 @@ class OrderProductTable extends Component{
         if(!data.length) return 0
         const total = data.map(({price, quantity})=>(parseFloat(price)*parseInt(quantity)))
             .reduce((prev, current)=> prev + current)
-        return total
+        return total.toFixed(2)
     }
     
     render(){
@@ -140,7 +140,7 @@ class OrderProductTable extends Component{
                                                 prefix={'$'} 
                                                 renderText={value => <TableCell>{value}</TableCell>} />
                                             <NumberFormat 
-                                                value={(product.quantity * product.price).toFixed(1)} 
+                                                value={(product.quantity * product.price).toFixed(2)} 
                                                 displayType={'text'} 
                                                 thousandSeparator={true} 
                                                 prefix={'$'} 
