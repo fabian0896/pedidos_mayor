@@ -9,8 +9,8 @@ const END_POINT = `https://free.currconv.com/api/v7/convert?&compact=ultra&apiKe
 
 
 export async function convertCurrency(from, to, value=0){
-    const dbValue = await getConvetFromDb(from, to, value)
-    if(dbValue){
+    const {dbValue, isInDb} = await getConvetFromDb(from, to, value)
+    if(isInDb){
         return dbValue
     }
     
@@ -78,14 +78,14 @@ async function getConvetFromDb(from, to, value=0){
     const thisDayData = data[key]
 
     if(!thisDayData){
-        return null
+        return {dbValue: null, isInDb: false}
     }
 
     const currencyChange = thisDayData[`${from}_${to}`]
 
     if(!currencyChange){
-        return null
+        return {dbValue: null, isInDb: false}
     }
 
-    return value*currencyChange
+    return {dbValue: value*currencyChange, isInDb: true}
 }

@@ -873,7 +873,7 @@ export async function addPayment(payment) {
 
         let totalPayments = parseFloat(payment.value)
 
-        const newOrderBalance = parseFloat(order.balance) - parseFloat(payment.value)
+        const newOrderBalance = parseFloat(order.balance).toFixed(2) - parseFloat(payment.value).toFixed(2)
 
         if (order.payments) {
             const subTotal = Object.keys(order.payments)

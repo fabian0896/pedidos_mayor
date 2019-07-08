@@ -91,7 +91,7 @@ function PaymentForm(props){
                     values.order &&
                     <Grid item xs={12}>
                         <Typography variant="subtitle1" color="textSecondary">Saldo:</Typography>
-                        <MoneyValue currency={values.order.currency} amount={values.order.balance.toFixed(1)}>
+                        <MoneyValue currency={values.order.currency} amount={values.order.balance.toFixed(2)}>
                             <Typography variant="h6"></Typography>
                         </MoneyValue>
                     </Grid>
@@ -177,7 +177,7 @@ export default compose(
             const order = props.options.find(item=>item.value === orderId)
             return{
                 order,
-                value: 0,
+                value: 0.00,
                 paymentMethod: '',
                 reference: ''
             }
