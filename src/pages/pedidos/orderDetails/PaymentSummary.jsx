@@ -75,6 +75,7 @@ function PaymentSummary(props) {
         })
     }, [data.balance, clientCurrency, data.currency])
 
+   
 
     return (
         <Paper className={classes.root}>
@@ -89,15 +90,15 @@ function PaymentSummary(props) {
             </div>
 
             <Typography color="textSecondary" align="center" variant="subtitle2">Total</Typography>
-              <MoneyValue amount={(data.shipmentsPrice || 0) + data.total}>
+              <MoneyValue amount={parseFloat((data.shipmentsPrice || 0) + data.total).toFixed(2)}>
                 <Typography align="center" variant="h5"></Typography>
             </MoneyValue>  
 
             <div className={classes.content}>
                 <div>
                     <Typography align="left" color="textSecondary" variant="body2">Prendas</Typography>
-                    <MoneyValue amount={data.total}>
-                        <Typography gutterBottom align="left" variant="body1">$380.000</Typography>
+                    <MoneyValue amount={parseFloat(data.total).toFixed(2)}>
+                        <Typography gutterBottom align="left" variant="body1"></Typography>
                     </MoneyValue>
                     
 
@@ -107,8 +108,8 @@ function PaymentSummary(props) {
                     </MoneyValue>
                     
 
-                    <Typography align="left" color="textSecondary" variant="body2">Total(COP)</Typography>
-                    <MoneyValue amount={(data.shipmentsPrice || 0) + data.total}>
+                    <Typography align="left" color="textSecondary" variant="body2">{`Total(${data.currency})`}</Typography>
+                    <MoneyValue amount={parseFloat((data.shipmentsPrice || 0) + data.total).toFixed(2)}>
                         <Typography align="left" variant="body1"></Typography>
                     </MoneyValue>
 
@@ -131,7 +132,7 @@ function PaymentSummary(props) {
             </div>
             <div className={classes.balance}>
                 <Typography color="inherit" align="center" variant="subtitle1">Saldo</Typography>
-                <MoneyValue amount={data.balance} >
+                <MoneyValue amount={parseFloat(data.balance).toFixed(2)} >
                     <Typography color="inherit" align="center" variant="h6"></Typography>
                 </MoneyValue>
                 <MoneyValue prefix={clientCurrency} amount={localValue} >

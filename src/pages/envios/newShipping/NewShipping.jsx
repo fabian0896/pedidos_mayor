@@ -86,6 +86,15 @@ class NewShipping extends React.Component {
                     shipping: values.order.shipping,
                 }
             }))
+        } else if(activeStep === 1){
+            this.setState(state=>({
+                formValues:{
+                    ...state.formValues,
+                    shipping:{
+                        ...values
+                    }
+                }
+            }))
         } else {
             this.setState(state => ({
                 formValues: {

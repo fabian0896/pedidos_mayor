@@ -98,7 +98,7 @@ class ListClientesItem extends Component{
                             <div className={ classes.stats }>
                                 <Typography inline component="span" variant="subheading" color="textSecondary">Saldo Pendiente:</Typography>
                                 <NumberFormat 
-                                    value={(client.balance || 0).toFixed(1)} 
+                                    value={parseFloat(client.balance).toFixed(1)} 
                                     displayType={'text'} 
                                     thousandSeparator={true} 
                                     prefix={`${client.currency==='COP'? '' : client.currency} $`} 

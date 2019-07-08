@@ -75,7 +75,9 @@ const styles = theme => ({
         display: 'flex',
         width: '100%',
         '& div': {
-            flex: 1
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
         }
     },
     divider: {
@@ -154,7 +156,7 @@ function OrderDetailsCard(props) {
                         </div>
                         <div>
                             <NumberFormat
-                                value={order.total}
+                                value={parseFloat(order.total).toFixed(1)}
                                 displayType={'text'}
                                 thousandSeparator={true}
                                 prefix={`${order.currency === 'COP' ? '' : order.currency + ' '}$`}

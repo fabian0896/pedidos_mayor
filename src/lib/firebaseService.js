@@ -413,7 +413,7 @@ export async function addOrder(order) {
         timeLine: [timeLineObject],
         state: 'pending',
         totalProducts,
-        balance: order.total,
+        balance: parseFloat(order.total),
         serialCode: serialCodeText,
         clientId: order.clientInfo.id,
         creator: firebase.auth().currentUser.uid,
@@ -515,7 +515,7 @@ export async function updateOrder(order, id) {
         ...order,
         state: 'pending',
         totalProducts,
-        balance: order.total,
+        balance: parseFloat(order.total),
         clientId: order.clientInfo.id,
         updatedAt: new Date()
     }

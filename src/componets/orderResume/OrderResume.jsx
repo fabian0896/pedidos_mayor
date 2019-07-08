@@ -77,7 +77,6 @@ function OrderResume(props){
     const date = moment(order.createdAt.seconds*1000).format('DD/MMMM/YYYY')
     const country = client.country.translations.es || client.country
     
-
     return(
         <Paper  className={classes.root}>
             <div onClick={onClick} className={classNames(classes.header, classes[order.state])}>
@@ -110,7 +109,7 @@ function OrderResume(props){
                     <div className={classes.moneyInfo}>
                         <Typography align="right" variant="body2" color="textSecondary">Saldo:</Typography>
                         <NumberFormat 
-                        value={order.balance || 0} 
+                        value={parseFloat(order.balance || 0).toFixed(1)} 
                         displayType={'text'} 
                         thousandSeparator={true} 
                         prefix={`$`} 
@@ -130,14 +129,14 @@ function OrderResume(props){
                         
                         <Typography align="right" variant="body2" color="textSecondary">Total</Typography>
                         <NumberFormat 
-                            value={order.total + (order.shipmentsPrice || 0)} 
+                            value={parseFloat(order.total + (order.shipmentsPrice || 0)).toFixed(1)} 
                             displayType={'text'} 
                             thousandSeparator={true} 
                             prefix={`$`} 
                             renderText={value =>( 
                                 <Typography component="span" variant="h6">{value}</Typography>
                             )} />
-                    </div>
+                    </div> 
                 </div>
             </div>
         </Paper>

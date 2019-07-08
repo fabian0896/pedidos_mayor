@@ -29,7 +29,7 @@ const Item = withStyles(theme =>({
                 <Typography style={{fontWeight: 500, lineHeight: 1.2}} variant="subtitle1">{order.serialCode}</Typography>
                 <Typography color="textSecondary">{client.name}</Typography>
             </div>
-            <MoneyText currency={order.currency} >{order.balance}</MoneyText>
+            <MoneyText currency={order.currency} >{parseFloat(order.balance).toFixed(1)}</MoneyText>
         </div>
     )
 })

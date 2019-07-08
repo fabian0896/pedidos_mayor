@@ -44,6 +44,9 @@ const styles = theme =>({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
+    },
+    email:{
+        wordBreak: 'break-all'
     }
 })
 
@@ -52,6 +55,9 @@ function ShippingResume(props){
     const {shipping: data, classes, float} = props
     const destination = data.shipping || data.shippingDestination
     const width = float? '100%' : '450px'
+
+    
+
     return(
         <div style={{width}} className={classes.root}>
             <Title
@@ -78,7 +84,7 @@ function ShippingResume(props){
                     <Typography variant="body2">{destination.phone}</Typography>
                     <Typography gutterBottom color="textSecondary">Telefono</Typography>
                     
-                    <Typography variant="body2">{destination.email}</Typography>
+                    <Typography className={classes.email} variant="body2">{destination.email}</Typography>
                     <Typography gutterBottom color="textSecondary">Correo</Typography>
                     
                     <Typography variant="body2">{destination.zipCode}</Typography>

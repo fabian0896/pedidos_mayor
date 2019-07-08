@@ -56,6 +56,7 @@ class Home extends Component {
         const { orders, payments, shipments, orderWithBalance, year} = this.state
         const { clients } = this.props
 
+
         return (
             <div >
                 <Header>
@@ -65,7 +66,7 @@ class Home extends Component {
                 <WeekStats year={year}/>
                 <Grid style={{marginTop: 40}} container spacing={16}>
                     <Grid item xs={12} md={9}>
-                        <Title align="center" primary="Pedidos" secondary="Pedidos Listo para despachar" />
+                        <Title align="center" primary="Despacho Hoy" secondary="Pedidos Listo para despachar" />
                         <OrderSlideList
                             noItemTitle="No hay pedidos Pendientes"
                             noItemMessage="En el momento no hay pedidos pendientes por despachar :)" >
