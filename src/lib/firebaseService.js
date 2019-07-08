@@ -1135,13 +1135,18 @@ export async function AddShipping(shipping) {
 
         timeLine.push(timeLineObject)
 
+        let state = order.state
+
+        if(shippedProducts >= order.totalProducts && shipping.trackingNumber){
+            state = 'shipped'
+        }
 
         const orderObject = {
             balance: orderBalance,
             shipments: orderShipments,
             shipmentsPrice,
             shippedProducts,
-            state: shippedProducts >= order.totalProducts? 'shipped' : order.state,
+            state,
             timeLine,
             updatedAt: new Date()
         }

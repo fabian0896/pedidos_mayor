@@ -90,7 +90,7 @@ function PaymentSummary(props) {
             </div>
 
             <Typography color="textSecondary" align="center" variant="subtitle2">Total</Typography>
-              <MoneyValue amount={parseFloat((data.shipmentsPrice || 0) + data.total).toFixed(2)}>
+              <MoneyValue amount={parseFloat((data.shipmentsPrice || 0) + parseFloat(data.total)).toFixed(2)}>
                 <Typography align="center" variant="h5"></Typography>
             </MoneyValue>  
 
@@ -109,7 +109,7 @@ function PaymentSummary(props) {
                     
 
                     <Typography align="left" color="textSecondary" variant="body2">{`Total(${data.currency})`}</Typography>
-                    <MoneyValue amount={parseFloat((data.shipmentsPrice || 0) + data.total).toFixed(2)}>
+                    <MoneyValue amount={parseFloat((data.shipmentsPrice || 0) + parseFloat(data.total)).toFixed(2)}>
                         <Typography align="left" variant="body1"></Typography>
                     </MoneyValue>
 
