@@ -147,7 +147,8 @@ export function compareObjects(obj1, obj2, keysArray){
 
 export function thousandSeparator(value, simbol=false){
     let negative = false
-    let tempValue = value
+    let tempValue = parseInt(value)
+    const afterPoint =  parseFloat(parseFloat(value-tempValue).toFixed(2))*100
     if(value<0){
         //valor negativo
         negative = true
@@ -164,7 +165,7 @@ export function thousandSeparator(value, simbol=false){
             return val
         }
     })
-    return  (negative? '-':'') + (simbol? '$' : '') + withPionts.reverse().join('')
+    return  (negative? '-':'') + (simbol? '$' : '') + withPionts.reverse().join('') + ',' + afterPoint
 } 
 
 
