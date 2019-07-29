@@ -455,7 +455,7 @@ export async function addOrder(order) {
                 totalOrders = client.totalOrders + 1
             }
 
-            let totalValue = order.total
+            let totalValue = parseFloat(order.total)
             if (client.currency !== order.currency) {
                 totalValue = await convertCurrency(order.currency, client.currency, totalValue)
             }
@@ -468,7 +468,7 @@ export async function addOrder(order) {
                     updatedAt: lastOrder
                 })
             } else {
-                const totalBalance = client.balance + totalValue
+                const totalBalance = parseFloat(client.balance) + totalValue
                 transaction.update(clientRef, {
                     balance: totalBalance,
                     totalOrders,
