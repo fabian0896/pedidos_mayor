@@ -579,14 +579,14 @@ export async function updateOrder(order, id) {
             }
 
 
-            let totalValue = order.total
+            let totalValue = parseFloat(order.total)
             if (client.currency !== order.currency) {
                 totalValue = await convertCurrency(order.currency, client.currency, totalValue)
             }
 
 
             if (order.payments && order.totalPayments) {
-                totalValue = totalValue - order.totalPayments
+                totalValue = totalValue - parseFloat(order.totalPayments)
             }
 
 
@@ -596,7 +596,7 @@ export async function updateOrder(order, id) {
                     updatedAt: new Date(),
                 })
             } else {
-                const totalBalance = (client.balance - oldOrder.balance) + totalValue
+                const totalBalance = (parseFloat(client.balance) - parseFloat(oldOrder.balance)) + parseFloat(totalValue)
                 transaction.update(clientRef, {
                     balance: totalBalance,
                     updatedAt: new Date()
