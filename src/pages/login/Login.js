@@ -27,9 +27,13 @@ class Login extends Component{
     handelSubmint = (values, actions) =>{ 
         const { register } = this.state
         if(register){
-            createSeller(values).catch(errMesaje=>{
+            createSeller(values)
+                .then(message=>{
+                    this.props.showAlert('success', message)
+                })
+                .catch(errMesaje=>{
                 this.props.showAlert('error', errMesaje);
-            })
+                })
         }else{
             this.login(values.email, values.password).catch(err =>{
                 this.props.showAlert('error', 'Usuario o clave incorrectas');

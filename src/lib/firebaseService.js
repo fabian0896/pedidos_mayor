@@ -235,9 +235,10 @@ export async function registerUSer(email, password) {
 }
 
 
-export function createSeller({ email, password, code, name }) {
+export function createSeller({ email, password, code, name }) { 
     return new Promise(async (res, rej) => {
         const codes = await getCodes()
+        console.log(codes)
         const matchCode = codes.find(actualCode => actualCode.value === code)
         if (!matchCode) {
             rej("El codigo de registro es invalido")
@@ -247,7 +248,9 @@ export function createSeller({ email, password, code, name }) {
             rej("no se pudo crear el usuario con el correo espesificado")
             return
         })
+        
         if (uid) {
+            
             await firebase.firestore().collection(SELLERS).doc(uid).set({
                 name,
                 email,
@@ -263,7 +266,8 @@ export function getCodes() {
     return new Promise(async (res, rej) => {
         const myHandleError = handleError(rej)
         const snap = await firebase.firestore().collection(CODES).doc('registerCode').get().catch(myHandleError)
-        return [snap.data()]
+        res([snap.data()])
+        return 
     })
 }
 
