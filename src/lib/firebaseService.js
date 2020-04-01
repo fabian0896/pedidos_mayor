@@ -665,6 +665,48 @@ export async function updateOrdersNotes(order, notes){
 }
 
 
+
+export async function updateCommissionPaymet(order, paymenthCommission, paymethCommissionName){
+    const seenArray =  await getSeenArray()
+    await firebase.firestore().runTransaction(async transaction => {
+        
+        
+        const paymenthCommissionAmount = (parseFloat(order.balance).toFixed(2)* (paymenthCommission/100)).toFixed(2)
+
+        const notificationObject = {
+            type: 'UPDATED',
+            collection: ORDERS,
+            author: firebase.auth().currentUser.uid,
+            message: `Se actualizo la comision por medio de pago del pedido ${order.serialCode}`,
+            link: `pedidos/${order.id}`,
+            date: new Date(),
+            seen: seenArray
+        }
+
+        const timeLineObject = {
+            type: 'UPDATED',
+            author: firebase.auth().currentUser.uid,
+            date: new Date(),
+            title: 'Comision por medio de pago actualizada',
+            message: 'Se agrego comision por medio de pago al pedido'
+        }
+
+
+
+        transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
+        transaction.update(firebase.firestore().collection(ORDERS).doc(order.id), {
+            timeLine: firebase.firestore.FieldValue.arrayUnion(timeLineObject),
+            paymenthCommission,
+            paymenthCommissionAmount,
+            paymethCommissionName
+        })
+        return
+    })
+    return 'OK'
+}
+
+
+
 export async function deleteOrder(order){
     const seenArray =  await getSeenArray()
     await firebase.firestore().runTransaction(async transaction =>{

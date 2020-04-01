@@ -1,5 +1,5 @@
 import React, {Fragment, useState, useEffect} from 'react'
-import { Paper, withStyles, Typography, IconButton } from '@material-ui/core';
+import { Paper, withStyles, Typography, IconButton, Divider } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
 import { Add as AddIcon } from '@material-ui/icons'
 import { convertCurrency} from '../../../lib/currencyService'
@@ -54,6 +54,12 @@ const styles = theme => ({
         top: '50%',
         transform: 'translateY(-50%)',
         color: '#FFF'
+    },
+    dividerLeft:{
+        marginRight: theme.spacing.unit*4
+    },
+    dividerRight:{
+        marginLeft: theme.spacing.unit*4
     }
 })
 
@@ -100,13 +106,24 @@ function PaymentSummary(props) {
                     <MoneyValue amount={parseFloat(data.total).toFixed(2)}>
                         <Typography gutterBottom align="left" variant="body1"></Typography>
                     </MoneyValue>
-                    
+
+                    <Divider className={classes.dividerLeft}></Divider>            
 
                     <Typography align="left" color="textSecondary" variant="body2">Envio</Typography>
                     <MoneyValue amount={data.shipmentsPrice || 0}>
                         <Typography gutterBottom align="left" variant="body1"></Typography>
                     </MoneyValue>
+
                     
+                    <Divider className={classes.dividerLeft}></Divider>            
+
+                    <Typography align="left" color="textSecondary" variant="body2">{`Comision por medio de pago(${data.paymenthCommission || 0}%)`}</Typography>
+                    <MoneyValue amount={data.paymenthCommissionAmount || 0}>
+                        <Typography gutterBottom align="left" variant="body1"></Typography>
+                    </MoneyValue>
+                    
+                    <Divider className={classes.dividerLeft}></Divider>            
+                             
 
                     <Typography align="left" color="textSecondary" variant="body2">{`Total(${data.currency})`}</Typography>
                     <MoneyValue amount={parseFloat((data.shipmentsPrice || 0) + parseFloat(data.total)).toFixed(2)}>
@@ -124,6 +141,7 @@ function PaymentSummary(props) {
                                     <MoneyValue amount={payment.value}>
                                         <Typography gutterBottom align="right" variant="body1"></Typography>
                                     </MoneyValue>
+                                    <Divider className={classes.dividerRight}></Divider>
                                 </Fragment>  
                             )
                         })
@@ -132,7 +150,7 @@ function PaymentSummary(props) {
             </div>
             <div className={classes.balance}>
                 <Typography color="inherit" align="center" variant="subtitle1">Saldo</Typography>
-                <MoneyValue amount={parseFloat(data.balance).toFixed(2)} >
+                <MoneyValue amount={parseFloat(data.balance + parseFloat(data.paymenthCommissionAmount)).toFixed(2)} >
                     <Typography color="inherit" align="center" variant="h6"></Typography>
                 </MoneyValue>
                 <MoneyValue prefix={clientCurrency} amount={localValue} >

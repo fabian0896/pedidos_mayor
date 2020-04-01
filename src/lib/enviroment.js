@@ -175,3 +175,10 @@ export const STATES = {
         short: 'Despachado'
     },
 }
+
+
+
+export const COMMISSIONS = {
+    payu: 4.5,
+    paypal: 5.5,
+}

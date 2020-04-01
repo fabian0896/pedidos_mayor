@@ -20,6 +20,7 @@ import ShippingCard from '../../../componets/shippingCard/ShippingCard';
 import AddPaymentModal from '../../pagos/AddPaymentModal';
 import { getResumePdf } from '../../../lib/jsReportService'
 import Notes from './Notes'
+import CommisionCard from './CommissionCard'
 
 class OrderDetails extends Component {
 
@@ -269,6 +270,7 @@ class OrderDetails extends Component {
                                             order={order}
                                             client={client}
                                         />
+                                        <CommisionCard onUpdate={this.handleUpdate} data={order}/>
                                         <PaymentSummary client={client} handleAddPayment={this.handleOpenPayModal} data={order} />
                                         <ShippingInfoCard handleAddShipping={this.handleAddShipping} data={order} />
                                     </Grid>
