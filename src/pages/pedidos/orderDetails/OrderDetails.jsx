@@ -8,7 +8,8 @@ import HeaderLayout from '../../../componets/headerLayout/HeaderLayout';
 import OrderDetailCard from './OrderDetailCard';
 import ShippingInfoCard from './ShippingInfoCard';
 import PaymentSummary from './PaymentSummary'
-import OrderProductTable from './OrderProductTable';
+//import OrderProductTable from './OrderProductTable';
+import OrderProductTable from './OrderProductTableNew';
 import { getOrderbyId, getClientById, getPaymentsByOrderId } from '../../../lib/firebaseService'
 import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom } from '../../../actions'

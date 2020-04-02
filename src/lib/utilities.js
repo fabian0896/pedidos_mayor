@@ -181,3 +181,96 @@ export const randomFrase = ()=>{
 function randomNumber(min = 0, max = 255){
     return Math.floor((Math.random()*(max - min) + min));
 }
+
+
+
+// Funcion para formater las prendas y dejarlas listas para imprimir con el formato clasico
+
+
+export const formatProductForTable = products => {
+    const finalData = products.reduce((prev, curr) => {
+      const index = compareProducts(prev, curr);
+      if (index !== -1) {
+        prev[index].sizes[curr.size] = parseInt(curr.quantity, 10);
+        return prev;
+      } else {
+        return [
+          ...prev,
+          {
+            reference: curr.reference,
+            color: curr.color,
+            mold: curr.mold,
+            label: curr.label,
+            price: curr.price,
+            name: curr.name,
+            sizes: {
+              [curr.size]: parseInt(curr.quantity, 10) 
+            }
+          }
+        ];
+      }
+    }, []);
+  
+    const sizesTemp = finalData.reduce((prev, curr) => {
+      const array = Object.keys(curr.sizes);
+      return prev.concat(array).sort((a, b) => a - b);
+    }, []);
+  
+    
+    const arrayLength = ((parseInt(sizesTemp[sizesTemp.length - 1],10) - parseInt(sizesTemp[0],10))/2) + 1
+  
+    const sizesList = Array(arrayLength).fill(0).reduce((prev, curr, idx) => {
+      if (idx === 0) {
+        return [parseInt(sizesTemp[0],10)];
+      }
+      return [...prev, prev[idx - 1] + 2];
+    }, []);
+  
+    const data = finalData.map((product)=>{
+      const temp = sizesList.reduce((prev, curr)=>{
+          return[
+            ...prev,
+            product.sizes[curr] || 0
+          ]
+      },[])
+  
+      const quantity =  temp.reduce((prev, curr)=>{
+        return prev + parseInt(curr,10)
+      }, 0)
+  
+      return{
+        ...product,
+        sizesList: temp,
+        quantity
+      }
+    })
+  
+    return [data, sizesList];
+  };
+  
+
+  
+  const compareProducts = (productList, product)=>{
+    let i = -1
+  
+    productList.forEach((curr, index)=>{
+        if(curr.reference !== product.reference){
+          return 
+        }
+        if(curr.color !== product.color){
+          return 
+        }
+        if(curr.mold !== product.mold){
+          return 
+        }
+        if(curr.label !== product.label){
+          return 
+        }
+        if(curr.price !== product.price){
+            return 
+        }  
+        i = index
+        return
+    })
+    return i
+  }

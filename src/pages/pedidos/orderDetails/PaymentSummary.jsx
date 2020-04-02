@@ -73,13 +73,13 @@ function PaymentSummary(props) {
 
 
     useEffect(()=>{
-        convertCurrency(data.currency, clientCurrency , data.balance).then(value=>{
+        convertCurrency(data.currency, clientCurrency , data.balance + (parseFloat(data.paymenthCommissionAmount) || 0)).then(value=>{
             setLocalValue(value.toFixed(1))
         }).catch(err=>{
             console.log(err)
             setLocalValue(0)
         })
-    }, [data.balance, clientCurrency, data.currency])
+    }, [data.balance, clientCurrency, data.currency, data.paymenthCommissionAmount])
 
    
 
@@ -150,7 +150,7 @@ function PaymentSummary(props) {
             </div>
             <div className={classes.balance}>
                 <Typography color="inherit" align="center" variant="subtitle1">Saldo</Typography>
-                <MoneyValue amount={parseFloat(data.balance + parseFloat(data.paymenthCommissionAmount)).toFixed(2)} >
+                <MoneyValue amount={parseFloat(data.balance + parseFloat(data.paymenthCommissionAmount || 0)).toFixed(2)} >
                     <Typography color="inherit" align="center" variant="h6"></Typography>
                 </MoneyValue>
                 <MoneyValue prefix={clientCurrency} amount={localValue} >

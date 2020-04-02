@@ -23,6 +23,7 @@ import {formatProductForTable} from '../../../lib/utilities'
 
 
 
+
 const styles = theme =>({
     root:{
         overflow: 'hidden',
@@ -46,8 +47,14 @@ const styles = theme =>({
     },
     totalRow:{
         background: theme.palette.grey[300]
+    },
+    tableCell:{
+        width: 400
     }
 })
+
+
+
 
 
 const MoneyCel = ({amount, colSpan})=>(
@@ -86,36 +93,42 @@ class OrderProductTable extends Component{
             ...rest
          } = this.props
 
-         
+
+         //console.log(formatProductForTable(data))
+
+         const [formatData, sizeList] = formatProductForTable(data)
 
         return(
             <Paper {...rest} className={classes.root}>
                 <div className={classes.header}>
-                    <Typography color="inherit" variant="h4">Prendas</Typography>
+                    <Typography color="inherit" variant="h4">Prendas ({order.totalProducts})</Typography>
                 </div>
                 <div className={classes.tableContainer}>
-                    <Table padding="dense" className={classes.table}>
+                    <Table size="small" padding="checkbox" className={classes.table}>
                         <TableHead>
                             <TableRow>
                                 {
                                     withEdittingButtons &&
                                     <TableCell>Editar/Eliminar</TableCell>
                                 }
-                                <TableCell>Nombre</TableCell>
+                                <TableCell className={classes.tableCell} size="medium" padding="checkbox" >Nombre</TableCell>
                                 <TableCell>Referencia</TableCell>
                                 <TableCell>Marquilla</TableCell>
                                 <TableCell>Molde</TableCell>
-                                <TableCell>Talla</TableCell>
                                 <TableCell>Color</TableCell>
-                                <TableCell>Cantidad</TableCell>
+                                {
+                                    sizeList.map((size, index)=> <TableCell key={index}>{size}</TableCell>)
+                                }
+
                                 <TableCell>{`Valor(${currency})`}</TableCell>
+                                <TableCell>Cantidad</TableCell>
                                 <TableCell>{`Total(${currency})`}</TableCell>
                                 
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {
-                                data.map((product, index)=>{
+                                formatData.map((product, index)=>{
                                     return(
                                         <TableRow key={index} hover>
                                             {
@@ -133,15 +146,23 @@ class OrderProductTable extends Component{
                                             <TableCell>{product.reference}</TableCell>
                                             <TableCell>{product.label === 'custom'? 'Personalizada':'Generica'}</TableCell>
                                             <TableCell>{product.mold === 'new'? 'Nuevo':'Viejo'}</TableCell>
-                                            <TableCell>{product.size}</TableCell>
                                             <TableCell>{product.color}</TableCell>
-                                            <TableCell>{product.quantity}</TableCell>
+                                            
+                                            {
+                                                product.sizesList.map((size, index)=>{
+                                                   return <TableCell align="center" key={index}>{size > 0 ? size: "-"}</TableCell>
+                                                })
+                                            }
+                                            
                                             <NumberFormat 
                                                 value={product.price} 
                                                 displayType={'text'} 
                                                 thousandSeparator={true} 
                                                 prefix={'$'} 
                                                 renderText={value => <TableCell>{value}</TableCell>} />
+                                            
+                                            <TableCell align="center">{product.quantity}</TableCell>
+                                            
                                             <NumberFormat 
                                                 value={(product.quantity * product.price).toFixed(2)} 
                                                 displayType={'text'} 
@@ -158,28 +179,30 @@ class OrderProductTable extends Component{
                                 <Fragment>
 
                                     <TableRow className={classes.tableTotal}>
-                                        <TableCell colSpan={3}>
+                                        <TableCell colSpan={(withEdittingButtons? 6 : 5) + sizeList.length -1 }></TableCell>
+                                        <TableCell colSpan={3 }>
                                             <Typography variant="subtitle2">Sub Total</Typography>
                                         </TableCell>
                                         <MoneyCel amount={order.subTotal}/>
-                                        <TableCell colSpan={withEdittingButtons? 6 : 5}></TableCell>
                                     </TableRow>
+                                    
                                     <TableRow className={classes.tableTotal}>
-                                        <TableCell colSpan={2}>
+                                        <TableCell colSpan={(withEdittingButtons? 6 : 5) + sizeList.length - 1 }></TableCell>
+                                        <TableCell colSpan={2 }>
                                             <Typography variant="subtitle2">Descuento</Typography>
                                         </TableCell>
                                         <TableCell>
                                             <Typography variant="subtitle2">{`${order.descount}%`}</Typography>
                                         </TableCell>
                                         <MoneyCel amount={-(order.subTotal*(order.descount/100)).toFixed(1)}/>
-                                        <TableCell colSpan={withEdittingButtons? 6 : 5}></TableCell>
                                     </TableRow>
                                 </Fragment>
                             } 
                             {
                                 withTotal &&
                                 <TableRow className={classes.totalRow}>
-                                    <TableCell colSpan={3}>
+                                    <TableCell colSpan={(withEdittingButtons? 6 : 5) + sizeList.length - 1 }></TableCell>
+                                    <TableCell colSpan={3 }>
                                         <Typography variant="subtitle2">Total</Typography>
                                     </TableCell>
                                     <NumberFormat 
@@ -192,7 +215,6 @@ class OrderProductTable extends Component{
                                                         <Typography variant="subtitle2">{value}</Typography>
                                                     </TableCell>
                                                 )} />
-                                    <TableCell colSpan={withEdittingButtons? 6 : 5}></TableCell>
                                 </TableRow>
                             } 
                         </TableBody>
