@@ -1,5 +1,5 @@
 import frases from './frases.json'
-
+import {COLORS} from './enviroment'
 
 export function formatPhone(phone, callCode){
     
@@ -187,6 +187,12 @@ function randomNumber(min = 0, max = 255){
 // Funcion para formater las prendas y dejarlas listas para imprimir con el formato clasico
 
 
+const getColorHex = (color)=>{
+    return COLORS[color.toLowerCase().trim()] || 'black'
+  }
+
+
+
 export const formatProductForTable = products => {
     const finalData = products.reduce((prev, curr) => {
       const index = compareProducts(prev, curr);
@@ -199,6 +205,7 @@ export const formatProductForTable = products => {
           {
             reference: curr.reference,
             color: curr.color,
+            colorHex: getColorHex(curr.color),
             mold: curr.mold,
             label: curr.label,
             price: curr.price,

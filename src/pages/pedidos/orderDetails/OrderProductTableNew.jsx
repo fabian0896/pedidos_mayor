@@ -15,6 +15,7 @@ import {
  } from '@material-ui/icons'
 import NumberFormat from 'react-number-format';
 import {formatProductForTable} from '../../../lib/utilities'
+import { red } from '@material-ui/core/colors';
 
 
 
@@ -50,6 +51,9 @@ const styles = theme =>({
     },
     tableCell:{
         width: 400
+    },
+    colors:{
+        color: 'red'
     }
 })
 
@@ -146,7 +150,7 @@ class OrderProductTable extends Component{
                                             <TableCell>{product.reference}</TableCell>
                                             <TableCell>{product.label === 'custom'? 'Personalizada':'Generica'}</TableCell>
                                             <TableCell>{product.mold === 'new'? 'Nuevo':'Viejo'}</TableCell>
-                                            <TableCell>{product.color}</TableCell>
+                                            <TableCell style={{color: product.colorHex, fontWeight: 500}} >{product.color}</TableCell>
                                             
                                             {
                                                 product.sizesList.map((size, index)=>{
@@ -164,7 +168,7 @@ class OrderProductTable extends Component{
                                             <TableCell align="center">{product.quantity}</TableCell>
                                             
                                             <NumberFormat 
-                                                value={(product.quantity * product.price).toFixed(2)} 
+                                                value={(product.quantity * product.price).toFixed(1)} 
                                                 displayType={'text'} 
                                                 thousandSeparator={true} 
                                                 prefix={'$'} 
@@ -183,7 +187,7 @@ class OrderProductTable extends Component{
                                         <TableCell colSpan={3 }>
                                             <Typography variant="subtitle2">Sub Total</Typography>
                                         </TableCell>
-                                        <MoneyCel amount={order.subTotal}/>
+                                        <MoneyCel amount={parseFloat(order.subTotal).toFixed(1)}/>
                                     </TableRow>
                                     
                                     <TableRow className={classes.tableTotal}>

@@ -182,3 +182,16 @@ export const COMMISSIONS = {
     payu: 4.5,
     paypal: 5.5,
 }
+
+
+
+export const COLORS = {
+    negro: 'black',
+    piel: '#EDAA7C',
+    PIEL: '#EDAA7C',
+    morado: '#8F23C4',
+    fucsia: '#E012C1',
+    azul: '#0750ed',
+    "azul claro": '#07aced',
+    salmon: '#FF8C69'
+}
