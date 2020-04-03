@@ -1,5 +1,9 @@
  export const SIZES = [
      {
+         number: 26,
+         letter: '3XS'
+     },
+     {
          number: 28,
          letter: '2XS'
      },

@@ -193,7 +193,7 @@ const getColorHex = (color)=>{
 
 
 
-export const formatProductForTable = products => {
+export const formatProductForTable = (products=[]) => {
     const finalData = products.reduce((prev, curr) => {
       const index = compareProducts(prev, curr);
       if (index !== -1) {
@@ -226,7 +226,7 @@ export const formatProductForTable = products => {
     
     const arrayLength = ((parseInt(sizesTemp[sizesTemp.length - 1],10) - parseInt(sizesTemp[0],10))/2) + 1
   
-    const sizesList = Array(arrayLength).fill(0).reduce((prev, curr, idx) => {
+    const sizesList = Array(arrayLength || 0).fill(0).reduce((prev, curr, idx) => {
       if (idx === 0) {
         return [parseInt(sizesTemp[0],10)];
       }

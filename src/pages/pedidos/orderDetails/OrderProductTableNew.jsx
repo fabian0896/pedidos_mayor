@@ -82,6 +82,12 @@ class OrderProductTable extends Component{
             .reduce((prev, current)=> prev + current)
         return total.toFixed(2)
     }
+
+    getTotalQuantity(data=[]){
+        return data.reduce((prev, curr)=>{
+            return prev + parseInt(curr.quantity) 
+        }, 0)
+    }
     
     render(){
         const { 
@@ -99,13 +105,13 @@ class OrderProductTable extends Component{
 
 
          //console.log(formatProductForTable(data))
-
+         //console.log(data)
          const [formatData, sizeList] = formatProductForTable(data)
 
         return(
             <Paper {...rest} className={classes.root}>
                 <div className={classes.header}>
-                    <Typography color="inherit" variant="h4">Prendas ({order.totalProducts})</Typography>
+                    <Typography color="inherit" variant="h4">Prendas ({order? order.totalProducts : this.getTotalQuantity(data)})</Typography>
                 </div>
                 <div className={classes.tableContainer}>
                     <Table size="small" padding="checkbox" className={classes.table}>

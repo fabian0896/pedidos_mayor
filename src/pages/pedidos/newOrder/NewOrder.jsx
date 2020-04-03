@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { showBackButtom, hideBackButtom, addAllProducts, getAllOrders } from '../../../actions'
 import ShippingForm from './ShippingForm';
-import ProductsForm from './ProductsForm'
+import ProductsForm from './ProductsFormNew'
 import DiscountForm from './DiscountForm';
 import OrderResume from './OrderResume';
 import { addOrder, updateOrder, deleteOrder } from '../../../lib/firebaseService'

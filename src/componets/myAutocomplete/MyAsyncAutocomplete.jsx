@@ -187,7 +187,7 @@ class MyAutocompleat extends React.Component {
   } 
 
   render() {
-    const { classes, theme, field, myPlaceholder, promiseOptions, error, getRef} = this.props;
+    const { classes, theme, field, myPlaceholder, promiseOptions, error, getRef, disable} = this.props;
 
     const selectStyles = {
       input: base => ({
@@ -217,6 +217,7 @@ class MyAutocompleat extends React.Component {
             onChange={this.handleChange}
             placeholder={myPlaceholder}
             isClearable
+            isDisabled = {disable}
           />
         </NoSsr>
     );
