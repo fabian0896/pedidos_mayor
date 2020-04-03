@@ -107,7 +107,7 @@ const WeekStats = withStyles(theme => ({
                 <div className={classes.content}>
                     <div>
                         <Typography variant="h4" >{week.totalOrders}</Typography>
-                        <Typography color="textSecondary">Peidos</Typography>
+                        <Typography color="textSecondary">Pedidos</Typography>
                     </div>
                     <div>
                         <Typography variant="h4" >{week.totalProducts}</Typography>
