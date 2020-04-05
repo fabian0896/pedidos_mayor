@@ -144,7 +144,7 @@ class OrderProductTable extends Component{
                                             {
                                                 withEdittingButtons &&
                                                 <TableCell padding="checkbox">
-                                                    <IconButton onClick={handleEdit(index)} >
+                                                    <IconButton onClick={handleEdit(product)} >
                                                         <EditIcon fontFamily="small" />
                                                     </IconButton>
                                                     <IconButton onClick={handleDelete(product)}>

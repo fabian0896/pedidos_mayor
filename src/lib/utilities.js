@@ -203,6 +203,7 @@ export const formatProductForTable = (products=[]) => {
         return [
           ...prev,
           {
+            product: curr.product,
             reference: curr.reference,
             color: curr.color,
             colorHex: getColorHex(curr.color),

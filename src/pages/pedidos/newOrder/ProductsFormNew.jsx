@@ -51,7 +51,7 @@ const AddSizeForm = ({onChange, value, disable}) => {
         },
         onSubmit: (size, actions) => {
             const isTheSame = value.reduce((prev,curr, currIndex)=>{
-                if(size.size === curr.size){
+                if(parseInt(size.size) === parseInt(curr.size)){
                     return currIndex
                 } else{
                     return prev
@@ -450,12 +450,13 @@ class ProductFrom extends React.Component {
         const { setFieldValue, values, allProducts } = this.props
         let finalProducts = []
         
-        
+        let editProducts = {}
 
-        const newProduct = {
-            ...allProducts[productValues.product.value],
-            ...productValues
-        }
+        //const newProduct = {
+        //    ...allProducts[productValues.product.value],
+        //    ...productValues
+        //}
+
 
 
         const newProductarray = productValues.sizes.map(({size, quantity})=>{
@@ -473,22 +474,21 @@ class ProductFrom extends React.Component {
 
 
         if (isEditting) {
-            finalProducts = values.products.slice()
-            finalProducts[editIndex] = newProduct
-        } else {
+            //finalProducts = values.products.slice()
+            editProducts = this.handleDelete(editIndex)(true)
+            
+            //finalProducts[editIndex] = newProduct
+        } 
             //finalProducts = this.mergeDuplicated(newProduct, values)
             // Me devuelve un arreglo con los los products
             
-            finalProducts = newProductarray.reduce((prev, curr)=>{
-                return{
-                    products: this.mergeDuplicated(curr, prev)
-                }
-            }, values)
+        finalProducts = newProductarray.reduce((prev, curr)=>{
+            return{
+                products: this.mergeDuplicated(curr, prev)
+            }
+        }, isEditting? editProducts : values)
 
-        }
-
-
-
+        
         this.setState({ isEditting: false, editIndex: -1 })
         setFieldValue('products', finalProducts.products)
         actions.setSubmitting(false)
@@ -520,9 +520,8 @@ class ProductFrom extends React.Component {
 
 
 
-    handleDelete = (productGroup) => () => {
-        const { values, setFieldValue } = this.props
-
+    handleDelete = (productGroup) => (variant=false) => {
+        const { values, setFieldValue, isEditting } = this.props
 
         const products = values.products.slice()
         
@@ -550,20 +549,37 @@ class ProductFrom extends React.Component {
             }
         }, [])
 
+
+
+        if(typeof variant !== 'object'){
+            return {
+                products: finalProducts
+            }
+        }
+
         setFieldValue('products', finalProducts)
     }
 
 
-    handleEdit = (index) => () => {
-        const { values } = this.props
-        const products = values.products
-        const edittingProduct = products[index]
-        this.setState({ isEditting: true, editIndex: index })
+    handleEdit = (productGroup) => () => {
+
+
+        //const { values } = this.props
+        //const products = values.products
+        const edittingProduct = productGroup
+
+        const formatSizes = Object.keys(productGroup.sizes).map(size=>{
+            return{
+                size,
+                quantity: productGroup.sizes[size]
+            }
+        })
+
+        this.setState({ isEditting: true, editIndex: productGroup })
         this.setValuesForm({
             product: edittingProduct.product,
-            size: edittingProduct.size,
+            sizes: formatSizes,
             color: edittingProduct.color,
-            quantity: edittingProduct.quantity,
             price: edittingProduct.price,
             label: edittingProduct.label,
             mold: edittingProduct.mold
