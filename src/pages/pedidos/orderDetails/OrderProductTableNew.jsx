@@ -15,7 +15,7 @@ import {
  } from '@material-ui/icons'
 import NumberFormat from 'react-number-format';
 import {formatProductForTable} from '../../../lib/utilities'
-import { red } from '@material-ui/core/colors';
+
 
 
 
@@ -147,7 +147,7 @@ class OrderProductTable extends Component{
                                                     <IconButton onClick={handleEdit(index)} >
                                                         <EditIcon fontFamily="small" />
                                                     </IconButton>
-                                                    <IconButton onClick={handleDelete(index)}>
+                                                    <IconButton onClick={handleDelete(product)}>
                                                         <DeleteIcon color="error" fontSize="small" />
                                                     </IconButton>
                                                 </TableCell>

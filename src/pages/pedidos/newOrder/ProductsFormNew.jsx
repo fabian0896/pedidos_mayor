@@ -59,7 +59,7 @@ const AddSizeForm = ({onChange, value, disable}) => {
             }, -1)
 
             if(isTheSame > -1){
-                console.log('Ya existe la talla', isTheSame)
+                
                 onChange({
                     size: value[isTheSame].size, 
                     quantity: parseInt(value[isTheSame].quantity) + parseInt(size.quantity)
@@ -519,12 +519,40 @@ class ProductFrom extends React.Component {
     }
 
 
-    handleDelete = (index) => () => {
+
+    handleDelete = (productGroup) => () => {
         const { values, setFieldValue } = this.props
+
+
         const products = values.products.slice()
-        products.splice(index, 1)
-        setFieldValue('products', products)
+        
+        const indexes = products.reduce((prev,curr, index)=>{
+            if(curr.reference === productGroup.reference &&
+                curr.color === productGroup.color &&
+                curr.mold === productGroup.mold &&
+                curr.label === productGroup.label &&
+                curr.price === productGroup.price){
+                    return [...prev, index]
+                } else{
+                    return prev
+                }
+        }, [])
+
+        indexes.forEach(index=>{
+            products.splice(index, 1, 0) // pongo un 0 en las posciciones que hay que borrar para luego saber y quitarlas del array
+        })
+
+        const finalProducts = products.reduce((prev, curr)=>{
+            if(curr !== 0){
+                return [...prev, curr]
+            } else{
+                return prev
+            }
+        }, [])
+
+        setFieldValue('products', finalProducts)
     }
+
 
     handleEdit = (index) => () => {
         const { values } = this.props
