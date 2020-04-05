@@ -272,7 +272,7 @@ class ProductFormInfo extends React.Component {
                                 <Grid container spacing={16}>
                                     <Grid item xs={12} md={12}>
                                         <Field
-                                            disable={!!values.sizes.length}
+                                            disable={!!values.sizes.length && !isEditting}
                                             getRef={node => this.selectRef = node}
                                             error={errors.product && touched.product}
                                             onChange={this.handleProductChange(setFieldValue)}
@@ -310,7 +310,7 @@ class ProductFormInfo extends React.Component {
 
                                     <Grid item xs={6} sm={6} md={6}>
                                         <TextField
-                                            disabled={!values.product || !!values.sizes.length}
+                                            disabled={(!values.product || !!values.sizes.length) && !isEditting}
                                             error={errors.color && touched.color}
                                             name="color"
                                             value={values.color}
@@ -338,7 +338,7 @@ class ProductFormInfo extends React.Component {
 
                                     <Grid item xs={12} sm={6} md={6}>
                                         <TextField
-                                            disabled={!values.product || !!values.sizes.length}
+                                            disabled={(!values.product || !!values.sizes.length) && !isEditting}
                                             error={errors.price && touched.price}
                                             helperText={this.state.labelText}
                                             value={values.price}
@@ -359,7 +359,7 @@ class ProductFormInfo extends React.Component {
                                     <Grid item xs={6} sm={6} md={6}>
                                         <TextField
                                             select
-                                            disabled={!values.product || !!values.sizes.length}
+                                            disabled={(!values.product || !!values.sizes.length) && !isEditting}
                                             error={errors.label && touched.label}
                                             value={values.label}
                                             onChange={handleChange}
@@ -376,7 +376,7 @@ class ProductFormInfo extends React.Component {
                                     <Grid item xs={6} sm={6} md={6}>
                                         <TextField
                                             select
-                                            disabled={!values.product || !!values.sizes.length}
+                                            disabled={(!values.product || !!values.sizes.length) && !isEditting}
                                             error={errors.mold && touched.mold}
                                             value={values.mold}
                                             onChange={handleChange}
@@ -397,7 +397,7 @@ class ProductFormInfo extends React.Component {
 
 
                                     <AddSizeForm
-                                        disable={!values.color || !values.product} 
+                                        disable={(!values.color || !values.product) && !isEditting} 
                                         value={values.sizes} 
                                         onChange={this.handleAddSize(setFieldValue)} />
 
@@ -521,7 +521,7 @@ class ProductFrom extends React.Component {
 
 
     handleDelete = (productGroup) => (variant=false) => {
-        const { values, setFieldValue, isEditting } = this.props
+        const { values, setFieldValue } = this.props
 
         const products = values.products.slice()
         
@@ -548,7 +548,6 @@ class ProductFrom extends React.Component {
                 return prev
             }
         }, [])
-
 
 
         if(typeof variant !== 'object'){
