@@ -7,6 +7,7 @@ import { limitName } from '../../lib/utilities'
 import { STATES } from '../../lib/enviroment'
 import classNames from 'classnames'
 import { green, amber } from '@material-ui/core/colors'
+import { connect } from 'react-redux'
 
 const styles = theme =>({
     root:{
@@ -73,7 +74,7 @@ const styles = theme =>({
 
 
 function OrderResume(props){
-    const { classes, order, client, onClick } = props
+    const { classes, order, client, onClick, seller } = props
     const date = moment(order.createdAt.seconds*1000).format('DD/MMMM/YYYY')
     const country = client.country.translations.es || client.country
     
@@ -104,7 +105,7 @@ function OrderResume(props){
                         <Typography  gutterBottom variant="body1">{date}</Typography>
 
                         <Typography  variant="body2" color="textSecondary">Encargado:</Typography>
-                        <Typography  variant="body1">Fabian David</Typography>
+                        <Typography  variant="body1">{seller.name}</Typography>
                     </div>
                     <div className={classes.moneyInfo}>
                         <Typography align="right" variant="body2" color="textSecondary">Saldo:</Typography>
@@ -144,5 +145,11 @@ function OrderResume(props){
 }
 
 
+const mapStateToProps = (state, props)=>{
+    return{
+        seller: state.sellers[props.client.seller]
+    }
+}
 
-export default withStyles(styles)(OrderResume)
+
+export default connect(mapStateToProps)(withStyles(styles)(OrderResume))

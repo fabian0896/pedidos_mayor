@@ -6,7 +6,7 @@ import moment from 'moment'
 import { Print as PrintIcon, Timeline as TimelineIcon } from '@material-ui/icons'
 import { STATES } from '../../../lib/enviroment'
 import { changeOrderState } from '../../../lib/firebaseService'
-
+import { connect } from 'react-redux'
 
 const styles = theme => ({
     root: {
@@ -89,7 +89,7 @@ const styles = theme => ({
 function OrderDetailsCard(props) {
     const [anchorEl, setAnchorEl] = useState(null)
     const [loadinResume, setLoadingResume] = useState(false) 
-    const { classes, order, client, onUpdate, handlePrintResume } = props
+    const { classes, order, client, onUpdate, handlePrintResume, seller } = props
     const country = client.country.translations.es || client.country.name
     const date = moment(order.createdAt.seconds * 1000).format('DD/MM/YYYY')
 
@@ -179,8 +179,8 @@ function OrderDetailsCard(props) {
                     <Typography component="span" variant="subtitle2" color="textSecondary">Fecha:</Typography>
                     <Typography gutterBottom component="span" variant="subtitle1">{date}</Typography>
 
-                    <Typography component="span" variant="subtitle2" color="textSecondary">Encargado:</Typography>
-                    <Typography gutterBottom component="span" variant="subtitle1">Fabian David Dueñas</Typography>
+                    <Typography component="span" variant="subtitle2" color="textSecondary">Encargado/a:</Typography>
+                                <Typography gutterBottom component="span" variant="subtitle1">{seller.name}</Typography>
                 </div>
             </div>
         </Paper>
@@ -188,4 +188,11 @@ function OrderDetailsCard(props) {
 }
 
 
-export default withStyles(styles)(OrderDetailsCard)
+const mapStateToProps = (state, props)=>{
+     
+    return{
+        seller: state.sellers[props.client.seller]
+    }
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(OrderDetailsCard))
