@@ -445,6 +445,7 @@ class ProductFrom extends React.Component {
 
     handleSubmit = (productValues, actions, selectRef) => {
 
+        const {client} = this.props
 
         const { isEditting, editIndex } = this.state
         const { setFieldValue, values, allProducts } = this.props
@@ -463,6 +464,7 @@ class ProductFrom extends React.Component {
             const temp = {
                 ...allProducts[productValues.product.value],
                 ...productValues,
+                labelName: client.labelName,
                 size,
                 quantity
             }

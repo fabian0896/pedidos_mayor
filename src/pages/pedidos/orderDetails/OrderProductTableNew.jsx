@@ -154,7 +154,7 @@ class OrderProductTable extends Component{
                                             }
                                             <TableCell>{product.name}</TableCell>
                                             <TableCell>{product.reference}</TableCell>
-                                            <TableCell>{product.label === 'custom'? 'Personalizada':'Generica'}</TableCell>
+                                            <TableCell>{product.label === 'generic'? 'Generica': product.labelName}</TableCell>
                                             <TableCell>{product.mold === 'new'? 'Nuevo':'Viejo'}</TableCell>
                                             <TableCell style={{color: product.colorHex, fontWeight: 500}} >{product.color}</TableCell>
                                             

@@ -209,6 +209,7 @@ export const formatProductForTable = (products=[]) => {
             colorHex: getColorHex(curr.color),
             mold: curr.mold,
             label: curr.label,
+            labelName: curr.labelName || 'Personalizada',
             price: curr.price,
             name: curr.name,
             sizes: {

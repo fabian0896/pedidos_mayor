@@ -16,7 +16,8 @@ const signupSchema = Yup.object().shape({
     phone: Yup.string().required("El telefono es requerido!"),
     currency: Yup.string().required('Valor requerido'),
     label: Yup.string().required(),
-    mold: Yup.string().required()
+    mold: Yup.string().required(),
+    labelName: Yup.string()
 })
 
 const styles = theme => ({
@@ -48,7 +49,8 @@ function NewClientFormGeneral(props) {
                 phone: props.phone,
                 currency: null,
                 label: 'generic',
-                mold: 'new'
+                mold: 'new',
+                labelName: ''
             }}
             validationSchema={signupSchema}
         >
@@ -123,24 +125,6 @@ function NewClientFormGeneral(props) {
                                 <Grid item xs={6}>
                                     <FormControl
                                         component="fieldset"
-                                        error={errors.label && touched.label}
-                                    >
-                                        <FormLabel component="legend">Marquilla</FormLabel>
-                                        <RadioGroup
-                                            aria-label="Label"
-                                            name="label"
-                                            value={values.label}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                        >
-                                            <FormControlLabel value="custom" control={<Radio />} label="Perzonalizada" />
-                                            <FormControlLabel value="generic" control={<Radio />} label="Generíca" />
-                                        </RadioGroup>
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <FormControl
-                                        component="fieldset"
                                         error={errors.mold && touched.mold}
                                     >
                                         <FormLabel component="legend">Molde</FormLabel>
@@ -156,6 +140,37 @@ function NewClientFormGeneral(props) {
                                         </RadioGroup>
                                     </FormControl>
                                 </Grid>
+                                <Grid item xs={6}>
+                                    <FormControl
+                                        component="fieldset"
+                                        error={errors.label && touched.label}
+                                    >
+                                        <FormLabel component="legend">Marquilla</FormLabel>
+                                        <RadioGroup
+                                            aria-label="Label"
+                                            name="label"
+                                            value={values.label}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                        >
+                                            <FormControlLabel value="custom" control={<Radio />} label="Perzonalizada" />
+                                            <FormControlLabel value="generic" control={<Radio />} label="Generíca" />
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+                                {
+                                    (values.label !== 'generic') &&
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            name="labelName"  
+                                            value={values.labelName}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            label="Nombre de la marquilla"
+                                            variant="outlined"/>
+                                    </Grid>
+                                }
                             </Grid>
                         </form>
                     )
