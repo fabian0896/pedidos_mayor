@@ -1,6 +1,6 @@
 import React from 'react'
 import { withStyles, Typography, Divider } from '@material-ui/core'
-import OrderProductTable from '../orderDetails/OrderProductTable'
+import OrderProductTable from '../orderDetails/OrderProductTableNew'
 import NumberFormat from 'react-number-format';
 import { convertCurrency } from '../../../lib/currencyService'
 
