@@ -114,7 +114,14 @@ class OrderDetails extends Component {
     }
 
     handleAddShipping = ()=>{
-        this.props.history.push("/envios/nuevo")
+        const { order, client } = this.state
+        this.props.history.push({
+            pathname: "/envios/nuevo",
+            state: {
+                serialCode: order.serialCode,
+                mode: 'new'
+            } 
+        })
     }
 
 

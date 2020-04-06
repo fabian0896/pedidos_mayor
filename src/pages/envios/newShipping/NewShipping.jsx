@@ -41,12 +41,26 @@ class NewShipping extends React.Component {
         this.props.showBackButtom()
         const options = await this.getOrderOptions()
         this.setState({ options })
+
+       
+
         const editShipping = this.props.location.state
         if(editShipping){
-            this.setState({
-                formValues: editShipping,
-                isEditing: true
-            })
+
+            if(editShipping.mode === 'new'){
+               const orderOptions = this.getOrderOptionsBySerialCode(editShipping.serialCode)
+               this.setState({
+                   formValues:{
+                       order: orderOptions
+                   }
+               })
+
+            }else{
+                this.setState({
+                    formValues: editShipping,
+                    isEditing: true
+                })
+            }
         }
         this.setState({noRender: false})
         document.title = `${this.state.isEditing?'Editando':'Nuevo'} envio`
@@ -55,6 +69,16 @@ class NewShipping extends React.Component {
     componentWillUnmount(){
         this.props.hideBackButtom()
     }
+
+
+    getOrderOptionsBySerialCode = (serialCode)=>{
+        //const orders = await this.getOrderOptions()
+        const {options } = this.state
+        return options.find((elemet =>{
+            return elemet.label === serialCode
+        }))
+    }
+
 
     getOrderOptions = async () => {
         const orders = await getPendingOrders()

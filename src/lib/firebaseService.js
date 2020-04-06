@@ -1065,11 +1065,19 @@ export async function getPaymentById(id) {
 }
 
 export async function getPendingOrders() {
-    const snap = await firebase.firestore().collection(ORDERS).where('state', '==', 'pending').orderBy('serialCode', 'asc').get()
+    const snap1 = firebase.firestore().collection(ORDERS).where('state', '==', 'pending').orderBy('serialCode', 'asc').get()
+    const snap2 = firebase.firestore().collection(ORDERS).where('state', '==', 'production').orderBy('serialCode', 'asc').get()
+    const snap3 = firebase.firestore().collection(ORDERS).where('state', '==', 'readyToShip').orderBy('serialCode', 'asc').get()
+    
+    const resultsArray = await Promise.all([snap1, snap2, snap3])
+
     const results = []
-    snap.forEach(item => {
-        results.push({ ...item.data(), id: item.id })
+    resultsArray.forEach(snap=>{
+        snap.forEach(item => {
+            results.push({ ...item.data(), id: item.id })
+        })
     })
+
     return results
 }
 
