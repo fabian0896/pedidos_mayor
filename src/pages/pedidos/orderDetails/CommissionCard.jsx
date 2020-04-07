@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import {
     withStyles, 
     Paper,
@@ -11,11 +11,38 @@ import {
     Radio,
     TextField,
     InputAdornment,
-    Button
+    Button,
+    Checkbox
 } from '@material-ui/core'
-import { useState } from 'react'
 import {updateCommissionPaymet} from '../../../lib/firebaseService'
 import {COMMISSIONS} from '../../../lib/enviroment'
+import { useFormik } from 'formik'
+import NumberFormat from 'react-number-format';
+import { thousandSeparator} from '../../../lib/utilities'
+
+
+function NumberFormatCustom(props) {
+    const { inputRef, onChange, ...other } = props;
+  
+    return (
+      <NumberFormat
+        {...other}
+        getInputRef={inputRef}
+        onValueChange={values => {
+          onChange({
+            target: {
+              value: values.value,
+            },
+          });
+        }}
+        thousandSeparator
+        prefix="$"
+      />
+    );
+  }
+
+
+
 
 const CommissionCard = withStyles(theme=>({
    root:{
@@ -36,43 +63,25 @@ const CommissionCard = withStyles(theme=>({
    }
 }))(({classes, data,onUpdate,...props})=>{
 
-    const [value, setValue] = useState(()=>data.paymethCommissionName)
-    const [textValue, setTextValue] = useState(()=> data.paymethCommissionName !== 'other'? '' : data.paymenthCommission )
-    const [loading, setLoading] = useState(false)
+    const formik = useFormik({
+        initialValues:{
+            paymenthCommissionName: data.paymethCommissionName || '',
+            paymenthCommission: data.paymenthCommission || 0,
+            useBaseValue: data.useBaseValue || true,
+            baseValue: data.commissionBaseValue || 0,
+        },
+        onSubmit: async (values, actions) =>{
+            let commissionValue = 0
+            if(values.paymenthCommissionName !== 'other'){
+                commissionValue = COMMISSIONS[values.paymenthCommissionName]
+            }else{
+                commissionValue = parseFloat(values.paymenthCommission).toFixed(1) || 0
+            }
 
-    const handleChange = (event)=>{
-        const selected = event.target.value
-
-        if(selected !== 'other')
-            resetTextValue()
-
-        setValue(selected)
-    }
-
-    const handleTextChange = (event)=>{
-        const text = event.target.value
-        setTextValue(text)
-    }
-
-    const resetTextValue = ()=>{
-        setTextValue('')
-    }
-
-    const handleSave = async ()=>{
-        setLoading(true)
-        let commissionValue = 0
-        if(value !== 'other'){
-            commissionValue = COMMISSIONS[value] || 0
-        } else{
-            const numberCommisionValue = parseFloat(textValue).toFixed(1) || 0
-            commissionValue = numberCommisionValue
+            await updateCommissionPaymet(data, commissionValue ,values.paymenthCommissionName, values.useBaseValue, values.baseValue)
+            onUpdate()
         }
-        console.log('Se van a gaurdar los datos')
-        await updateCommissionPaymet(data, commissionValue, value)
-        onUpdate()
-        console.log('Se Guardaron')
-        setLoading(false)
-    }
+    })
 
     return(
         <Paper className={classes.root}>
@@ -80,22 +89,26 @@ const CommissionCard = withStyles(theme=>({
                 <Typography color='inherit' component='h6' variant='h6' align='center'>CARGOS POR PAGO</Typography>
             </div>
             <div className={classes.body}>
+                <form onSubmit={formik.handleSubmit} className={classes.form} autoComplete="off" >
                 <Typography color='textSecondary' variant='subheading' component='p'>Selecciona el incremeto por el medio de pago seleccionado</Typography>
                 <Divider className={classes.divider}/>
 
                 <FormControl >
                     <FormLabel>Medio de pago</FormLabel>
-                    <RadioGroup name="paymentMethod" value={value} onChange={handleChange}>
+                    <RadioGroup name="paymenthCommissionName" value={formik.values.paymenthCommissionName} onChange={formik.handleChange}>
                        <FormControlLabel value="payu" label="PayU (4,5%)" control={<Radio/>} />
                        <FormControlLabel value="paypal" label="PayPal (5,5%)" control={<Radio/>} />
                        <FormControlLabel value="other" label="Otra" control={<Radio/>} />
                     </RadioGroup>
                 </FormControl>
-                <form className={classes.form} autoComplete="off" >
+                {
+                (formik.values.paymenthCommissionName === "other") &&
+                <Fragment>
                     <TextField
-                        value={textValue}
-                        onChange={handleTextChange}
-                        disabled={!(value === 'other')}
+                        name="paymenthCommission"
+                        value={formik.values.paymenthCommission}
+                        onChange={formik.handleChange}
+                        disabled={!(formik.values.paymenthCommissionName === 'other')}
                         InputProps={{
                             endAdornment: <InputAdornment position="end">%</InputAdornment>
                         }}
@@ -103,16 +116,37 @@ const CommissionCard = withStyles(theme=>({
                         label="Porcentaje" 
                         variant="outlined" 
                         fullWidth={true} />
-                </form>
+                    </Fragment>
+                }
+                    
+                    <Divider className={classes.divider}/>
+                    <FormControlLabel
+                        control={<Checkbox name="useBaseValue" checked={formik.values.useBaseValue} onChange={formik.handleChange} />}
+                        label={`En base al saldo actual ($${thousandSeparator(data.balance)})`}
+                    />
+                    <TextField
+                        label="Valor base"
+                        fullWidth
+                        variant="outlined"
+                        disabled={formik.values.useBaseValue}
+                        name="baseValue"
+                        value={formik.values.baseValue}
+                        onChange={formik.handleChange('baseValue')}
+                        onBlur={formik.handleBlur('baseValue')}
+                        InputProps={{
+                            inputComponent: NumberFormatCustom,
+                        }}
+                    />
                 <Divider className={classes.divider}/>
                 <Button
-                    disabled={loading}
-                    onClick={handleSave}
+                    type="submit"
+                    disabled={formik.isSubmitting}
                     fullWidth={true} 
                     variant="contained" 
                     color="primary">
                             Guardar
                 </Button>         
+                </form>
             </div>
         </Paper>
     )

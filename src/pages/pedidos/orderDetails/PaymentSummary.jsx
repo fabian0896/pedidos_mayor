@@ -3,6 +3,7 @@ import { Paper, withStyles, Typography, IconButton, Divider } from '@material-ui
 import NumberFormat from 'react-number-format';
 import { Add as AddIcon } from '@material-ui/icons'
 import { convertCurrency} from '../../../lib/currencyService'
+import { thousandSeparator } from '../../../lib/utilities'
 
 const MoneyValue = ({amount, children, prefix})=>(
     <NumberFormat 
@@ -117,7 +118,7 @@ function PaymentSummary(props) {
                     
                     <Divider className={classes.dividerLeft}></Divider>            
 
-                    <Typography align="left" color="textSecondary" variant="body2">{`Comision por medio de pago(${data.paymenthCommission || 0}%)`}</Typography>
+                    <Typography align="left" color="textSecondary" variant="body2">{`Comision ${data.paymenthCommission || 0}% basada en $${thousandSeparator(data.commissionBaseValue || 0)}`}</Typography>
                     <MoneyValue amount={data.paymenthCommissionAmount || 0}>
                         <Typography gutterBottom align="left" variant="body1"></Typography>
                     </MoneyValue>

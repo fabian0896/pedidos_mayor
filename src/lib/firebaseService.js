@@ -666,12 +666,14 @@ export async function updateOrdersNotes(order, notes){
 
 
 
-export async function updateCommissionPaymet(order, paymenthCommission, paymethCommissionName){
+export async function updateCommissionPaymet(order, paymenthCommission, paymethCommissionName, useBaseValue, baseValue){
     const seenArray =  await getSeenArray()
     await firebase.firestore().runTransaction(async transaction => {
         
         
-        const paymenthCommissionAmount = (parseFloat(order.balance).toFixed(2)* (paymenthCommission/100)).toFixed(2)
+        const value = !useBaseValue? baseValue : order.balance
+
+        const paymenthCommissionAmount = (parseFloat(value).toFixed(2)* (paymenthCommission/100)).toFixed(2)
 
         const notificationObject = {
             type: 'UPDATED',
@@ -692,13 +694,15 @@ export async function updateCommissionPaymet(order, paymenthCommission, paymethC
         }
 
 
-
         transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
         transaction.update(firebase.firestore().collection(ORDERS).doc(order.id), {
             timeLine: firebase.firestore.FieldValue.arrayUnion(timeLineObject),
             paymenthCommission,
             paymenthCommissionAmount,
-            paymethCommissionName
+            paymethCommissionName,
+            commissionBaseValue: value,
+            useBaseValue,
+            updatedAt: new Date()
         })
         return
     })
@@ -887,6 +891,8 @@ export async function addPayment(payment) {
         const clientSnap = await transaction.get(clientRef)
         const client = clientSnap.data()
 
+
+
         const newBalance = client.balance - payment.value
 
         const paymentObject = {
@@ -919,7 +925,13 @@ export async function addPayment(payment) {
 
         let totalPayments = parseFloat(payment.value)
 
-        const newOrderBalance = parseFloat(order.balance).toFixed(2) - parseFloat(payment.value).toFixed(2)
+        const newOrderBalance = parseFloat(order.balance + (parseFloat(order.paymenthCommissionAmount || 0).toFixed(2))).toFixed(2) - parseFloat(payment.value).toFixed(2)
+
+        let positiveBalance = 0
+
+        if(newOrderBalance < 0){
+            positiveBalance = newOrderBalance * -1
+        }
 
         if (order.payments) {
             const subTotal = Object.keys(order.payments)
@@ -948,8 +960,9 @@ export async function addPayment(payment) {
             [`payments.${paymentId}`]: paymentObject,
             timeLine,
             totalPayments,
-            balance: newOrderBalance,
-            updatedAt: new Date()
+            balance: newOrderBalance < 0 ? 0 : newOrderBalance,
+            updatedAt: new Date(),
+            positiveBalance// aqui va el saldo a favor del pedido
         }
 
         const clientObject = {
