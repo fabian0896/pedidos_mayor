@@ -2,8 +2,8 @@ import React from 'react'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
-import { Paper, Grid, Divider } from '@material-ui/core';
-import { yellow, teal, blue } from '@material-ui/core/colors'
+import { Paper, Grid, Divider, Button } from '@material-ui/core';
+import { yellow, teal, blue, green, red } from '@material-ui/core/colors'
 import {
     Place,
     Phone,
@@ -33,6 +33,30 @@ const UnPayItems = withStyles(theme=>({
         </div>
     )
 })
+
+
+
+const BalanceItem = withStyles(theme=>({
+    root:{
+        padding: theme.spacing.unit*1,
+        display: 'flex',
+        alignItems: 'center',
+        '& > :first-child':{
+            flex: 1,
+        }
+    }
+}))(({classes, item})=>{
+    return(
+        <div className={classes.root}>
+            <div>
+                <Typography variant="subtitle1" >{item.sourceName}</Typography>
+                <Typography variant="subtitle2" style={{lineHeight: 1}} color="textSecondary">{moment(item.date.seconds*1000).format('DD/MMM/YYYY')}</Typography>
+            </div>
+            <MoneyValue style={{color: item.value < 0? red['500']:green['A700']}} variant="body2" color="textSecondary">{item.value}</MoneyValue>
+        </div>
+    )
+})
+
 
 
 
@@ -106,7 +130,8 @@ const styles = theme => ({
         justifyContent: 'center'
     },
     balanceItem:{
-        marginBottom: theme.spacing.unit
+        marginBottom: theme.spacing.unit,
+        marginTop: theme.spacing.unit
     }
 })
 
@@ -175,7 +200,7 @@ function ClientDetailInfo(props){
                     </div>
                     <div className={classes.stats}>
                         <div className={classes.balanceItem}>
-                            <MoneyValue align="center" component="span" variant="h5" color="textPrimary">{client.balance || 0}</MoneyValue>
+                            <MoneyValue style={{color: (client.balance || 0) > 0 ? red['500'] : 'black'}} align="center" component="span" variant="h5" color="inherit">{(client.balance || 0) < 0 ? 0 : (client.balance || 0)}</MoneyValue>
                             <Typography component="span" align="center" variant="subtitle2" color="textSecondary">Saldo Pendiente:</Typography>
                         </div>
                         <Divider/>
@@ -193,6 +218,45 @@ function ClientDetailInfo(props){
                                 <Typography align="center" variant="overline">No hay pedidos sin pagar :)</Typography>
                             </div>
                         }
+                    </div>
+                </Paper>
+            </Grid>
+
+
+            <Grid item xs={12} sm={6} md={4}>
+                <Paper className={classes.paper} >
+                    <div className={classNames(classes.cardHeader, classes.blue) }>
+                        <Money fontSize="large" />
+                        <Typography align="center" color="inherit" component="span" variant="h6" >Saldo positivo</Typography>
+                    </div>
+                    <div className={classes.stats}>
+                        <div className={classes.balanceItem}>
+                            <MoneyValue style={{color: (client.positiveBalance || 0) >= 0 ? green['A700'] : red['500']}} align="center" component="span" variant="h5" color="inherit" >{client.positiveBalance || 0}</MoneyValue>
+                            <Typography component="span" align="center" variant="subtitle2" color="textSecondary">Saldo a favor:</Typography>
+                        </div>
+                        <Divider/>
+                        {
+                            !!client.positiveBalanceHistory.length?
+                            <div className={classes.unPayItems}>
+                                {
+                                    client.positiveBalanceHistory.map((item, index)=>(
+                                        <BalanceItem key={index} item={item}/>
+                                    ))
+                                }
+                            </div>
+                            :
+                            <div className={classes.noUnpayItems}>
+                                <Typography align="center" variant="overline">No hay registros</Typography>
+                            </div>
+                        }
+                        <div>
+                            <Button 
+                                fullWidth
+                                color="primary"
+                            >
+                                Agregar Saldo
+                            </Button>
+                        </div>
                     </div>
                 </Paper>
             </Grid>

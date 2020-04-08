@@ -925,12 +925,33 @@ export async function addPayment(payment) {
 
         let totalPayments = parseFloat(payment.value)
 
-        const newOrderBalance = parseFloat(order.balance + (parseFloat(order.paymenthCommissionAmount || 0).toFixed(2))).toFixed(2) - parseFloat(payment.value).toFixed(2)
+        const paymenthCommissionAmount = parseFloat(order.paymenthCommissionAmount || 0)
 
-        let positiveBalance = 0
+        const newOrderBalance = parseFloat((parseFloat(order.balance + paymenthCommissionAmount) - parseFloat(payment.value)).toFixed(2))
 
-        if(newOrderBalance < 0){
-            positiveBalance = newOrderBalance * -1
+
+        let positiveBalance = client.positiveBalance || 0
+
+
+        let positiveBalanceHistory = client.positiveBalanceHistory? client.positiveBalanceHistory : []
+    
+        if(newOrderBalance < 0){       
+            positiveBalance = positiveBalance + (newOrderBalance * -1)
+            
+            
+            const positiveBalanceObject = {
+                date: paymentObject.createdAt,
+                sourceName: paymentObject.orderSerialCode,
+                value: (newOrderBalance * -1)
+            }
+
+
+            if(client.positiveBalance <= 0){
+                positiveBalanceHistory = [positiveBalanceObject]
+            } else{
+                positiveBalanceHistory = [positiveBalanceObject,...client.positiveBalanceHistory]
+            }
+
         }
 
         if (order.payments) {
@@ -955,18 +976,21 @@ export async function addPayment(payment) {
         }
 
         paymentObject['orderBalance'] = newOrderBalance
+        paymentObject['positiveBalance'] = newOrderBalance < 0? (newOrderBalance * -1) : 0
+       
 
         const orderObject = {
             [`payments.${paymentId}`]: paymentObject,
             timeLine,
             totalPayments,
             balance: newOrderBalance < 0 ? 0 : newOrderBalance,
-            updatedAt: new Date(),
-            positiveBalance// aqui va el saldo a favor del pedido
+            updatedAt: new Date(),       
         }
 
         const clientObject = {
+            positiveBalanceHistory,
             balance: newBalance,
+            positiveBalance,// aqui va el saldo a favor del pedido
             updatedAt: new Date(),
             lastPayment: new Date()
         }
@@ -996,6 +1020,9 @@ export async function addPayment(payment) {
 }
 
 
+
+
+
 export async function deletePayment(id, payment){
     const seenArray =  await getSeenArray()
     await firebase.firestore().runTransaction(async transaction=>{
@@ -1009,8 +1036,32 @@ export async function deletePayment(id, payment){
         const client = clientSnap.data()
         const order = orderSnap.data()
 
-        const orderBalance =  order.balance + parseFloat(payment.value) 
+        let orderBalance =  order.balance + parseFloat(payment.value) 
+
+
+        if(payment.positiveBalance > 0){
+            orderBalance = orderBalance - parseFloat(payment.positiveBalance)
+        }
+
         const clientBalance = client.balance + parseFloat(payment.value) 
+
+        const newPositiveBalance = client.positiveBalance - (payment.positiveBalance || 0 )
+
+
+        let positiveBalanceHistory = [...client.positiveBalanceHistory]
+
+
+        if(payment.positiveBalance > 0){
+            const positiveBalanceObject = {
+                date: new Date(),
+                sourceName: `Pago elminado(${payment.orderSerialCode})`,
+                value: (payment.positiveBalance * -1)
+            }
+    
+             positiveBalanceHistory = [positiveBalanceObject, ...client.positiveBalanceHistory]
+        }
+
+
 
         const notificationObject = {
             type: 'DELETED',
@@ -1037,12 +1088,24 @@ export async function deletePayment(id, payment){
             [`payments.${id}`]: firebase.firestore.FieldValue.delete(),
             timeLine: firebase.firestore.FieldValue.arrayUnion(timeLineObject)
         })
-        transaction.update(clientRef, {balance: clientBalance})
+        transaction.update(clientRef, {
+            positiveBalanceHistory,
+            balance: clientBalance,
+            positiveBalance: newPositiveBalance
+        })
         transaction.delete(paymentRef)
     })
     await algolia.deletepayment(id)
     return
 }
+
+
+
+
+
+
+
+
 
 export async function getPayments(id) {
     const db = firebase.firestore().collection(PAYMENTS)
@@ -1072,10 +1135,17 @@ export async function getPaymentsByOrderId(orderId) {
     return results
 }
 
+
+
+
 export async function getPaymentById(id) {
     const snap = await firebase.firestore().collection(PAYMENTS).doc(id).get()
     return { ...snap.data(), id: snap.id }
 }
+
+
+
+
 
 export async function getPendingOrders() {
     const snap1 = firebase.firestore().collection(ORDERS).where('state', '==', 'pending').orderBy('serialCode', 'asc').get()
