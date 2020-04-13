@@ -147,6 +147,10 @@ export const PaymentsMethods ={
         background: '#e0e0e0',
         color: '#da291c'
     },
+    'consaldo a favor':{
+        background: '#00c853',
+        color: '#FFFFFF'
+    },
     default:{
         background: '#e0e0e0',
         color: '#323232'

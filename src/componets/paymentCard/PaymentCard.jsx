@@ -8,6 +8,7 @@ import classNames from 'classnames'
 import { Delete as DeleteIcon, Close as CloseIcon } from '@material-ui/icons'
 import ModalAlert from '../modalAlert/ModalAlert'
 import { deletePayment as firebaseDeletePayment  } from '../../lib/firebaseService'
+import { green } from '@material-ui/core/colors'
 
 const MoneyValue = ({amount, children, currency})=>(
     <NumberFormat 
@@ -152,14 +153,18 @@ const PaymentCard = withStyles((theme)=>({
     },
     deleteIcon:{
         fontSize: 60
+    },
+    positiveBalance:{
+        color: green['A700'],
+        fontWeight: 600
     }
 }))(({payment, classes, onUpdate})=>{
     const [edit, setEdit] = useState(false)
     const [alert, setAlert] = useState(false)
     const [loader, setLoader] = useState(false)
     const paymentStyle = useMemo(()=>getPaymentStyles(payment.paymentMethod)) 
-    
-    
+  
+
     let counter = 0
     let timer = null
     const handleDobleClick = useCallback(()=>{
@@ -227,6 +232,20 @@ const PaymentCard = withStyles((theme)=>({
                                 </MoneyValue>
                                 <Typography className={classes.secondaryText} variant="subtitle2" >{payment.paymentMethod}</Typography>
                                 <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">{payment.reference}</Typography>
+                                {
+                                    payment.usePositiveBalance?
+                                    <Fragment>
+                                        <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">------</Typography>
+                                        <Typography className={classes.secondaryText} variant="subtitle1" color="inherit">------</Typography>
+                                    </Fragment>
+                                    :
+                                    <Fragment>
+                                        <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">Saldo a favor:</Typography>
+                                        <MoneyValue currency={payment.currency} amount={payment.positiveBalance}>
+                                            <Typography className={classNames({[classes.positiveBalance]: (payment.positiveBalance > 0)})} variant="subtitle1" color="inherit"></Typography>
+                                        </MoneyValue>
+                                    </Fragment>
+                                }
                             </div>
                                 <Divider className={classes.divider}/>
                             <div style={{color: paymentStyle.color}} className={classes.secondaryInfo}>

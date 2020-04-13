@@ -908,7 +908,13 @@ export async function addPayment(payment) {
             currency: client.currency,
             totalOrder: order.total,
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            usePositiveBalance: payment.usePositiveBalance
+        }
+        
+        if(payment.usePositiveBalance){
+            paymentObject.reference = "sin referencia"
+            paymentObject.paymentMethod = "Con saldo a favor"
         }
 
         algoliaObject = {
@@ -954,6 +960,21 @@ export async function addPayment(payment) {
 
         }
 
+
+
+        // En caso de que el pago se usando el saldo a favor
+        if(payment.usePositiveBalance){
+            positiveBalance =  positiveBalance -  parseFloat(totalPayments.toFixed(2))
+            const positiveBalanceObject = {
+                date: paymentObject.createdAt,
+                sourceName: `Uso de saldo en pedido ${paymentObject.orderSerialCode}`,
+                value: (totalPayments * -1).toFixed(2)
+            }
+            positiveBalanceHistory = [positiveBalanceObject, ...client.positiveBalanceHistory]
+        }
+
+
+
         if (order.payments) {
             const subTotal = Object.keys(order.payments)
                 .map(id => order.payments[id])
@@ -963,12 +984,17 @@ export async function addPayment(payment) {
             totalPayments += subTotal
         }
 
+        let timeLineMessage = `Se realizó un pago por ${client.currency} $${thousandSeparator(payment.value)}, Saldo: ${client.currency} $${thousandSeparator(newOrderBalance)}`
+        if(payment.usePositiveBalance){
+            timeLineMessage = `Se utilizo el saldo a favor para realizar un pago por ${client.currency} $${thousandSeparator(payment.value)}, Saldo: ${client.currency} $${thousandSeparator(newOrderBalance)}`
+        }
+
         timeLine.push({
             type: 'PAYMENT',
             author: firebase.auth().currentUser.uid,
             date: new Date(),
             title: 'Pago Realizado',
-            message: `Se realizó un pago por ${client.currency} $${thousandSeparator(payment.value)}, Saldo: ${client.currency} $${thousandSeparator(newOrderBalance)}`
+            message: timeLineMessage
         })
 
         if (newOrderBalance <= 0) {

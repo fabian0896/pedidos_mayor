@@ -114,7 +114,7 @@ class OrderDetails extends Component {
     }
 
     handleAddShipping = ()=>{
-        const { order, client } = this.state
+        const { order} = this.state
         this.props.history.push({
             pathname: "/envios/nuevo",
             state: {
@@ -141,6 +141,7 @@ class OrderDetails extends Component {
                     !noRender &&
                     <Fragment>
                         <AddPaymentModal
+                            client={client}
                             order={order}
                             open={openPayModal}
                             onClose={this.hanldeClosePayModal} 

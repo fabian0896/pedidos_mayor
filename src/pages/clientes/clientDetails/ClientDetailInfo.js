@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
 import { Paper, Grid, Divider, Button } from '@material-ui/core';
-import { yellow, teal, blue, green, red } from '@material-ui/core/colors'
+import { yellow, teal, blue, green, red, cyan } from '@material-ui/core/colors'
 import {
     Place,
     Phone,
@@ -118,6 +118,9 @@ const styles = theme => ({
     blue:{
         background: blue[800],
     },
+    cyan:{
+        background: cyan[800]
+    },
     unPayItems:{
         flex: 1,
         overflow: 'auto',
@@ -140,7 +143,7 @@ function ClientDetailInfo(props){
     return(
         <Grid container spacing={24}>
 
-            <Grid item xs={12} sm={6} md={4} >
+            <Grid item xs={12} sm={6} md={6} >
                 <Paper className={classes.paper} >
                     <div className={classNames(classes.cardHeader, classes.orange) }>
                         <Place fontSize="large" />
@@ -168,7 +171,7 @@ function ClientDetailInfo(props){
             </Grid>
 
 
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={6}>
                 <Paper className={classes.paper} >
                     <div className={classNames(classes.cardHeader, classes.green) }>
                         <Phone fontSize="large" />
@@ -192,7 +195,7 @@ function ClientDetailInfo(props){
             </Grid>
 
 
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={6}>
                 <Paper className={classes.paper} >
                     <div className={classNames(classes.cardHeader, classes.blue) }>
                         <Money fontSize="large" />
@@ -223,9 +226,9 @@ function ClientDetailInfo(props){
             </Grid>
 
 
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={6}>
                 <Paper className={classes.paper} >
-                    <div className={classNames(classes.cardHeader, classes.blue) }>
+                    <div className={classNames(classes.cardHeader, classes.cyan) }>
                         <Money fontSize="large" />
                         <Typography align="center" color="inherit" component="span" variant="h6" >Saldo positivo</Typography>
                     </div>

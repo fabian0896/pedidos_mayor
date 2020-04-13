@@ -20,6 +20,7 @@ class AddPaymentModal extends Component{
         loadingModal: false
     }
 
+
     handleSubmit = async (values) =>{
         this.setState({loading: true, success: false, loadingModal: true})
         await addPayment(values)
@@ -44,10 +45,12 @@ class AddPaymentModal extends Component{
 
     updateOptions = async () => {
         const orders = await getOrdersWithBalance()
+        const { clients } =  this.props
         const optionsOrders = Object.keys(orders).map(id=>{
             return{
                 label: orders[id].serialCode,
                 value: id,
+                client: clients[orders[id].clientId],
                 balance: orders[id].balance,
                 currency: orders[id].currency,
                 secondary: this.props.clients[orders[id].clientId].name
