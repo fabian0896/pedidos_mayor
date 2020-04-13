@@ -240,7 +240,7 @@ const PaymentCard = withStyles((theme)=>({
                                     </Fragment>
                                     :
                                     <Fragment>
-                                        <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">Saldo a favor:</Typography>
+                                        <Typography className={classes.secondaryText} variant="subtitle2" color="inherit">Saldo a favor generado:</Typography>
                                         <MoneyValue currency={payment.currency} amount={payment.positiveBalance}>
                                             <Typography className={classNames({[classes.positiveBalance]: (payment.positiveBalance > 0)})} variant="subtitle1" color="inherit"></Typography>
                                         </MoneyValue>

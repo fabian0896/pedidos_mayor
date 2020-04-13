@@ -140,6 +140,17 @@ const styles = theme => ({
 
 function ClientDetailInfo(props){
     const { classes, client, unPayOrders } = props
+
+    
+    const getTotalUnPayOrders = (orders)=>{
+            return orders.reduce((prev, curr)=>{
+                return prev +  curr.balance
+            }, 0)
+    }
+
+
+    const totalValueUnPayOrders = getTotalUnPayOrders(unPayOrders)
+
     return(
         <Grid container spacing={24}>
 
@@ -203,7 +214,7 @@ function ClientDetailInfo(props){
                     </div>
                     <div className={classes.stats}>
                         <div className={classes.balanceItem}>
-                            <MoneyValue style={{color: (client.balance || 0) > 0 ? red['500'] : 'black'}} align="center" component="span" variant="h5" color="inherit">{(client.balance || 0) < 0 ? 0 : (client.balance || 0)}</MoneyValue>
+                            <MoneyValue style={{color: (client.balance || 0) > 0 ? red['500'] : 'black'}} align="center" component="span" variant="h5" color="inherit">{(totalValueUnPayOrders || 0) < 0 ? 0 : (totalValueUnPayOrders || 0)}</MoneyValue>
                             <Typography component="span" align="center" variant="subtitle2" color="textSecondary">Saldo Pendiente:</Typography>
                         </div>
                         <Divider/>

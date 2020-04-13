@@ -744,6 +744,7 @@ export async function deleteOrder(order){
 }
 
 
+
 export async function getAllOrders() {
     const db = firebase.firestore().collection(ORDERS).orderBy('createdAt', 'desc').limit(30)
     const orders = {}
@@ -753,6 +754,8 @@ export async function getAllOrders() {
     })
     return orders
 }
+
+
 
 export async function getOrderbyId(id) {
     const db = firebase.firestore().collection(ORDERS).doc(id)
@@ -892,8 +895,10 @@ export async function addPayment(payment) {
         const client = clientSnap.data()
 
 
-
-        const newBalance = client.balance - payment.value
+        let newBalance = client.balance - payment.value
+        if(payment.usePositiveBalance){
+            newBalance =  client.balance
+        }
 
         const paymentObject = {
             id: paymentId,
@@ -1062,16 +1067,19 @@ export async function deletePayment(id, payment){
         const client = clientSnap.data()
         const order = orderSnap.data()
 
-        let orderBalance =  order.balance + parseFloat(payment.value) 
 
+        let orderBalance =  order.balance + parseFloat(payment.value) 
+    
 
         if(payment.positiveBalance > 0){
             orderBalance = orderBalance - parseFloat(payment.positiveBalance)
         }
 
-        const clientBalance = client.balance + parseFloat(payment.value) 
+        let clientBalance = client.balance + parseFloat(payment.value)
+     
 
-        const newPositiveBalance = client.positiveBalance - (payment.positiveBalance || 0 )
+
+        let newPositiveBalance = client.positiveBalance - (payment.positiveBalance || 0 )
 
 
         let positiveBalanceHistory = [...client.positiveBalanceHistory]
@@ -1080,13 +1088,32 @@ export async function deletePayment(id, payment){
         if(payment.positiveBalance > 0){
             const positiveBalanceObject = {
                 date: new Date(),
-                sourceName: `Pago elminado(${payment.orderSerialCode})`,
+                sourceName: `Pago con saldo a favor elminado (${payment.orderSerialCode})`,
                 value: (payment.positiveBalance * -1)
             }
     
              positiveBalanceHistory = [positiveBalanceObject, ...client.positiveBalanceHistory]
         }
 
+
+
+        if(payment.usePositiveBalance){
+            // aqui va todo lo que pasa cuando el pago proviene de un saldo a favor
+            // el valor del pago se tiene que descntar del pedido y sumar el valor al saldo a favor del cliente 
+            // ya que el saldo tiene que estar disponible nuevamente cuando lo deseen
+            clientBalance = client.balance
+            newPositiveBalance = client.positiveBalance + parseFloat(parseFloat(payment.value).toFixed(2))
+            const positiveBalanceObject = {
+                date: new Date(),
+                sourceName: `Uso de saldo en pedido ${payment.orderSerialCode} eliminado`,
+                value: (payment.value)
+            }
+    
+             positiveBalanceHistory = [positiveBalanceObject, ...client.positiveBalanceHistory]
+
+
+             console.log(clientBalance, newPositiveBalance, positiveBalanceHistory)
+        }
 
 
         const notificationObject = {
