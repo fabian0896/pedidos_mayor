@@ -382,6 +382,10 @@ exports.addPayment = functions.firestore.document(`${PAYMENTS}/{payment}`).onCre
     const payment = snap.data()
     const [month, year] = getDate()
     
+    if(payment.usePositiveBalance){
+        payment.value = 0
+    }
+
     const income = {}
     income[payment.currency] = admin.firestore.FieldValue.increment(parseFloat(payment.value))
 
@@ -407,6 +411,10 @@ exports.updatePayment = functions.firestore.document(`${PAYMENTS}/{payment}`).on
 exports.deletePayment = functions.firestore.document(`${PAYMENTS}/{payment}`).onDelete((snap, context)=>{
     const payment = snap.data()
     const [month, year] = getDate(payment.createdAt.seconds*1000)
+
+    if(payment.usePositiveBalance){
+        payment.value = 0
+    }
     
     const income = {}
     income[payment.currency] = admin.firestore.FieldValue.increment(parseFloat(-payment.value))

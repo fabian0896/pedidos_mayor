@@ -19,7 +19,7 @@ import PaymentCard from '../../../componets/paymentCard/PaymentCard'
 import Title from '../../../componets/title/Title'
 import ShippingCard from '../../../componets/shippingCard/ShippingCard';
 import AddPaymentModal from '../../pagos/AddPaymentModal';
-import { getResumePdf } from '../../../lib/jsReportService'
+import { getResumePdf, getResumeExc } from '../../../lib/jsReportService'
 import Notes from './Notes'
 import CommisionCard from './CommissionCard'
 
@@ -127,7 +127,7 @@ class OrderDetails extends Component {
 
     handlePrintResume =  (setLoading) => async () =>{
         setLoading && setLoading(true)
-        await getResumePdf(this.state.order, this.state.client)
+        await getResumeExc(this.state.order, this.state.client)
         setLoading && setLoading(false)
     }
 
