@@ -82,6 +82,7 @@ class NewProductForm extends React.Component{
 
         const validationSchema = Yup.object().shape({
             name: Yup.string("Valor invalido").required("Este valor es necesario"),
+            name_en: Yup.string("Valor invalido"),
             reference: Yup.string("VAlor invalido").required("Este valor es necesario"),
             cop: Yup.string("Valor invalido"),
             usd: Yup.string("Valor invalido"),
@@ -94,6 +95,7 @@ class NewProductForm extends React.Component{
             validate={!isEditing && validate}
             initialValues={{
                 name: editingValues.name || '',
+                name_en: editingValues.name_en || '',
                 reference: editingValues.reference || '',
                 cop: editingValues.cop || '',
                 usd: editingValues.usd || '',
@@ -126,6 +128,18 @@ class NewProductForm extends React.Component{
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     value={values.name}   
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    name="name_en"
+                                    error={ (!!errors.name_en) && (!!touched.name_en)  } 
+                                    label="Nombre en ingles"
+                                    variant="outlined"
+                                    fullWidth
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.name_en}   
                                 />
                             </Grid>
                             <Grid item xs={12}>

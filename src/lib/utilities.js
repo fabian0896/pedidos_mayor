@@ -212,6 +212,7 @@ export const formatProductForTable = (products=[]) => {
             labelName: curr.labelName || 'Personalizada',
             price: curr.price,
             name: curr.name,
+            name_en: curr.name_en,
             sizes: {
               [curr.size]: parseInt(curr.quantity, 10) 
             }

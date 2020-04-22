@@ -83,6 +83,8 @@ class Prendas extends Component{
         
         await addOrUpdateProduct(values, id)
         //await addProduct(values)
+        
+        console.log("Se actualizo la prenda")
 
         this.setState({
             loadingModal: false,
