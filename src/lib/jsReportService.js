@@ -52,9 +52,20 @@ export async function getResumeExc(order, client){
         client
     }
 
-    console.log(finalObject)
+    //console.log(finalObject)
 
-    /*
+    //Detecto el si el idioma del cliente es espanol 
+    let shortid = ''
+    const {country:{languages} } = client
+    const spanish = isSpanish(languages)
+
+    if(spanish){
+        shortid = 'rkeXJcARmU'
+    }else{
+        shortid = 'Hyl46ulCdL'
+    }
+   
+    
     const res = await fetch('https://fajasinternacionales.jsreportonline.net/api/report',{
         method: 'POST',
         mode: 'cors',
@@ -64,7 +75,7 @@ export async function getResumeExc(order, client){
         },
         body: JSON.stringify({
             template: {
-                "shortid":"HylorYCTaE"
+                shortid
             },
             data: finalObject
         })
@@ -75,11 +86,16 @@ export async function getResumeExc(order, client){
     const fileURL = URL.createObjectURL(report);
     var link = document.createElement('a');
     link.href = fileURL;
-    link.download = `pedido-${order.serialCode}.pdf`;
+    link.download = `pedido ${order.serialCode} ${client.name}.xlsx`;
     document.body.appendChild(link);
     link.click();
     link.remove();
-    */
-
+    
     return;
+}
+
+
+
+const isSpanish = (languages=[]) =>{
+    return languages.some(element => element.iso639_1 === 'es')
 }

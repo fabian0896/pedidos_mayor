@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -12,7 +12,7 @@ import { Edit, Delete, Close } from '@material-ui/icons'
 import IconButton from '@material-ui/core/IconButton'
 import { capitalize } from '../../lib/utilities' 
 import NumberFormat from 'react-number-format';
-
+import { Tooltip, Chip } from '@material-ui/core'
 
 
 const panelStyles = theme => ({
@@ -69,6 +69,30 @@ let Panel = ({ classes, children, isEditing, toggleEditing, name, count}) => (
 
 Panel = withStyles(panelStyles)(Panel)
 
+
+const CustomChip = withStyles(theme=>({
+  root:{
+    color: '#FFFFFF',
+    background: '#d3d3d3',
+    padding: 2,
+    borderRadius: 3,
+    textTransform: 'uppercase',
+    fontSize: 10,
+    fontWeight: 900,
+    marginRight: theme.spacing.unit*3
+  }
+}))(({value, classes})=>{
+  return(
+    <Fragment>
+      {
+        !!value &&
+        <span className={classes.root}>
+            en
+        </span>
+      }
+    </Fragment>
+  )
+})
 
 
 const styles = theme => ({
@@ -138,9 +162,11 @@ class ProductTable extends React.Component {
                     </div>
                     </TableCell>
                 }
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
+                <Tooltip title={row.name_en || ''}>
+                  <TableCell component="th" scope="row">
+                    {row.name} <CustomChip value={row.name_en}/>
+                  </TableCell>
+                </Tooltip>
                 <TableCell align="right">{row.reference}</TableCell>
                 <NumberFormat value={row.cop} displayType={'text'} thousandSeparator={true} prefix={'$'} renderText={value => <TableCell align="right">{value}</TableCell>} />
                 <NumberFormat value={row.usd} displayType={'text'} thousandSeparator={true} prefix={'$'} renderText={value => <TableCell align="right">{value}</TableCell>} />

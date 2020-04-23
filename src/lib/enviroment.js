@@ -201,5 +201,12 @@ export const COLORS = {
     fucsia: '#E012C1',
     azul: '#0750ed',
     "azul claro": '#07aced',
-    salmon: '#FF8C69'
+    salmon: '#FF8C69',
+    black: 'black',
+    beige: '#EDAA7C',
+    fuchsia: '#E012C1',
+    purple: '#8F23C4',
+    red: 'red',
+    rojo: 'red',
+    blue: '#0750ed'
 }
