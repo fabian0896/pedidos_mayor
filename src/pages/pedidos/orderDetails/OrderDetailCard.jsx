@@ -125,8 +125,19 @@ function OrderDetailsCard(props) {
     }
 
     const getProductionReport = (type) => ()=>{
-        handlePrintProductionResume(setLoadingResume)(type)
-        handleCloseReport()
+        //handlePrintProductionResume(setLoadingResume)(type)
+        //handleCloseReport()
+        console.log(order)
+    }
+
+    const areTherePowernet = (order) =>{
+        const {products} = order
+        return products.some(product => product.line === "powernet")
+    }
+
+    const areThereLatex = (order) =>{
+        const {products} = order
+        return products.some(product => product.line !== "powernet")
     }
 
 
@@ -164,8 +175,8 @@ function OrderDetailsCard(props) {
                                 onClose={handleCloseReport}
                             >
                                 <MenuItem onClick={getClientReport}>Reporte Cliente</MenuItem>
-                                <MenuItem onClick={getProductionReport('latex')}>Produccion Latex</MenuItem>
-                                <MenuItem onClick={getProductionReport('powernet')}>Produccion Powernet</MenuItem>
+                                <MenuItem disabled={!areThereLatex(order)} onClick={getProductionReport('latex')}>Produccion Latex</MenuItem>
+                                <MenuItem disabled={!areTherePowernet(order)} onClick={getProductionReport('powernet')}>Produccion Powernet</MenuItem>
                             </Menu>
                         </Fragment>
                 }
