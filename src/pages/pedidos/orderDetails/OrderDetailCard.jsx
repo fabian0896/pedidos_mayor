@@ -125,9 +125,8 @@ function OrderDetailsCard(props) {
     }
 
     const getProductionReport = (type) => ()=>{
-        //handlePrintProductionResume(setLoadingResume)(type)
-        //handleCloseReport()
-        console.log(order)
+        handlePrintProductionResume(setLoadingResume)(type)
+        handleCloseReport()
     }
 
     const areTherePowernet = (order) =>{

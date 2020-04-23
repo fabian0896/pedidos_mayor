@@ -206,6 +206,7 @@ export const formatProductForTable = (products=[]) => {
             product: curr.product,
             reference: curr.reference,
             color: curr.color,
+            line: curr.line,
             colorHex: getColorHex(curr.color),
             mold: curr.mold,
             label: curr.label,

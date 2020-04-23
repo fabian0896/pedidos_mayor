@@ -110,9 +110,10 @@ export async function getProductionResumeExc(order, client, type){
     
     const finalObject = {
         ...order,
-        products,
+        products: fiterByType(products, type),
         sizeList,
-        client
+        client,
+        type
     }
 
     const shortid = 'S1ljUJUAOL'
@@ -146,3 +147,12 @@ export async function getProductionResumeExc(order, client, type){
 }
 
 
+const fiterByType = (products=[], type='latex')=>{
+    if(type === 'powernet'){
+        return products.filter((products)=> products.line === 'powernet')
+    } else if(type === 'latex'){
+        return products.filter((products)=> products.line !== 'powernet')
+    }else{
+        return products
+    }
+}   

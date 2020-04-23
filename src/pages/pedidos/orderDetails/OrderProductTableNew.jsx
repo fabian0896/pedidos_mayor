@@ -127,7 +127,7 @@ class OrderProductTable extends Component{
                                 <TableCell>Molde</TableCell>
                                 <TableCell>Color</TableCell>
                                 {
-                                    sizeList.map((size, index)=> <TableCell key={index}>{size}</TableCell>)
+                                    sizeList.map((size, index)=> <TableCell align="center" key={index}>{size}</TableCell>)
                                 }
 
                                 <TableCell>{`Valor(${currency})`}</TableCell>
