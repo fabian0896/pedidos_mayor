@@ -99,3 +99,50 @@ export async function getResumeExc(order, client){
 const isSpanish = (languages=[]) =>{
     return languages.some(element => element.iso639_1 === 'es')
 }
+
+
+
+
+
+export async function getProductionResumeExc(order, client, type){
+
+    const [products, sizeList] = formatProductForTable(order.products)
+    
+    const finalObject = {
+        ...order,
+        products,
+        sizeList,
+        client
+    }
+
+    const shortid = 'S1ljUJUAOL'
+      
+    const res = await fetch('https://fajasinternacionales.jsreportonline.net/api/report',{
+        method: 'POST',
+        mode: 'cors',
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': "Basic " + btoa("ventas@fajasinternacionales.com:Redes2017")
+        },
+        body: JSON.stringify({
+            template: {
+                shortid
+            },
+            data: finalObject
+        })
+    })
+
+    const report = await res.blob()
+
+    const fileURL = URL.createObjectURL(report);
+    var link = document.createElement('a');
+    link.href = fileURL;
+    link.download = `Producción ${type} ${order.serialCode} ${client.name}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    
+    return;
+}
+
+

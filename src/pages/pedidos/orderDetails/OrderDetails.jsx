@@ -19,7 +19,7 @@ import PaymentCard from '../../../componets/paymentCard/PaymentCard'
 import Title from '../../../componets/title/Title'
 import ShippingCard from '../../../componets/shippingCard/ShippingCard';
 import AddPaymentModal from '../../pagos/AddPaymentModal';
-import { getResumePdf, getResumeExc } from '../../../lib/jsReportService'
+import { getResumeExc, getProductionResumeExc} from '../../../lib/jsReportService'
 import Notes from './Notes'
 import CommisionCard from './CommissionCard'
 
@@ -131,6 +131,13 @@ class OrderDetails extends Component {
         setLoading && setLoading(false)
     }
 
+
+    handlePrintProductionResume =  (setLoading) => async (type) =>{
+        setLoading && setLoading(true)
+        await getProductionResumeExc(this.state.order, this.state.client, type)
+        setLoading && setLoading(false)
+    }
+
     render() {
         const { width } = this.props
         const { products, client, noRender, order, payments, openPayModal } = this.state
@@ -159,6 +166,7 @@ class OrderDetails extends Component {
                                 <Fragment>
                                     
                                     <OrderDetailCard
+                                        handlePrintProductionResume = {this.handlePrintProductionResume}
                                         handlePrintResume={this.handlePrintResume}
                                         onUpdate={this.handleUpdate}
                                         order={order}
@@ -274,6 +282,7 @@ class OrderDetails extends Component {
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={3}>
                                         <OrderDetailCard
+                                            handlePrintProductionResume = {this.handlePrintProductionResume}
                                             handlePrintResume={this.handlePrintResume}
                                             onUpdate={this.handleUpdate}
                                             order={order}

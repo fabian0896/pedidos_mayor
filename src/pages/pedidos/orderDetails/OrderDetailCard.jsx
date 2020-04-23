@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, Fragment } from 'react'
 import { Paper, withStyles, Avatar, Typography, Divider, IconButton, MenuItem, Menu, CircularProgress } from '@material-ui/core';
 import { getNameLetters } from '../../../lib/utilities'
 import NumberFormat from 'react-number-format';
@@ -88,56 +88,86 @@ const styles = theme => ({
 
 function OrderDetailsCard(props) {
     const [anchorEl, setAnchorEl] = useState(null)
-    const [loadinResume, setLoadingResume] = useState(false) 
-    const { classes, order, client, onUpdate, handlePrintResume, seller } = props
+    const [anchorElReport, setAnchorElReport] = useState(null)
+    const [loadinResume, setLoadingResume] = useState(false)
+    const { classes, order, client, onUpdate, handlePrintResume, handlePrintProductionResume ,seller } = props
     const country = client.country.translations.es || client.country.name
     const date = moment(order.createdAt.seconds * 1000).format('DD/MM/YYYY')
 
-    const stateList =  Object.keys(STATES).map(id=>({...STATES[id], key: id}))
+    const stateList = Object.keys(STATES).map(id => ({ ...STATES[id], key: id }))
 
     function handleClick(event) {
         setAnchorEl(event.currentTarget)
+    }
+
+    function handleClickReport(event) {
+        setAnchorElReport(event.currentTarget)
     }
 
     function handleClose() {
         setAnchorEl(null)
     }
 
-    const handleChangeState = useCallback((state)=> async ()=>{
+    function handleCloseReport() {
+        setAnchorElReport(null)
+    }
+
+    const handleChangeState = useCallback((state) => async () => {
         await changeOrderState(order.id, state)
         handleClose()
         onUpdate && onUpdate()
     })
 
-    
+
+    const getClientReport = ()=>{
+        handlePrintResume(setLoadingResume)()
+        handleCloseReport()
+    }
+
+    const getProductionReport = (type) => ()=>{
+        handlePrintProductionResume(setLoadingResume)(type)
+        handleCloseReport()
+    }
+
 
     return (
         <Paper className={classes.root}>
             <div className={classes.header}>
-                <IconButton 
+                <IconButton
                     onClick={handleClick}
                     className={classes.stateButton}>
                     <TimelineIcon fontSize="large" />
                 </IconButton>
                 <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose} >
                     {
-                        stateList.map((state, index)=>(
+                        stateList.map((state, index) => (
                             <MenuItem
-                                disabled={state.key === order.state} 
-                                key={index} 
+                                disabled={state.key === order.state}
+                                key={index}
                                 onClick={handleChangeState(state.key)}>
-                                    {state.name}
+                                {state.name}
                             </MenuItem>
                         ))
                     }
                 </Menu>
                 {
-                    loadinResume?
-                    <CircularProgress className={classes.printButton} color="inherit"/>
-                    :
-                    <IconButton onClick={handlePrintResume(setLoadingResume)} className={classes.printButton}>
-                        <PrintIcon fontSize="large" />
-                    </IconButton>
+                    loadinResume ?
+                        <CircularProgress className={classes.printButton} color="inherit" />
+                        :
+                        <Fragment>
+                            <IconButton onClick={handleClickReport} className={classes.printButton}>
+                                <PrintIcon fontSize="large" />
+                            </IconButton>
+                            <Menu
+                                anchorEl={anchorElReport}
+                                open={Boolean(anchorElReport)}
+                                onClose={handleCloseReport}
+                            >
+                                <MenuItem onClick={getClientReport}>Reporte Cliente</MenuItem>
+                                <MenuItem onClick={getProductionReport('latex')}>Produccion Latex</MenuItem>
+                                <MenuItem onClick={getProductionReport('powernet')}>Produccion Powernet</MenuItem>
+                            </Menu>
+                        </Fragment>
                 }
                 <div className={classes.flagContainer}>
                     <img className={classes.flag} src={client.country.flag} alt={client.country.name} />
@@ -180,7 +210,7 @@ function OrderDetailsCard(props) {
                     <Typography gutterBottom component="span" variant="subtitle1">{date}</Typography>
 
                     <Typography component="span" variant="subtitle2" color="textSecondary">Encargado/a:</Typography>
-                                <Typography gutterBottom component="span" variant="subtitle1">{seller.name}</Typography>
+                    <Typography gutterBottom component="span" variant="subtitle1">{seller.name}</Typography>
                 </div>
             </div>
         </Paper>
@@ -188,9 +218,9 @@ function OrderDetailsCard(props) {
 }
 
 
-const mapStateToProps = (state, props)=>{
-     
-    return{
+const mapStateToProps = (state, props) => {
+
+    return {
         seller: state.sellers[props.client.seller]
     }
 }

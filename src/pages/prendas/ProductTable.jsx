@@ -12,7 +12,7 @@ import { Edit, Delete, Close } from '@material-ui/icons'
 import IconButton from '@material-ui/core/IconButton'
 import { capitalize } from '../../lib/utilities' 
 import NumberFormat from 'react-number-format';
-import { Tooltip, Chip } from '@material-ui/core'
+import { Tooltip } from '@material-ui/core'
 
 
 const panelStyles = theme => ({
