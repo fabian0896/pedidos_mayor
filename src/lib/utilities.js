@@ -187,8 +187,14 @@ function randomNumber(min = 0, max = 255){
 // Funcion para formater las prendas y dejarlas listas para imprimir con el formato clasico
 
 
-const getColorHex = (color)=>{
-    return COLORS[color.toLowerCase().trim()] || 'black'
+const getColorHex = (color = "")=>{
+    const listOfWords = color.split(" ")
+    
+    const exactColor = Object.keys(COLORS).find(currColor =>{
+        return listOfWords.some(word => word.toLowerCase().trim() === currColor)
+    })
+
+    return COLORS[exactColor] || 'black'
   }
 
 

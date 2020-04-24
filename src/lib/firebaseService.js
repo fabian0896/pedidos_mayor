@@ -492,6 +492,8 @@ export async function addOrder(order) {
                 seen: seenArray
             }
 
+            console.log(orderObject)
+
             transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
             transaction.set(oredrRef, orderObject)
             res('completed')

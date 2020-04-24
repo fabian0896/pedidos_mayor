@@ -208,5 +208,7 @@ export const COLORS = {
     purple: '#8F23C4',
     red: 'red',
     rojo: 'red',
-    blue: '#0750ed'
+    blue: '#0750ed',
+    verde: '#37e643',
+    green: '#37e643'
 }

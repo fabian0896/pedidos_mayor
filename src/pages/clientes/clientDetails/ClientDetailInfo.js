@@ -250,7 +250,7 @@ function ClientDetailInfo(props){
                         </div>
                         <Divider/>
                         {
-                            !!client.positiveBalanceHistory.length?
+                             !!client.positiveBalanceHistory?
                             <div className={classes.unPayItems}>
                                 {
                                     client.positiveBalanceHistory.map((item, index)=>(

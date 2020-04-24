@@ -444,7 +444,7 @@ class ProductFrom extends React.Component {
     setValuesForm = () => { }
 
     handleSubmit = (productValues, actions, selectRef) => {
-
+      
         const {client} = this.props
 
         const { isEditting, editIndex } = this.state
@@ -464,7 +464,7 @@ class ProductFrom extends React.Component {
             const temp = {
                 ...allProducts[productValues.product.value],
                 ...productValues,
-                labelName: client.labelName,
+                labelName: client.labelName || 'Personalizada',
                 size,
                 quantity
             }
