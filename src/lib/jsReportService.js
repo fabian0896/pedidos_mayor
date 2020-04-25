@@ -3,18 +3,18 @@ import { formatProductForTable } from './utilities'
 
 
 // para usar jsreport online descomentar esta parte del codigo y comentar la otra 
-/*
+
 const URL_STRING = 'https://fajasinternacionales.jsreportonline.net/api/report'
-const PDF_REPORT_ID = "HylorYCTaE"
-const EXC_ES_ID = "rkeXJcARmU"
-const EXC_EN_ID = "Hyl46ulCdL"
-const EXC_PODUCTION = "S1ljUJUAOL"
-*/
+//const PDF_REPORT_ID = "HylorYCTaE"
+//const EXC_ES_ID = "rkeXJcARmU"
+//const EXC_EN_ID = "Hyl46ulCdL"
+//const EXC_PODUCTION = "S1ljUJUAOL"
+
 
 
 //Para usar el servidor perzonalizado descomentar esta parte del codifo y comentar la otra
 
-const URL_STRING = 'http://34.68.124.251/api/report'
+//const URL_STRING = 'http://34.68.124.251/api/report'
 const PDF_REPORT_ID = "HylorYCTaE"
 const EXC_ES_ID = "rkeXJcARmU"
 const EXC_EN_ID = "Hyl46ulCdL"
