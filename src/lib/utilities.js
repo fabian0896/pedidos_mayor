@@ -57,7 +57,7 @@ export function limitName(name){
 
 export function capitalize(text=""){
     if(typeof text === 'string'){
-        return text.charAt(0).toUpperCase() + text.substring(1)
+        return text.charAt(0).toUpperCase() + text.substring(1).toLocaleLowerCase()
     }
     return ''
 }
@@ -195,7 +195,7 @@ const getColorHex = (color = "")=>{
     })
 
     return COLORS[exactColor] || 'black'
-  }
+}
 
 
 
@@ -211,7 +211,7 @@ export const formatProductForTable = (products=[]) => {
           {
             product: curr.product,
             reference: curr.reference,
-            color: curr.color,
+            color: capitalize(curr.color),
             line: curr.line,
             colorHex: getColorHex(curr.color),
             mold: curr.mold,
@@ -274,7 +274,7 @@ export const formatProductForTable = (products=[]) => {
         if(curr.reference !== product.reference){
           return 
         }
-        if(curr.color !== product.color){
+        if(curr.color.trim().toLocaleLowerCase() !== product.color.trim().toLocaleLowerCase()){
           return 
         }
         if(curr.mold !== product.mold){

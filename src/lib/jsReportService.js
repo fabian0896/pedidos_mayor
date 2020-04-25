@@ -1,6 +1,26 @@
 import { formatProductForTable } from './utilities'
 //const apiKey = "Basic " + btoa("ventas@fajasinternacionales:Redes2017");
 
+
+// para usar jsreport online descomentar esta parte del codigo y comentar la otra 
+/*
+const URL_STRING = 'https://fajasinternacionales.jsreportonline.net/api/report'
+const PDF_REPORT_ID = "HylorYCTaE"
+const EXC_ES_ID = "rkeXJcARmU"
+const EXC_EN_ID = "Hyl46ulCdL"
+const EXC_PODUCTION = "S1ljUJUAOL"
+*/
+
+
+//Para usar el servidor perzonalizado descomentar esta parte del codifo y comentar la otra
+
+const URL_STRING = 'http://34.68.124.251/api/report'
+const PDF_REPORT_ID = "HylorYCTaE"
+const EXC_ES_ID = "rkeXJcARmU"
+const EXC_EN_ID = "Hyl46ulCdL"
+const EXC_PODUCTION = "S1ljUJUAOL"
+
+
 export async function getResumePdf(order, client){
     const [formatData, sizeList] = formatProductForTable(order)
     
@@ -11,7 +31,7 @@ export async function getResumePdf(order, client){
 
 
 
-    const res = await fetch('https://fajasinternacionales.jsreportonline.net/api/report',{
+    const res = await fetch(URL_STRING,{
         method: 'POST',
         mode: 'cors',
         headers:{
@@ -20,7 +40,7 @@ export async function getResumePdf(order, client){
         },
         body: JSON.stringify({
             template: {
-                "shortid":"HylorYCTaE"
+                "shortid": PDF_REPORT_ID
             },
             data: finalObject
         })
@@ -60,13 +80,13 @@ export async function getResumeExc(order, client){
     const spanish = isSpanish(languages)
 
     if(spanish){
-        shortid = 'rkeXJcARmU'
+        shortid = EXC_ES_ID
     }else{
-        shortid = 'Hyl46ulCdL'
+        shortid = EXC_EN_ID
     }
    
     
-    const res = await fetch('https://fajasinternacionales.jsreportonline.net/api/report',{
+    const res = await fetch(URL_STRING,{
         method: 'POST',
         mode: 'cors',
         headers:{
@@ -116,9 +136,9 @@ export async function getProductionResumeExc(order, client, type){
         type
     }
 
-    const shortid = 'S1ljUJUAOL'
+    const shortid = EXC_PODUCTION
       
-    const res = await fetch('https://fajasinternacionales.jsreportonline.net/api/report',{
+    const res = await fetch(URL_STRING,{
         method: 'POST',
         mode: 'cors',
         headers:{

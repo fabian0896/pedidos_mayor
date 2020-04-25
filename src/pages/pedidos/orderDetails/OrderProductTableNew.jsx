@@ -125,7 +125,7 @@ class OrderProductTable extends Component{
                                 <TableCell>Referencia</TableCell>
                                 <TableCell>Marquilla</TableCell>
                                 <TableCell>Molde</TableCell>
-                                <TableCell>Color</TableCell>
+                                <TableCell align="center">Color</TableCell>
                                 {
                                     sizeList.map((size, index)=> <TableCell align="center" key={index}>{size}</TableCell>)
                                 }
@@ -156,7 +156,7 @@ class OrderProductTable extends Component{
                                             <TableCell>{product.reference}</TableCell>
                                             <TableCell>{product.label === 'generic'? 'Generica': product.labelName}</TableCell>
                                             <TableCell>{product.mold === 'new'? 'Nuevo':'Viejo'}</TableCell>
-                                            <TableCell style={{color: product.colorHex, fontWeight: 500}} >{product.color}</TableCell>
+                                            <TableCell align="center" style={{color: product.colorHex, fontWeight: 500}} >{product.color}</TableCell>
                                             
                                             {
                                                 product.sizesList.map((size, index)=>{

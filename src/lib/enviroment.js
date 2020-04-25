@@ -195,9 +195,11 @@ export const COMMISSIONS = {
 
 export const COLORS = {
     negro: 'black',
+    negra: 'black',
     piel: '#EDAA7C',
     PIEL: '#EDAA7C',
     morado: '#8F23C4',
+    morada: '#8F23C4',
     fucsia: '#E012C1',
     azul: '#0750ed',
     "azul claro": '#07aced',
@@ -208,6 +210,7 @@ export const COLORS = {
     purple: '#8F23C4',
     red: 'red',
     rojo: 'red',
+    roja: 'red',
     blue: '#0750ed',
     verde: '#37e643',
     green: '#37e643'
