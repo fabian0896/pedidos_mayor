@@ -468,7 +468,6 @@ class ProductFrom extends React.Component {
                 quantity
             }
 
-            console.log(temp)
 
             delete temp.sizes
 
