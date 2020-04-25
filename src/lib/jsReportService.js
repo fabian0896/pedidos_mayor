@@ -4,7 +4,7 @@ import { formatProductForTable } from './utilities'
 
 // para usar jsreport online descomentar esta parte del codigo y comentar la otra 
 
-const URL_STRING = 'https://fajasinternacionales.jsreportonline.net/api/report'
+//const URL_STRING = 'https://fajasinternacionales.jsreportonline.net/api/report'
 //const PDF_REPORT_ID = "HylorYCTaE"
 //const EXC_ES_ID = "rkeXJcARmU"
 //const EXC_EN_ID = "Hyl46ulCdL"
@@ -16,7 +16,7 @@ const URL_STRING = 'https://fajasinternacionales.jsreportonline.net/api/report'
 
 
 
-//const URL_STRING = 'https://excel-fajas.uc.r.appspot.com/api/report'
+const URL_STRING = 'https://pedidosbybethel.tk/api/report'
 const PDF_REPORT_ID = "HylorYCTaE"
 const EXC_ES_ID = "rkeXJcARmU"
 const EXC_EN_ID = "Hyl46ulCdL"
@@ -24,7 +24,7 @@ const EXC_PODUCTION = "S1ljUJUAOL"
 
 
 export async function getResumePdf(order, client){
-    const [formatData, sizeList] = formatProductForTable(order)
+    //const [formatData, sizeList] = formatProductForTable(order)
     
     const finalObject = {
         ...order,
