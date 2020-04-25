@@ -408,7 +408,9 @@ export async function addOrder(order) {
         message: 'Se añadio el pedido al sistema'
     }
 
+    //console.log("Se va a impromir los numeros")
     const totalProducts = order.products.reduce((prev, current) => {
+        //console.log(current.quantity)
         return prev + parseInt(current.quantity)
     }, 0)
 
@@ -513,9 +515,13 @@ export async function updateOrder(order, id) {
 
     const seenArray =  await getSeenArray()
 
+
+    //console.log("se van a imprimir los numeros de edicion")
     const totalProducts = order.products.reduce((prev, current) => {
+        //console.log(current.size, ": ", current.quantity)
         return prev + parseInt(current.quantity)
     }, 0)
+
 
     const orderObject = {
         ...order,

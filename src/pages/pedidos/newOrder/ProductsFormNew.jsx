@@ -457,17 +457,18 @@ class ProductFrom extends React.Component {
         //    ...allProducts[productValues.product.value],
         //    ...productValues
         //}
-
-
-
+        
+        
         const newProductarray = productValues.sizes.map(({size, quantity})=>{
             const temp = {
                 ...allProducts[productValues.product.value],
                 ...productValues,
                 labelName: client.labelName || 'Personalizada',
-                size,
+                size: parseInt(size),
                 quantity
             }
+
+            console.log(temp)
 
             delete temp.sizes
 

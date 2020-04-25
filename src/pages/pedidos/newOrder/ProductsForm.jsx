@@ -290,6 +290,7 @@ class ProductFrom extends React.Component{
         const { isEditting, editIndex } = this.state
         const { setFieldValue, values, allProducts } = this.props
         let finalProducts = []  
+        console.log(productValues)
         const newProduct = {
             ...allProducts[productValues.product.value],
             ...productValues

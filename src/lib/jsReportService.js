@@ -14,7 +14,9 @@ const URL_STRING = 'https://fajasinternacionales.jsreportonline.net/api/report'
 
 //Para usar el servidor perzonalizado descomentar esta parte del codifo y comentar la otra
 
-//const URL_STRING = 'http://34.68.124.251/api/report'
+
+
+//const URL_STRING = 'https://excel-fajas.uc.r.appspot.com/api/report'
 const PDF_REPORT_ID = "HylorYCTaE"
 const EXC_ES_ID = "rkeXJcARmU"
 const EXC_EN_ID = "Hyl46ulCdL"

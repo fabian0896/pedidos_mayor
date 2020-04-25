@@ -84,8 +84,8 @@ class OrderProductTable extends Component{
     }
 
     getTotalQuantity(data=[]){
-        return data.reduce((prev, curr)=>{
-            return prev + parseInt(curr.quantity) 
+        return data.reduce((prev, curr)=>{ 
+            return prev + parseInt(curr.quantity)
         }, 0)
     }
     
@@ -103,7 +103,7 @@ class OrderProductTable extends Component{
             ...rest
          } = this.props
 
-
+         console.log(order)
          //console.log(formatProductForTable(data))
          //console.log(data)
          const [formatData, sizeList] = formatProductForTable(data)
