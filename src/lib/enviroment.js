@@ -213,5 +213,8 @@ export const COLORS = {
     roja: 'red',
     blue: '#0750ed',
     verde: '#37e643',
-    green: '#37e643'
+    green: '#37e643',
+    pink: '#FF0080',
+    rosado: '#FF0080',
+    rosada: '#FF0080',
 }
