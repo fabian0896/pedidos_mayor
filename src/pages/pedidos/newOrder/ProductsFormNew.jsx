@@ -478,7 +478,6 @@ class ProductFrom extends React.Component {
 
         if (isEditting) {
             //finalProducts = values.products.slice()
-            console.log('EditIndex', editIndex)
             editProducts = this.handleDelete(editIndex)(true)
             
             //finalProducts[editIndex] = newProduct
