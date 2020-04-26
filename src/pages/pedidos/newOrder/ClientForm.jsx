@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Formik, Field } from 'formik'
-import { withStyles } from '@material-ui/core';
+import { withStyles, TextField } from '@material-ui/core';
 import MyAutocomplete from '../../../componets/myAutocomplete/MyAutocomplete'
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -27,7 +27,8 @@ const styles = theme => ({
 
 const validationSchema = Yup.object().shape({
     client: Yup.object().required('valor requerido'),
-    currency: Yup.string().required('valor requerido')
+    currency: Yup.string().required('valor requerido'),
+    consecutive: Yup.number().min(1)
 })
 
 const customChange = (setFieldValue, clients)=> (option) =>{
@@ -45,7 +46,8 @@ function ClientForm(props) {
         <Formik
             initialValues={{
                 client: iniValues.client || null,
-                currency: iniValues.currency || null
+                currency: iniValues.currency || null,
+                consecutive: iniValues.consecutive || '',
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
@@ -66,23 +68,38 @@ function ClientForm(props) {
                                 optionsList={props.options} />
                             {
                                 values.currency &&
-                                <FormControl
-                                    disabled={isEditing}
-                                    component="fieldset"
-                                    error={errors.currency && touched.currency}
-                                    >
-                                    <FormLabel component="legend">Moneda</FormLabel>
-                                    <RadioGroup
-                                        aria-label="Gender"
-                                        name="currency"
-                                        value={values.currency}
+                                <Fragment>
+                                    <FormControl
+                                        disabled={isEditing}
+                                        component="fieldset"
+                                        error={errors.currency && touched.currency}
+                                        >
+                                        <FormLabel component="legend">Moneda</FormLabel>
+                                        <RadioGroup
+                                            aria-label="Gender"
+                                            name="currency"
+                                            value={values.currency}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                        >
+                                            <FormControlLabel value="USD" control={<Radio />} label="Dolares" />
+                                            <FormControlLabel value="COP" control={<Radio />} label="Pesos Colombianos" />
+                                        </RadioGroup>
+                                    </FormControl>
+
+                                    <TextField
+                                        placeholder="Sugerencia: 265"
+                                        error={errors.consecutive && touched.consecutive}
+                                        style={{marginTop: 16}}
+                                        label="Consecutivo del pedido"
+                                        variant="outlined"
+                                        fullWidth
+                                        value={values.consecutive}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
-                                    >
-                                        <FormControlLabel value="USD" control={<Radio />} label="Dolares" />
-                                        <FormControlLabel value="COP" control={<Radio />} label="Pesos Colombianos" />
-                                    </RadioGroup>
-                                </FormControl>
+                                        name="consecutive"
+                                    />
+                                </Fragment>
                             }
                         </form>
                     )

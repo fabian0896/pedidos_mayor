@@ -108,7 +108,7 @@ export async function getResumeExc(order, client){
     const fileURL = URL.createObjectURL(report);
     var link = document.createElement('a');
     link.href = fileURL;
-    link.download = `pedido ${order.serialCode} ${client.name}.xlsx`;
+    link.download = `pedido ${order.consecutive || order.serialCode} ${client.name}.xlsx`;
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -160,7 +160,7 @@ export async function getProductionResumeExc(order, client, type){
     const fileURL = URL.createObjectURL(report);
     var link = document.createElement('a');
     link.href = fileURL;
-    link.download = `Producción ${type} ${order.serialCode} ${client.name}.xlsx`;
+    link.download = `Producción ${type} Pedido ${ order.consecutive ||order.serialCode} ${client.name}.xlsx`;
     document.body.appendChild(link);
     link.click();
     link.remove();

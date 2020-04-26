@@ -142,6 +142,9 @@ class OrderDetails extends Component {
         const { width } = this.props
         const { products, client, noRender, order, payments, openPayModal } = this.state
         const shippingList = order.shipments || []
+
+        console.log(order)
+
         return (
             <div>
                 {

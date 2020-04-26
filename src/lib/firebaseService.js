@@ -416,6 +416,7 @@ export async function addOrder(order) {
 
     const orderObject = {
         ...order,
+        consecutive: parseInt(order.consecutive),
         timeLine: [timeLineObject],
         state: 'pending',
         totalProducts,
@@ -525,6 +526,7 @@ export async function updateOrder(order, id) {
 
     const orderObject = {
         ...order,
+        consecutive: parseInt(order.consecutive),
         state: 'pending',
         totalProducts,
         balance: parseFloat(order.total),

@@ -206,8 +206,8 @@ function OrderDetailsCard(props) {
                             <Typography color="textSecondary" variant="body1" align="center">Valor</Typography>
                         </div>
                         <div>
-                            <Typography variant="subtitle2" align="center">{order.totalProducts}</Typography>
-                            <Typography color="textSecondary" variant="body1" align="center">Prendas</Typography>
+                            <Typography variant="subtitle2" align="center">{order.consecutive || 'None'}</Typography>
+                            <Typography color="textSecondary" variant="body1" align="center">Consecutivo</Typography>
                         </div>
                     </div>
 
