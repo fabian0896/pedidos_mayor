@@ -475,8 +475,10 @@ class ProductFrom extends React.Component {
         })
 
 
+
         if (isEditting) {
             //finalProducts = values.products.slice()
+            console.log('EditIndex', editIndex)
             editProducts = this.handleDelete(editIndex)(true)
             
             //finalProducts[editIndex] = newProduct
@@ -529,7 +531,7 @@ class ProductFrom extends React.Component {
         
         const indexes = products.reduce((prev,curr, index)=>{
             if(curr.reference === productGroup.reference &&
-                curr.color === productGroup.color &&
+                curr.color.trim().toLowerCase() === productGroup.color.trim().toLowerCase() &&
                 curr.mold === productGroup.mold &&
                 curr.label === productGroup.label &&
                 curr.price === productGroup.price){
