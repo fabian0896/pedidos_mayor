@@ -209,6 +209,7 @@ export const formatProductForTable = (products=[]) => {
         return [
           ...prev,
           {
+            id: curr.id,
             product: curr.product,
             reference: curr.reference,
             color: capitalize(curr.color),

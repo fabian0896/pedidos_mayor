@@ -1,4 +1,5 @@
 import { formatProductForTable } from './utilities'
+import { getAllProducts } from './firebaseService'
 //const apiKey = "Basic " + btoa("ventas@fajasinternacionales:Redes2017");
 
 
@@ -65,17 +66,13 @@ export async function getResumePdf(order, client){
 
 export async function getResumeExc(order, client){
 
-    const [products, sizeList] = formatProductForTable(order.products)
+
+    //le doy formato a los productos y me traigo una lista con todos los productos actualizados
+    let [products, sizeList] = formatProductForTable(order.products)
     
-    const finalObject = {
-        ...order,
-        products,
-        sizeList,
-        client
-    }
 
-    //console.log(finalObject)
 
+    
     //Detecto el si el idioma del cliente es espanol 
     let shortid = ''
     const {country:{languages} } = client
@@ -85,8 +82,23 @@ export async function getResumeExc(order, client){
         shortid = EXC_ES_ID
     }else{
         shortid = EXC_EN_ID
+        const allProducts = await getAllProducts()
+        products = products.map(product =>{
+            return {
+                ...product,
+                name_en: allProducts[product.id]? allProducts[product.id].name_en : null 
+            }
+        })
     }
    
+
+    const finalObject = {
+        ...order,
+        products,
+        sizeList,
+        client
+    }
+
     
     const res = await fetch(URL_STRING,{
         method: 'POST',
