@@ -20,6 +20,7 @@ import moment from 'moment'
 import { getYearStats } from '../../lib/statsService'
 
 
+
 class Home extends Component {
 
     state = {
@@ -30,7 +31,7 @@ class Home extends Component {
     }
 
     async componentDidMount() {
-
+    
         document.title = "Inicio | Pedidos Bethel"
         const [orders, payments, shipments, orderWithBalance, year] = await Promise.all([
             getReadyToShipOrders(),

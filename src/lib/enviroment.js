@@ -197,6 +197,7 @@ export const COLORS = {
     negro: 'black',
     negra: 'black',
     piel: '#EDAA7C',
+    nude: '#EDAA7C',
     PIEL: '#EDAA7C',
     morado: '#8F23C4',
     morada: '#8F23C4',
