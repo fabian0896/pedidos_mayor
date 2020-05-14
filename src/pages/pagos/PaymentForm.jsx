@@ -106,7 +106,7 @@ function PaymentForm(props){
 
                 <Grid item xs={12}>
                     <Typography variant="subtitle1" color="textSecondary">Saldo a favor:</Typography>
-                    <MoneyValue currency={values.order.currency} amount={(values.order.client.positiveBalance || 0).toFixed(2)}>
+                    <MoneyValue currency={values.order? values.order.currency : 'COP'} amount={(values.order.client.positiveBalance || 0).toFixed(2)}>
                         <Typography style={{color: green['A700']}} variant="h6"></Typography>
                     </MoneyValue>
 
