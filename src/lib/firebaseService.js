@@ -505,7 +505,7 @@ export async function addOrder(order) {
     })
 
     await algolia.addOrder(algoliaObject)
-    return
+    return orderId 
 }
 
 

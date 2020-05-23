@@ -191,15 +191,17 @@ class NewOrder extends Component {
             successText: successMessage
         })
 
+        let newOrderid = ""
+
         if (isEditing) {
             await updateOrder(formValues, formValues.id)
         } else {
-            await addOrder(formValues)
+           newOrderid = await addOrder(formValues)
         }
 
         this.setState({ success: true, loading: false })
         setTimeout(() => {
-            const route = isEditing ? `/pedidos/${formValues.id}` : '/pedidos'
+            const route = isEditing ? `/pedidos/${formValues.id}` : `/pedidos/${newOrderid}`
             this.props.history.push(route)
         }, 700)
         return
