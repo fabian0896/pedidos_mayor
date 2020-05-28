@@ -197,6 +197,7 @@ class NewOrder extends Component {
             await updateOrder(formValues, formValues.id)
         } else {
            newOrderid = await addOrder(formValues)
+           console.log(newOrderid)
         }
 
         this.setState({ success: true, loading: false })
