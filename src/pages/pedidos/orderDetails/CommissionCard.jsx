@@ -97,7 +97,7 @@ const CommissionCard = withStyles(theme=>({
                     <FormLabel>Medio de pago</FormLabel>
                     <RadioGroup name="paymenthCommissionName" value={formik.values.paymenthCommissionName} onChange={formik.handleChange}>
                        <FormControlLabel value="payu" label="PayU (4,5%)" control={<Radio/>} />
-                       <FormControlLabel value="paypal" label="PayPal (5,5%)" control={<Radio/>} />
+                       <FormControlLabel value="paypal" label="PayPal (7,5%)" control={<Radio/>} />
                        <FormControlLabel value="other" label="Otra" control={<Radio/>} />
                     </RadioGroup>
                 </FormControl>

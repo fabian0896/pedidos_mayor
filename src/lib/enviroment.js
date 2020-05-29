@@ -188,7 +188,7 @@ export const STATES = {
 
 export const COMMISSIONS = {
     payu: 4.5,
-    paypal: 5.5,
+    paypal: 7.5,
 }
 
 
