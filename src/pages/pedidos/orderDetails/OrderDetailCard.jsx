@@ -174,6 +174,7 @@ function OrderDetailsCard(props) {
                                 onClose={handleCloseReport}
                             >
                                 <MenuItem onClick={getClientReport}>Reporte Cliente</MenuItem>
+                                <MenuItem onClick={getProductionReport('all')}>Producción todo</MenuItem>
                                 <MenuItem disabled={!areThereLatex(order)} onClick={getProductionReport('latex')}>Produccion Latex</MenuItem>
                                 <MenuItem disabled={!areTherePowernet(order)} onClick={getProductionReport('powernet')}>Produccion Powernet</MenuItem>
                             </Menu>
