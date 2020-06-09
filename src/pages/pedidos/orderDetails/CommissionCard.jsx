@@ -122,7 +122,7 @@ const CommissionCard = withStyles(theme=>({
                     <Divider className={classes.divider}/>
                     <FormControlLabel
                         control={<Checkbox name="useBaseValue" checked={formik.values.useBaseValue} onChange={formik.handleChange} />}
-                        label={`En base al saldo actual ($${thousandSeparator(data.balance)})`}
+                        label={`En base al saldo actual ($${thousandSeparator(data.balance.toFixed(2))})`}
                     />
                     <TextField
                         label="Valor base"
@@ -130,7 +130,7 @@ const CommissionCard = withStyles(theme=>({
                         variant="outlined"
                         disabled={formik.values.useBaseValue}
                         name="baseValue"
-                        value={formik.values.baseValue}
+                        value={formik.values.baseValue.toFixed(2)}
                         onChange={formik.handleChange('baseValue')}
                         onBlur={formik.handleBlur('baseValue')}
                         InputProps={{
