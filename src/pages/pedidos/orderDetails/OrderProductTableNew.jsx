@@ -216,7 +216,7 @@ class OrderProductTable extends Component{
                                         <Typography variant="subtitle2">Total</Typography>
                                     </TableCell>
                                     <NumberFormat 
-                                                value={withDetails? order.total.toFixed(2)  : this.getTotal(data)} 
+                                                value={withDetails? parseFloat(order.total).toFixed(2)  : this.getTotal(data)} 
                                                 displayType={'text'} 
                                                 thousandSeparator={true} 
                                                 prefix={`${currency==='COP'?'':currency+' '}$`} 
