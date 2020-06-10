@@ -1,6 +1,7 @@
 import { formatProductForTable } from './utilities'
 import { getAllProducts } from './firebaseService'
 import { translateText } from './translatorService'
+import moment from 'moment'
 
 //const apiKey = "Basic " + btoa("ventas@fajasinternacionales:Redes2017");
 
@@ -201,4 +202,14 @@ const fiterByType = (products = [], type = 'latex') => {
     } else {
         return products
     }
-}   
+}  
+
+
+
+export const monthReport = async (month)=>{
+    const start = moment('2020-06-01').toDate() // se le suma uno por que los mese empiezan en 0
+    const end =  moment('2020-07-01').toDate()
+
+    console.log(start, end)
+
+}
