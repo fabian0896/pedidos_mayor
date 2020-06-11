@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import Header from '../../componets/headerLayout/HeaderLayout'
-import { Typography, Grid } from '@material-ui/core';
+import { Typography, Grid, Button, CircularProgress } from '@material-ui/core';
 import { getMonthStats } from '../../lib/statsService'
 import NotFound from '../../componets/notFound/NotFound';
 import StatsCard from '../../componets/statsCard/StatsCard'
@@ -15,6 +15,8 @@ import Title from '../../componets/title/Title'
 import PieChart from './PieChart'
 import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom } from '../../actions'
+
+import { monthReport } from '../../lib/jsReportService'
 
 const MONTHS = {
     1: 'ENERO',
@@ -36,6 +38,8 @@ const useLocation = (location, year, month) => {
     const [data, setData] = useState(null)
     const [err, setErr] = useState(true)
     const [loading, setLoading] = useState(true)
+    
+
     useEffect(() => {
         if (location.state) {
             setData(location.state)
@@ -56,17 +60,32 @@ const useLocation = (location, year, month) => {
 }
 
 
+
+
+
+
 function StatMonth({ match: { params: { year, month } }, location, showBackButtom, hideBackButtom }) {
 
     const [data, loading, error] = useLocation(location, year, month)
+    const [loadingReport, setLoadingReport] = useState(false)
+
 
     const productsPerOrder = data ? (data.totalProducts / data.totalOrders).toFixed(0) : 0
 
-    useEffect(()=>{
+    useEffect(() => {
         showBackButtom()
         document.title = `Estadisticas | ${MONTHS[month]}-${year} `
         return hideBackButtom
     }, [])
+
+
+    const getReport = async ()=>{
+        setLoadingReport(true)
+        console.log(month, year)
+        await monthReport(month, year)
+        setLoadingReport(false)
+    }
+
 
     return (
         <div>
@@ -92,13 +111,13 @@ function StatMonth({ match: { params: { year, month } }, location, showBackButto
                             <StatsCard
                                 icon={<MoneyIcon />}
                                 title="Igresos COP"
-                                value={`${data.income? (data.income.COP||0): 0}`}
+                                value={`${data.income ? (data.income.COP || 0) : 0}`}
                                 secondary="Ingreso en Pesos"
                             />
                             <StatsCard
                                 icon={<MoneyIcon />}
                                 title="Ingresos USD"
-                                value={`${data.income? (data.income.USD||0): 0}`}
+                                value={`${data.income ? (data.income.USD || 0) : 0}`}
                                 secondary="ingresos en Dolares"
                             />
                         </StatsCardList>
@@ -139,7 +158,23 @@ function StatMonth({ match: { params: { year, month } }, location, showBackButto
                                     data={data}
                                 />
                             </Grid>
+
+                            <Grid item xs={12}>
+                                <div>
+                                    <Button
+                                        onClick={getReport} 
+                                        color="primary" 
+                                        fullWidth
+                                        disabled={loadingReport} 
+                                        variant="contained">
+                                            Descargar reporte del mes
+                                    </Button>
+                                </div>
+                            </Grid>
+
                         </Grid>
+
+    
 
                     </Fragment>
                     :

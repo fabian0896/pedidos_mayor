@@ -211,11 +211,13 @@ const fiterByType = (products = [], type = 'latex') => {
 
 
 
-export const monthReport = async (month) => {
-    const date = moment('2020-06').format('MMMM')
-    const start = moment('2020-06-01') // se le suma uno por que los mese empiezan en 0
-    const end = moment('2020-07-01').subtract(1,'day')
+export const monthReport = async (month, year) => {
 
+    const start = moment().year(year).month(month-1).date(1).hour(0).minute(0) // se le suma uno por que los mese empiezan en 0
+    const date = start.format('MMMM') 
+    const end = moment().year(year).month(month).date(1).hour(23).minute(0).subtract(1,'day')
+
+    //console.log(start.toDate(), end.toDate())
 
     // crear funccion par ahacer la consulta a la base de datos poniendo las fechas especificas
     const orders = (await getOrderByMonth(start.toDate(), end.toDate())).map(order=>{

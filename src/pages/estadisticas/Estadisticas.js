@@ -206,6 +206,7 @@ class Estadisticas extends Component {
                     }
                 </Grid>
 
+               
             </div>
         )
     }
