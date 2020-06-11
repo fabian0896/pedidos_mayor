@@ -1,8 +1,8 @@
 import { formatProductForTable } from './utilities'
-import { getAllProducts } from './firebaseService'
+import { getAllProducts, getOrderByMonth } from './firebaseService'
 import { translateText } from './translatorService'
 import moment from 'moment'
-
+import numeral from 'numeral'
 //const apiKey = "Basic " + btoa("ventas@fajasinternacionales:Redes2017");
 
 
@@ -202,14 +202,78 @@ const fiterByType = (products = [], type = 'latex') => {
     } else {
         return products
     }
-}  
+}
 
 
 
-export const monthReport = async (month)=>{
-    const start = moment('2020-06-01').toDate() // se le suma uno por que los mese empiezan en 0
-    const end =  moment('2020-07-01').toDate()
 
-    console.log(start, end)
+
+
+
+
+export const monthReport = async (month) => {
+    const date = moment('2020-06').format('MMMM')
+    const start = moment('2020-06-01') // se le suma uno por que los mese empiezan en 0
+    const end = moment('2020-07-01').subtract(1,'day')
+
+
+    // crear funccion par ahacer la consulta a la base de datos poniendo las fechas especificas
+    const orders = (await getOrderByMonth(start.toDate(), end.toDate())).map(order=>{
+        const total = numeral(parseFloat(order.total ) + parseFloat(order.shipmentsPrice || 0)).format('$0,0.00')
+        const balance = numeral(parseFloat(order.balance)).format('$0,0.00')
+
+        return {
+            ...order,
+            total: `${total} ${order.currency}`,
+            balance: `${balance} ${order.currency}`
+        }
+    })
+
+    
+
+
+    // organizar los datos y enviarlos a js report 
+    const result = {
+        month: date,
+        start: start.format('DD/MMMM/YYYY'),
+        end: end.format('DD/MMMM/YYYY'),
+        orders
+    }
+
+    
+    const res = await fetch(URL_STRING, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': "Basic " + btoa("ventas@fajasinternacionales.com:Redes2017")
+        },
+        body: JSON.stringify({
+            template: {
+                shortid: "ryxonbTy68"
+            },
+            data: result
+        })
+    })
+
+
+
+    //recibir el archivo y descargarlo
+
+    const report = await res.blob()
+
+    const fileURL = URL.createObjectURL(report);
+    var link = document.createElement('a');
+    link.href = fileURL;
+    link.type = "application/pdf"
+    link.download = `Reporte de pedidos mes de ${date}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+
+    // fin de la funcion
+
+    return
 
 }

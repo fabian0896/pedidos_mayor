@@ -884,6 +884,35 @@ export async function getOrdersWithBalanceByClientId(id){
     return [...result1, ...result2]
 }
 
+
+export async function getOrderByMonth(start, end){
+    const db = firebase.firestore().collection(ORDERS)
+    const query = await db.where('createdAt', '>=', start).where('createdAt', '<', end).get()
+
+
+    const orders = query.docs.map(order=>({...order.data()}))
+
+    const clientsSnap = orders.reduce((prev, order)=>{
+        const snap = getClientById(order.clientId)
+        return [...prev, snap]
+    },[])
+    
+
+    const clients = await Promise.all(clientsSnap)
+
+    const result = orders.map(order => {
+
+        const client = clients.find(value => value.id === order.clientId)
+
+        return{
+            ...order,
+            client
+        }
+    })
+
+    return result
+}
+
 //----------------------------------------------Payments------------------------------------------
 
 

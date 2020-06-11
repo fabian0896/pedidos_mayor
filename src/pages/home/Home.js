@@ -18,7 +18,7 @@ import OrderWithBalance from './OrderWithBalance'
 import WeekStats from '../../componets/weekStats/WeekStats'
 import moment from 'moment'
 import { getYearStats } from '../../lib/statsService'
-import { monthReport } from '../../lib/jsReportService'
+
 
 
 class Home extends Component {
@@ -31,7 +31,7 @@ class Home extends Component {
     }
 
     async componentDidMount() {
-        monthReport()
+        
         document.title = "Inicio | Pedidos Bethel"
         const [orders, payments, shipments, orderWithBalance, year] = await Promise.all([
             getReadyToShipOrders(),
