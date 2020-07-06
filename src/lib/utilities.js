@@ -267,7 +267,8 @@ export const formatProductForTable = (products=[]) => {
   };
   
 
-  
+  // modifiar para cuando sea procucción no se tome en cuenta el precio
+   
   const compareProducts = (productList, product)=>{
     let i = -1
   

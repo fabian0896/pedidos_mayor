@@ -82,6 +82,7 @@ function OrderResume(props){
         <Paper  className={classes.root}>
             <div onClick={onClick} className={classNames(classes.header, classes[order.state])}>
                 <Typography align="center" color="inherit" component="h6" variant="h5">{order.serialCode}</Typography>
+                <Typography align="center" color="inherit"  variant="body2">({order.consecutive? order.consecutive : '---'})</Typography>
                 <Typography align="center" color="inherit" component="p" variant="overline">Prendas</Typography>    
                 <Typography className={classes.productNumber} align="center" color="inherit" component="p" variant="overline">{order.totalProducts}</Typography>    
             </div>
