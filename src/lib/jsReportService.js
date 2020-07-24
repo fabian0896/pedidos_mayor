@@ -113,6 +113,8 @@ export async function getResumeExc(order, client) {
     }
 
 
+    console.log(JSON.stringify(finalObject))
+
     const res = await fetch(URL_STRING, {
         method: 'POST',
         mode: 'cors',
@@ -162,6 +164,8 @@ export async function getProductionResumeExc(order, client, type) {
         client,
         type
     }
+
+    console.log(JSON.stringify(finalObject))
 
     const shortid = EXC_PODUCTION
 
