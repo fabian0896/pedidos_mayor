@@ -20,7 +20,8 @@ import numeral from 'numeral'
 
 
 
-const URL_STRING = 'https://pedidosbybethel.tk/api/report'
+//const URL_STRING = 'https://pedidosbybethel.tk/api/report'
+const URL_STRING = 'https://fajas-report.herokuapp.com/api/report'
 const PDF_REPORT_ID = "HylorYCTaE"
 const EXC_ES_ID = "rkeXJcARmU"
 const EXC_EN_ID = "Hyl46ulCdL"
