@@ -82,7 +82,6 @@ class NewOrder extends Component {
         }))
     }
 
-
     setClientInForm = (id, cb) => {
         const actualClient = this.props.clients[id]
         if (!actualClient) {
@@ -100,7 +99,6 @@ class NewOrder extends Component {
             }
         }), () => { cb && cb() })
     }
-
 
     componentWillUnmount() {
 
