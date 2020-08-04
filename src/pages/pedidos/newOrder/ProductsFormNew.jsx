@@ -603,7 +603,8 @@ class ProductFrom extends React.Component {
             color: edittingProduct.color,
             price: edittingProduct.price,
             label: edittingProduct.label,
-            mold: edittingProduct.mold
+            mold: edittingProduct.mold,
+            details: edittingProduct.details
         })
     }
 
