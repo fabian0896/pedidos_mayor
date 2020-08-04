@@ -221,6 +221,7 @@ export const formatProductForTable = (products=[]) => {
             price: curr.price,
             name: curr.name,
             name_en: curr.name_en,
+            details: curr.details || '',
             sizes: {
               [curr.size]: parseInt(curr.quantity, 10) 
             }

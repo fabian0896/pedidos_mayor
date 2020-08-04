@@ -152,7 +152,7 @@ class OrderProductTable extends Component{
                                                     </IconButton>
                                                 </TableCell>
                                             }
-                                            <TableCell>{product.name}</TableCell>
+                                            <TableCell>{product.name} {product.details}</TableCell>
                                             <TableCell>{product.reference}</TableCell>
                                             <TableCell>{product.label === 'generic'? 'Generica': product.labelName}</TableCell>
                                             <TableCell>{product.mold === 'new'? 'Nuevo':'Viejo'}</TableCell>

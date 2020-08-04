@@ -188,7 +188,8 @@ const validationFormInfoSchema = Yup.object().shape({
     mold: Yup.string().required('valor requerido'),
     color: Yup.string().required('valor requerido'),
     price: Yup.number().required('valor Requerido'),
-    sizes: Yup.array().min(1, 'tienes que agregar por lo menos una talla')
+    sizes: Yup.array().min(1, 'tienes que agregar por lo menos una talla'),
+    details: Yup.string()
 })
 
 
@@ -257,6 +258,7 @@ class ProductFormInfo extends React.Component {
                     price: '',
                     label: '',
                     mold: '',
+                    details: '',
                     sizes:[]
                 }}
                 validationSchema={validationFormInfoSchema}
@@ -317,7 +319,7 @@ class ProductFormInfo extends React.Component {
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             fullWidth
-                                            label="Color/Variante"
+                                            label="Color"
                                             variant='outlined'
                                         />
                                     </Grid>
@@ -391,6 +393,23 @@ class ProductFormInfo extends React.Component {
                                         </TextField>
                                     </Grid>
 
+                                    <Grid item xs={12} sm={12} md={12}>
+                                        <TextField
+                                            disabled={(!values.product || !!values.sizes.length) && !isEditting}
+                                            error={errors.details && touched.details}
+                                            name="details"
+                                            value={values.details}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            fullWidth
+                                            label="Detalles(opcional)"
+                                            variant='outlined'
+                                            multiline
+                                            rows={2}
+                                        />
+                                    </Grid>
+
+
                                     <Grid item xs={12}>
                                         <Divider />
                                     </Grid>
@@ -444,7 +463,7 @@ class ProductFrom extends React.Component {
     setValuesForm = () => { }
 
     handleSubmit = (productValues, actions, selectRef) => {
-      
+        //console.log(productValues)
         const {client} = this.props
 
         const { isEditting, editIndex } = this.state

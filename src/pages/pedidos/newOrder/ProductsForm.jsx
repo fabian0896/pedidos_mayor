@@ -53,7 +53,8 @@ const validationFormInfoSchema = Yup.object().shape({
     size: Yup.number().required('valor requerido'),
     quantity: Yup.number().required('valor requerido'),
     color: Yup.string().required('valor requerido'),
-    price: Yup.number().required('valor Requerido')
+    price: Yup.number().required('valor Requerido'),
+    details: Yup.string()
 })
 
 
@@ -115,7 +116,8 @@ class ProductFormInfo extends React.Component{
                     quantity: '',
                     price: '',
                     label: '',
-                    mold: ''
+                    mold: '',
+                    details: ''
                 }}
                 validationSchema={validationFormInfoSchema}
                 onSubmit={(values, actions)=> handleSubmit(values,actions, this.selectRef)}
