@@ -527,7 +527,8 @@ class ProductFrom extends React.Component {
                 item.price === product.price &&
                 item.color.toLowerCase() === product.color.toLowerCase() &&
                 item.label === product.label &&
-                item.mold === product.mold
+                item.mold === product.mold &&
+                item.details === product.details
             )
         })
 
@@ -552,7 +553,8 @@ class ProductFrom extends React.Component {
                 curr.color.trim().toLowerCase() === productGroup.color.trim().toLowerCase() &&
                 curr.mold === productGroup.mold &&
                 curr.label === productGroup.label &&
-                curr.price === productGroup.price){
+                curr.price === productGroup.price &&
+                curr.details === productGroup.details){
                     return [...prev, index]
                 } else{
                     return prev

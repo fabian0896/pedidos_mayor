@@ -289,6 +289,9 @@ export const formatProductForTable = (products=[]) => {
         if(curr.price !== product.price){
             return 
         }  
+        if(curr.details !== product.details){
+            return 
+        }  
         i = index
         return
     })
