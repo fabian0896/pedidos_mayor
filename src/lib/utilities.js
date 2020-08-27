@@ -274,6 +274,9 @@ export const formatProductForTable = (products=[]) => {
     let i = -1
   
     productList.forEach((curr, index)=>{
+        const currDetails = curr.details? curr.details : "";
+        const productDetails = product.details? product.details : "";
+        
         if(curr.reference !== product.reference){
           return 
         }
@@ -289,7 +292,7 @@ export const formatProductForTable = (products=[]) => {
         if(curr.price !== product.price){
             return 
         }  
-        if(curr.details !== product.details){
+        if(currDetails !== productDetails){
             return 
         }  
         i = index
