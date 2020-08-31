@@ -549,18 +549,20 @@ class ProductFrom extends React.Component {
         const products = values.products.slice()
         
         const indexes = products.reduce((prev,curr, index)=>{
+            const currDetails = curr.details? curr.details : ""
+            const productDetails = productGroup.details? productGroup.details : ""
             if(curr.reference === productGroup.reference &&
                 curr.color.trim().toLowerCase() === productGroup.color.trim().toLowerCase() &&
                 curr.mold === productGroup.mold &&
                 curr.label === productGroup.label &&
                 curr.price === productGroup.price &&
-                curr.details === productGroup.details){
+                currDetails === productDetails){
                     return [...prev, index]
                 } else{
                     return prev
                 }
         }, [])
-
+        console.log(indexes)
         indexes.forEach(index=>{
             products.splice(index, 1, 0) // pongo un 0 en las posciciones que hay que borrar para luego saber y quitarlas del array
         })
