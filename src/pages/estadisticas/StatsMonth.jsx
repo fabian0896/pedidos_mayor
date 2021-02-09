@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import Header from '../../componets/headerLayout/HeaderLayout'
-import { Typography, Grid, Button, CircularProgress } from '@material-ui/core';
+import { Typography, Grid, Button, CircularProgress, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { getMonthStats } from '../../lib/statsService'
 import NotFound from '../../componets/notFound/NotFound';
 import StatsCard from '../../componets/statsCard/StatsCard'
@@ -17,6 +17,8 @@ import { connect } from 'react-redux'
 import { showBackButtom, hideBackButtom } from '../../actions'
 
 import { monthReport } from '../../lib/jsReportService'
+
+import { getAllSellers } from "../../lib/firebaseService"
 
 const MONTHS = {
     1: 'ENERO',
@@ -38,7 +40,7 @@ const useLocation = (location, year, month) => {
     const [data, setData] = useState(null)
     const [err, setErr] = useState(true)
     const [loading, setLoading] = useState(true)
-    
+
 
     useEffect(() => {
         if (location.state) {
@@ -64,26 +66,40 @@ const useLocation = (location, year, month) => {
 
 
 
-function StatMonth({ match: { params: { year, month } }, location, showBackButtom, hideBackButtom }) {
+function StatMonth({ match: { params: { year, month } }, location, showBackButtom, hideBackButtom, sellers }) {
 
     const [data, loading, error] = useLocation(location, year, month)
     const [loadingReport, setLoadingReport] = useState(false)
-
+    const [seller, setSeller] = useState("")
+    const [sellerList, setSellerList] = useState([])
 
     const productsPerOrder = data ? (data.totalProducts / data.totalOrders).toFixed(0) : 0
 
     useEffect(() => {
+        getAllSellet()
         showBackButtom()
         document.title = `Estadisticas | ${MONTHS[month]}-${year} `
         return hideBackButtom
     }, [])
 
+    const getAllSellet = async ()=>{
+        const data = await getAllSellers(true)
+        setSellerList(data)
+    }
 
-    const getReport = async ()=>{
+
+    const getReport = async () => {
         setLoadingReport(true)
-        console.log(month, year)
-        await monthReport(month, year)
+        console.log(month, year, seller)
+        await monthReport(month, year, seller)
         setLoadingReport(false)
+    }
+
+
+
+    const handleChangeSeller = (e) => {
+        console.log(e.target.value)
+        setSeller(e.target.value)
     }
 
 
@@ -161,20 +177,43 @@ function StatMonth({ match: { params: { year, month } }, location, showBackButto
 
                             <Grid item xs={12}>
                                 <div>
+                                    <FormControl fullWidth variant="outlined">
+                                        <InputLabel id="vendedor-id">Vendedor</InputLabel>
+                                        <Select
+                                            id="vendedor-id"
+                                            value={seller}
+                                            onChange={handleChangeSeller}
+                                            label="Vendedor"
+                                        >
+                                            <MenuItem value="">
+                                                <em>Todos</em>
+                                            </MenuItem>
+                                            {
+                                                sellerList.map(seller =>(
+                                                    <MenuItem key={seller.id} value={seller.id}>{seller.name}</MenuItem>
+                                                ))
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </div>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <div>
                                     <Button
-                                        onClick={getReport} 
-                                        color="primary" 
+                                        onClick={getReport}
+                                        color="primary"
                                         fullWidth
-                                        disabled={loadingReport} 
+                                        disabled={loadingReport}
                                         variant="contained">
-                                            Descargar reporte del mes
+                                        Descargar reporte del mes
                                     </Button>
                                 </div>
                             </Grid>
 
                         </Grid>
 
-    
+
 
                     </Fragment>
                     :
@@ -197,6 +236,7 @@ const mapDispatchToProps = {
     hideBackButtom,
     showBackButtom
 }
+
 
 
 export default connect(null, mapDispatchToProps)(StatMonth)

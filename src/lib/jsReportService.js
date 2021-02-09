@@ -1,5 +1,5 @@
 import { formatProductForTable } from './utilities'
-import { getAllProducts, getOrderByMonth } from './firebaseService'
+import { getAllProducts, getOrderByMonth, getSellerById } from './firebaseService'
 import { translateText } from './translatorService'
 import moment from 'moment'
 import numeral from 'numeral'
@@ -216,7 +216,7 @@ const fiterByType = (products = [], type = 'latex') => {
 
 
 
-export const monthReport = async (month, year) => {
+export const monthReport = async (month, year, seller) => {
 
     const start = moment().year(year).month(month-1).date(1).hour(0).minute(0) // se le suma uno por que los mese empiezan en 0
     const date = start.format('MMMM') 
@@ -225,7 +225,10 @@ export const monthReport = async (month, year) => {
     //console.log(start.toDate(), end.toDate())
 
     // crear funccion par ahacer la consulta a la base de datos poniendo las fechas especificas
-    const orders = (await getOrderByMonth(start.toDate(), end.toDate())).map(order=>{
+    
+    
+    
+    const orders = (await getOrderByMonth(start.toDate(), end.toDate(), seller)).map(order=>{
         const total = numeral(parseFloat(order.total ) + parseFloat(order.shipmentsPrice || 0)).format('$0,0.00')
         const balance = numeral(parseFloat(order.balance)).format('$0,0.00')
 
@@ -237,6 +240,7 @@ export const monthReport = async (month, year) => {
     })
 
     
+    const sellerData = await getSellerById(seller) 
 
 
     // organizar los datos y enviarlos a js report 
@@ -244,7 +248,8 @@ export const monthReport = async (month, year) => {
         month: date,
         start: start.format('DD/MMMM/YYYY'),
         end: end.format('DD/MMMM/YYYY'),
-        orders
+        orders,
+        sellerData
     }
 
     

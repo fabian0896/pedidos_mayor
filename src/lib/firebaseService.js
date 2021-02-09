@@ -885,9 +885,18 @@ export async function getOrdersWithBalanceByClientId(id){
 }
 
 
-export async function getOrderByMonth(start, end){
+export async function getOrderByMonth(start, end, seller=null){
     const db = firebase.firestore().collection(ORDERS)
-    const query = await db.where('createdAt', '>=', start).where('createdAt', '<', end).get()
+
+
+    let query = null
+
+    if(seller){
+        query = await db.where('createdAt', '>=', start).where('createdAt', '<', end).where("creator","==", seller).get()
+    } else{
+        query = await db.where('createdAt', '>=', start).where('createdAt', '<', end).get()
+    }  
+
 
 
     const orders = query.docs.map(order=>({...order.data()}))
