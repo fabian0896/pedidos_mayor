@@ -23,9 +23,9 @@ export async function getYearStats(year){
 
     const ordersSnap = await firebase.firestore().collection(ORDERS).where('createdAt', '>=', dateStart.toDate()).where('createdAt', '<=', dateEnd.toDate()).get()
 
-    const ordersData = ordersSnap.docs.map(v => v.data())
+    const ordersDataList = ordersSnap.docs.map(v => v.data())
 
-    console.log(ordersData.length)
+    const newResult = formatDataOrders(ordersDataList)
 
     const db = firebase.firestore().collection(STATS).doc(`${year}`)
     const snap = await db.get()
@@ -34,6 +34,7 @@ export async function getYearStats(year){
     }
     const result = snap.data()
 
+    console.log(newResult)
     console.log(result)
 
     return {
@@ -64,4 +65,31 @@ export async function getMonthStats(year, month){
         return {}  
     }
     return snap.data()
+}
+
+
+
+
+
+
+
+const formatDataOrders = (orderList=[]) =>{
+
+    //obtener el numero de ordenes totales
+    const totalOrders = orderList.length
+
+
+
+    //opteniendo el numero total de prendas 
+    const totalProducts = orderList.reduce((prev, curr)=>{
+        return prev + curr.totalProducts
+    },0)
+
+
+
+    return {
+        totalOrders,
+        totalProducts
+    }
+
 }
