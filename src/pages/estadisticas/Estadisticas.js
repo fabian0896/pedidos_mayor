@@ -104,8 +104,8 @@ class Estadisticas extends Component {
             <div>
                 <Header>
                     <YearSelector
-                        disableNext={disableNext}
-                        disablePrevius={disablePrevius}
+                        disableNext={false}
+                        disablePrevius={false}
                         getYear={this.handleChangeYear} />
                 </Header>
                 <Fragment>
