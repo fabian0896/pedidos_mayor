@@ -240,8 +240,11 @@ export const monthReport = async (month, year, seller) => {
     })
 
     
-    const sellerData = await getSellerById(seller) 
+    let sellerData = null
 
+    if(seller){
+        sellerData = await getSellerById(seller) 
+    }
 
     // organizar los datos y enviarlos a js report 
     const result = {

@@ -58,20 +58,16 @@ class Estadisticas extends Component {
     handleChangeYear = async (year) => {
         const [
             actualYear,
-            previusYear,
-            nextYear,
             months
         ] = await Promise.all([
             getYearStats(year),
-            getYearStats(year + 1),
-            getYearStats(year - 1),
             getMonthsOfYear(year)
         ])
 
         this.setState({
             year: actualYear,
-            disableNext: !Boolean(nextYear),
-            disablePrevius: !Boolean(previusYear),
+            disableNext: false,
+            disablePrevius: false,
             months,
             limit: (year === moment().year())
         })
