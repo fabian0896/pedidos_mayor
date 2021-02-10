@@ -21,7 +21,7 @@ export async function getYearStats(year){
     console.log(dateStart.toDate(), dateEnd.toDate())
 
 
-    const ordersSnap = await firebase.firestore().collection(ORDERS).where('createdAt', '>=', dateStart.toDate()).where('createdAt', '<=', dateEnd.toDate()).get()
+    const ordersSnap = await firebase.firestore().collection(ORDERS).where('createdAt', '>=', dateStart.toDate()).where('createdAt', '<=', dateEnd.toDate()).limit(5).get()
 
     const ordersDataList = ordersSnap.docs.map(v => v.data())
 
@@ -73,6 +73,9 @@ export async function getMonthStats(year, month){
 
 
 
+//------------------ FUNCION PARA SCAR LAS ESTADISTICAS DE LOS PEDIDO ------------------
+
+
 const formatDataOrders = (orderList=[]) =>{
 
     //obtener el numero de ordenes totales
@@ -86,10 +89,78 @@ const formatDataOrders = (orderList=[]) =>{
     },0)
 
 
+    //Calcular los ingresos (incomes)
+    const income = orderList.reduce((prev, order)=>{
+        if(!order.payments) return prev
+
+        const totalValue = Object.keys(order.payments).map(id => parseFloat(order.payments[id].value)).reduce((p,c)=> p + c, 0)
+
+        if(order.currency == "COP"){
+            return {
+                ...prev,
+                COP: prev.COP + totalValue
+            }
+        }else if(order.currency === "USD"){
+            return{
+                ...prev,
+                USD: prev.USD + totalValue
+            }
+        }else{
+            return prev
+        }
+
+    },{COP: 0, USD: 0})
+
+
+    //calcular la cantidad de cada producto
+    const products = {}
+    orderList.forEach(order=>{
+        order.products.forEach(product =>{
+            if(!products[product.id]){
+                products[product.id] = {
+                    id: product.id,
+                    line: product.line,
+                    name: product.name,
+                    quantity:parseInt(product.quantity)
+                }
+                return
+            }
+            products[product.id].quantity += parseInt(product.quantity)
+        })
+    })
+
+
+    
+    //clacular la cantidad por talla (sizes)
+    const sizes = {}
+    orderList.forEach(order=>{
+        order.products.forEach(product =>{
+            if(!sizes[product.size]){
+                sizes[product.size] = {
+                    id: String(product.size),
+                    name: String(product.size),
+                    quantity: parseInt(product.quantity)
+                }
+                return
+            }
+            sizes[product.size].quantity += parseInt(product.quantity)
+        })
+    })
+
+
+
+    //calculo de semanas weeks
+
+    
+
+
 
     return {
         totalOrders,
-        totalProducts
+        totalProducts,
+        income,
+        products,
+        sizes,
     }
 
 }
