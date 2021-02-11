@@ -19,21 +19,7 @@ export async function getYearStats(year){
 
     //Descomentat las siguientes lineas para actualizar las estadisticas basada en todos los pedidos
     //usar esto en caso de que fallen las cloud functions para ajustar las estadisticas a lso valores reales
-    const dateStart = moment().year(year).month(0).date(1).hour(0).minute(0).second(0)
-    const dateEnd = moment().year(year + 1).month(0).date(0).hour(23).minute(59).second(59)
-    console.log(dateStart.toDate(), dateEnd.toDate())
-    const ordersSnap = await firebase.firestore().collection(ORDERS).where('createdAt', '>=', dateStart.toDate()).where('createdAt', '<=', dateEnd.toDate()).get()
-    const ordersDataList = ordersSnap.docs.map(v => v.data())
-    const newResult = await formatDataOrders(ordersDataList)
-    const  statsByMonth = await getStatsArrayByMonth(ordersDataList)
-    const batch = firebase.firestore().batch()
-    statsByMonth.forEach((data,index)=>{
-        const ref = firebase.firestore().collection(STATS).doc(`${year}-${index+1}`)
-        batch.set(ref, {...data, year: year, month: index+1})
-    })
-    await batch.commit()
-    await firebase.firestore().collection(STATS).doc(`${year}`).set(newResult)
-    console.log("Se actualizaron las estadisticas")
+    //await updateStats(year)
 
 
 
@@ -255,4 +241,25 @@ const getStatsArrayByMonth = async (orderList = [])=>{
         stats.push(result)
     }
     return stats
+}
+
+
+
+
+const updateStats = async (year)=>{
+    const dateStart = moment().year(year).month(0).date(1).hour(0).minute(0).second(0)
+    const dateEnd = moment().year(year + 1).month(0).date(0).hour(23).minute(59).second(59)
+    console.log(dateStart.toDate(), dateEnd.toDate())
+    const ordersSnap = await firebase.firestore().collection(ORDERS).where('createdAt', '>=', dateStart.toDate()).where('createdAt', '<=', dateEnd.toDate()).get()
+    const ordersDataList = ordersSnap.docs.map(v => v.data())
+    const newResult = await formatDataOrders(ordersDataList)
+    const  statsByMonth = await getStatsArrayByMonth(ordersDataList)
+    const batch = firebase.firestore().batch()
+    statsByMonth.forEach((data,index)=>{
+        const ref = firebase.firestore().collection(STATS).doc(`${year}-${index+1}`)
+        batch.set(ref, {...data, year: year, month: index+1})
+    })
+    await batch.commit()
+    await firebase.firestore().collection(STATS).doc(`${year}`).set(newResult)
+    console.log("Se actualizaron las estadisticas")
 }
