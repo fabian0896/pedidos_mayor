@@ -27,7 +27,7 @@ const Item = withStyles(theme =>({
         <div className={classes.root}>
             <div>
                 <Typography style={{fontWeight: 500, lineHeight: 1.2}} variant="subtitle1">{order.serialCode}</Typography>
-                <Typography color="textSecondary">{client.name}</Typography>
+                <Typography color="textSecondary">{client? client.name : "undefined"}</Typography>
             </div>
             <MoneyText currency={order.currency} >{parseFloat(order.balance).toFixed(1)}</MoneyText>
         </div>

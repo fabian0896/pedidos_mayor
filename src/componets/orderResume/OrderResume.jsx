@@ -76,7 +76,7 @@ const styles = theme =>({
 function OrderResume(props){
     const { classes, order, client, onClick, seller } = props
     const date = moment(order.createdAt.seconds*1000).format('DD/MMMM/YYYY')
-    const country = client.country.translations.es || client.country
+    const country = "NONE"//client.country.translations.es || client.country
     
     return(
         <Paper  className={classes.root}>
@@ -89,11 +89,11 @@ function OrderResume(props){
             <div className={classes.content}>
                 <div className={classes.contentHeader}>
                     <div>
-                        <Typography component="span" variant="h6">{limitName(client.name)}</Typography>
-                        <Typography component="span" variant="subtitle2" color="textSecondary">{`${client.city}, ${country}`}</Typography>
+                        <Typography component="span" variant="h6">{limitName(client? client.name : "none")}</Typography>
+                        <Typography component="span" variant="subtitle2" color="textSecondary">{`${client? client.city:"none"}, ${country}`}</Typography>
                     </div>
                     <div>
-                        <img className={classes.flag} src={client.country.flag} alt={client.country.name}/>
+                        <img className={classes.flag} src={client? client.country.flag : "https://www.grahambrown.com/dw/image/v2/BBBG_PRD/on/demandware.static/-/Sites-product-master/default/dw496dc722/images/large/CT-060-096_1.jpg?sw=1024&sh=1024&sm=fit"} alt={client? client.country.name : "none"}/>
                     </div>
                 </div>
                 <Divider/>
@@ -147,8 +147,8 @@ function OrderResume(props){
 
 
 const mapStateToProps = (state, props)=>{
-    return{
-        seller: state.sellers[props.client.seller]
+    return{ 
+        seller: {}//state.sellers[props.client.seller]
     }
 }
 
