@@ -245,8 +245,14 @@ const getStatsArrayByMonth = async (orderList = [])=>{
 
 
 
+let lastUpdate = null
+const UPDATE_INTERVAL = 3600000 //que se actualice si han pasado 1 hora
 
-const updateStats = async (year)=>{
+export async function  updateStats(year){
+    if(lastUpdate){
+        const now = new Date().getTime()
+        if((now - lastUpdate) < UPDATE_INTERVAL) return console.log("No ha pasado el tiempo suficiente para actualizar")
+    }
     const dateStart = moment().year(year).month(0).date(1).hour(0).minute(0).second(0)
     const dateEnd = moment().year(year + 1).month(0).date(0).hour(23).minute(59).second(59)
     console.log(dateStart.toDate(), dateEnd.toDate())
@@ -262,4 +268,5 @@ const updateStats = async (year)=>{
     await batch.commit()
     await firebase.firestore().collection(STATS).doc(`${year}`).set(newResult)
     console.log("Se actualizaron las estadisticas")
+    lastUpdate = new Date().getTime()
 }

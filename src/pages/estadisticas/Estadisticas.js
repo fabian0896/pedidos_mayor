@@ -8,7 +8,7 @@ import {
     Widgets as WidgetsIcon,
     AccessibilityNew as AccessibilityNewIcon
 } from '@material-ui/icons'
-import { getYearStats, getMonthsOfYear } from '../../lib/statsService'
+import { getYearStats, getMonthsOfYear, updateStats } from '../../lib/statsService'
 import moment from 'moment'
 import YearSelector from './YearSelector';
 import LineChart from './LineChart';
@@ -51,8 +51,9 @@ class Estadisticas extends Component {
         limit: false
     }
 
-    async componentDidMount() {
-
+    componentDidMount() {
+        const now = new Date().getFullYear()
+        updateStats(now)    
     }
 
     handleChangeYear = async (year) => {
