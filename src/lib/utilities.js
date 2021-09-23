@@ -198,6 +198,13 @@ const getColorHex = (color = "")=>{
 }
 
 
+export function getFlagImageUrl(country) {
+    if (country.flag) {
+        return `https://restcountries.com/data/${country.alpha3Code.toLowerCase()}.svg`;
+    }
+    return country.flags[0];
+}
+
 
 export const formatProductForTable = (products=[]) => {
     const finalData = products.reduce((prev, curr) => {

@@ -9,6 +9,8 @@ import classNames from 'classnames'
 import { green, amber } from '@material-ui/core/colors'
 import { connect } from 'react-redux'
 
+import { useGetFlag } from '../../hooks';
+
 const styles = theme =>({
     root:{
         //height: 200,
@@ -72,12 +74,13 @@ const styles = theme =>({
 })
 
 
-
 function OrderResume(props){
     const { classes, order, client, onClick, seller } = props
     const date = moment(order.createdAt.seconds*1000).format('DD/MMMM/YYYY')
-    const country = "NONE"//client.country.translations.es || client.country
+    const country = "NONE" //client.country.translations.es || client.country
     
+    const flag = useGetFlag(client);
+
     return(
         <Paper  className={classes.root}>
             <div onClick={onClick} className={classNames(classes.header, classes[order.state])}>
@@ -93,7 +96,7 @@ function OrderResume(props){
                         <Typography component="span" variant="subtitle2" color="textSecondary">{`${client? client.city:"none"}, ${country}`}</Typography>
                     </div>
                     <div>
-                        <img className={classes.flag} src={client? client.country.flag : "https://www.grahambrown.com/dw/image/v2/BBBG_PRD/on/demandware.static/-/Sites-product-master/default/dw496dc722/images/large/CT-060-096_1.jpg?sw=1024&sh=1024&sm=fit"} alt={client? client.country.name : "none"}/>
+                        <img className={classes.flag} src={flag} alt={client? client.country.name : "none"}/>
                     </div>
                 </div>
                 <Divider/>

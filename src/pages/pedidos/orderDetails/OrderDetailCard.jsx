@@ -8,6 +8,8 @@ import { STATES } from '../../../lib/enviroment'
 import { changeOrderState } from '../../../lib/firebaseService'
 import { connect } from 'react-redux'
 
+import { useGetFlag } from '../../../hooks';
+
 const styles = theme => ({
     root: {
         width: '100%',
@@ -87,10 +89,13 @@ const styles = theme => ({
 })
 
 function OrderDetailsCard(props) {
+    const { classes, order, client, onUpdate, handlePrintResume, handlePrintProductionResume ,seller } = props
     const [anchorEl, setAnchorEl] = useState(null)
     const [anchorElReport, setAnchorElReport] = useState(null)
     const [loadinResume, setLoadingResume] = useState(false)
-    const { classes, order, client, onUpdate, handlePrintResume, handlePrintProductionResume ,seller } = props
+
+    const flag = useGetFlag(client);
+
     const country = client.country.translations.es || client.country.name
     const date = moment(order.createdAt.seconds * 1000).format('DD/MM/YYYY')
 
@@ -181,7 +186,7 @@ function OrderDetailsCard(props) {
                         </Fragment>
                 }
                 <div className={classes.flagContainer}>
-                    <img className={classes.flag} src={client.country.flag} alt={client.country.name} />
+                    <img className={classes.flag} src={flag} alt={client.country.name} />
                 </div>
                 <div className={classes.avatarContainer} >
                     <Avatar style={{ background: `rgb(${client.personalColor.join(',')})` }} className={classes.avatar}>{getNameLetters(client.name)}</Avatar>

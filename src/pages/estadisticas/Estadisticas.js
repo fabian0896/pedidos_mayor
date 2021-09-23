@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import Header from '../../componets/headerLayout/HeaderLayout'
 import StatsCardList from '../../componets/statsCard/StatsCardList'
-import { Grid } from '@material-ui/core'
+import { Button, Grid } from '@material-ui/core'
 import StatsCard from '../../componets/statsCard/StatsCard'
 import {
     AttachMoney as MoneyIcon,
@@ -48,12 +48,13 @@ class Estadisticas extends Component {
         disableNext: false,
         disablePrevius: false,
         months: {},
-        limit: false
+        limit: false,
+        updatingLoading: false,
     }
 
     componentDidMount() {
         const now = new Date().getFullYear()
-        updateStats(now)    
+        //updateStats(now)    
     }
 
     handleChangeYear = async (year) => {
@@ -81,6 +82,14 @@ class Estadisticas extends Component {
             pathname: `estadisticas/${month.year}/${month.month}`,
             state: month
         })
+    }
+
+    handleUpdateStats = async () => {
+        console.log('Actualizando estadisticas...');
+        const now = new Date().getFullYear()
+        this.setState({ updatingLoading: true });
+        await updateStats(now);
+        this.setState({ updatingLoading: false });
     }
 
     render() {
@@ -202,7 +211,13 @@ class Estadisticas extends Component {
                         ))
                     }
                 </Grid>
-
+                
+                <Button 
+                    disabled={this.state.updatingLoading} 
+                    onClick={this.handleUpdateStats} 
+                    variant="outlined">
+                        Actualizar Estadisticas
+                </Button>
                
             </div>
         )

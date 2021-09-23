@@ -5,6 +5,8 @@ import Button from '@material-ui/core/Button'
 import { limitName } from '../../../lib/utilities'
 import { Hidden } from '@material-ui/core'
 
+import { useGetFlag } from '../../../hooks';
+
 const styles = theme => ({
     title:{
          //marginBottom: `${theme.spacing.unit * 3}px`,
@@ -75,10 +77,11 @@ const styles = theme => ({
 
 function ClientDetailHeader(props){
     const { classes, client, handleEdit } = props
+    const flag = useGetFlag(client);
     return(
         <div className={classes.header}>
             <div className={ classes.headerContent }>
-                <img alt={client.country.name} className={classes.img} src={client.country.flag}/>
+                <img alt={client.country.name} className={classes.img} src={flag}/>
                 <Hidden xsDown implementation="js">
                     <Typography className={classes.title} component="h2" variant="h2">{client.name}</Typography>
                 </Hidden>

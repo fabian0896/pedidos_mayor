@@ -40,11 +40,10 @@ function NewClientResume(props){
         zipCode,
         classes
     } = props
-    const flag = country.flag
+    const flag = country.flags[0]
     const countryName = country.translations.es || country.name
     const callingCode = country.callingCodes[0]
     const formatPhonw = formatPhone(phone, callingCode )
-    
     return(
         <div className={ classes.root }>
             <div className={ classes.header }>

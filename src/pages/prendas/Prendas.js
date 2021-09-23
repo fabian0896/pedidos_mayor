@@ -341,7 +341,7 @@ const mapDispatchToProps = {
 }
 
 function mapStateToProps(state, props){
-    
+    console.log(state.products.all)
     const allProducts = state.products.all
     const productList = Object.keys(allProducts).map(id => allProducts[id])
     const lines  = []
