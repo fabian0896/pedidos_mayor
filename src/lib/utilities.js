@@ -200,7 +200,7 @@ const getColorHex = (color = "")=>{
 
 export function getFlagImageUrl(country) {
     if (country.flag) {
-        return `https://restcountries.com/data/${country.alpha3Code.toLowerCase()}.svg`;
+        return `https://flagcdn.com/${country.alpha2Code.toLowerCase()}.svg`;
     }
     return country.flags[0];
 }

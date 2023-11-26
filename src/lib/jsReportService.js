@@ -1,31 +1,21 @@
 import { formatProductForTable } from './utilities'
 import { getAllProducts, getOrderByMonth, getSellerById } from './firebaseService'
-import { translateText } from './translatorService'
 import moment from 'moment'
 import numeral from 'numeral'
-//const apiKey = "Basic " + btoa("ventas@fajasinternacionales:Redes2017");
-
 
 // para usar jsreport online descomentar esta parte del codigo y comentar la otra 
-
 //const URL_STRING = 'https://fajasinternacionales.jsreportonline.net/api/report'
 //const PDF_REPORT_ID = "HylorYCTaE"
 //const EXC_ES_ID = "rkeXJcARmU"
 //const EXC_EN_ID = "Hyl46ulCdL"
 //const EXC_PODUCTION = "S1ljUJUAOL"
 
-
-
 //Para usar el servidor perzonalizado descomentar esta parte del codifo y comentar la otra
-
-
-
-//const URL_STRING = 'https://pedidosbybethel.tk/api/report'
-const URL_STRING = 'https://fajas-report.herokuapp.com/api/report'
-const PDF_REPORT_ID = "HylorYCTaE"
-const EXC_ES_ID = "rkeXJcARmU"
-const EXC_EN_ID = "Hyl46ulCdL"
-const EXC_PODUCTION = "S1ljUJUAOL"
+const URL_STRING = 'https://fajas-report.onrender.com/api/report'
+const PDF_REPORT_ID = "ordesReport"
+const EXC_ES_ID = "orderTable"
+const EXC_EN_ID = "orderTable_en"
+const EXC_PODUCTION = "orderProductionTable"
 
 
 export async function getResumePdf(order, client) {
@@ -47,7 +37,7 @@ export async function getResumePdf(order, client) {
         },
         body: JSON.stringify({
             template: {
-                "shortid": PDF_REPORT_ID
+                "name": PDF_REPORT_ID
             },
             data: finalObject
         })
@@ -125,7 +115,7 @@ export async function getResumeExc(order, client) {
         },
         body: JSON.stringify({
             template: {
-                shortid
+                name: shortid
             },
             data: finalObject
         })
@@ -179,7 +169,7 @@ export async function getProductionResumeExc(order, client, type) {
         },
         body: JSON.stringify({
             template: {
-                shortid
+                name: shortid
             },
             data: finalObject
         })

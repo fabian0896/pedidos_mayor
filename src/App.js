@@ -4,6 +4,7 @@ import Login from './pages/login/Login';
 import { Switch, Redirect, withRouter } from 'react-router-dom'
 import firebase from 'firebase/app';
 import 'firebase/auth'
+import 'firebase/database';
 import { connect } from 'react-redux';
 import { 
   updateUser, 
