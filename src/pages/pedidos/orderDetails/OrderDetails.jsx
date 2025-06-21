@@ -66,7 +66,6 @@ class OrderDetails extends Component {
             exist = false
         })
         if (!exist) {
-            console.log('el pedido no existe')
             return
         }
         this.setState({ order, products: order.products })

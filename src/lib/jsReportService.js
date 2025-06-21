@@ -77,14 +77,6 @@ export async function getResumeExc(order, client) {
     } else {
         shortid = EXC_EN_ID
 
-
-        // get de variasnt translations and then add that to de products
-
-        //const productsVarianstsPromises = products.map(product => translateText(product.color, 'es', 'en'))
-        //const varianstsTranslatiosn = await Promise.all(productsVarianstsPromises)
-        //console.log(varianstsTranslatiosn)
-
-
         const allProducts = await getAllProducts()
         products = products.map(product => {
             return {
@@ -102,9 +94,6 @@ export async function getResumeExc(order, client) {
         sizeList,
         client
     }
-
-
-    console.log(JSON.stringify(finalObject))
 
     const res = await fetch(URL_STRING, {
         method: 'POST',
@@ -156,8 +145,6 @@ export async function getProductionResumeExc(order, client, type) {
         type
     }
 
-    console.log(JSON.stringify(finalObject))
-
     const shortid = EXC_PODUCTION
 
     const res = await fetch(URL_STRING, {
@@ -207,17 +194,10 @@ const fiterByType = (products = [], type = 'latex') => {
 
 
 export const monthReport = async (month, year, seller) => {
-
     const start = moment().year(year).month(month-1).date(1).hour(0).minute(0) // se le suma uno por que los mese empiezan en 0
     const date = start.format('MMMM') 
     const end = moment().year(year).month(month).date(1).hour(23).minute(0).subtract(1,'day')
 
-    //console.log(start.toDate(), end.toDate())
-
-    // crear funccion par ahacer la consulta a la base de datos poniendo las fechas especificas
-    
-    
-    
     const orders = (await getOrderByMonth(start.toDate(), end.toDate(), seller)).map(order=>{
         const total = numeral(parseFloat(order.total ) + parseFloat(order.shipmentsPrice || 0)).format('$0,0.00')
         const balance = numeral(parseFloat(order.balance)).format('$0,0.00')

@@ -172,7 +172,6 @@ class NewOrder extends Component {
     }
 
     handleComplete = () => {
-        console.log('completed!')
     }
 
     handleSave = async () => {
@@ -195,7 +194,6 @@ class NewOrder extends Component {
             await updateOrder(formValues, formValues.id)
         } else {
            newOrderid = await addOrder(formValues)
-           console.log(newOrderid)
         }
 
         this.setState({ success: true, loading: false })

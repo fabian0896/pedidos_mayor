@@ -58,7 +58,6 @@ class Pagos extends Component{
         this.setState({isSearching: true, loadingSearch: true})
         const search = await searchPayment(value)
         this.setState({loadingSearch: false, searchResults: search})
-        console.log(search)
         return
     }
     

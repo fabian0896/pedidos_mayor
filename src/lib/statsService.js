@@ -28,9 +28,6 @@ export async function getYearStats(year){
         return null
     }
     const result = snap.data()
-
-    console.log(result)
-
     return {
         ...result,
         income:{
@@ -252,7 +249,6 @@ export async function  updateStats(year){
     }
     const dateStart = moment().year(year).month(0).date(1).hour(0).minute(0).second(0)
     const dateEnd = moment().year(year + 1).month(0).date(0).hour(23).minute(59).second(59)
-    console.log(dateStart.toDate(), dateEnd.toDate())
     const ordersSnap = await firebase.firestore().collection(ORDERS).where('createdAt', '>=', dateStart.toDate()).where('createdAt', '<=', dateEnd.toDate()).get()
     const ordersDataList = ordersSnap.docs.map(v => v.data())
     const newResult = await formatDataOrders(ordersDataList)
@@ -264,6 +260,5 @@ export async function  updateStats(year){
     })
     await batch.commit()
     await firebase.firestore().collection(STATS).doc(`${year}`).set(newResult)
-    console.log("Se actualizaron las estadisticas")
     lastUpdate = new Date().getTime()
 }

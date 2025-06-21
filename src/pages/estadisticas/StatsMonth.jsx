@@ -90,7 +90,6 @@ function StatMonth({ match: { params: { year, month } }, location, showBackButto
 
     const getReport = async () => {
         setLoadingReport(true)
-        console.log(month, year, seller)
         await monthReport(month, year, seller)
         setLoadingReport(false)
     }
@@ -98,7 +97,6 @@ function StatMonth({ match: { params: { year, month } }, location, showBackButto
 
 
     const handleChangeSeller = (e) => {
-        console.log(e.target.value)
         setSeller(e.target.value)
     }
 

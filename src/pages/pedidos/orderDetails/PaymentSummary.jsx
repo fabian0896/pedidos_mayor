@@ -76,8 +76,7 @@ function PaymentSummary(props) {
     useEffect(()=>{
         convertCurrency(data.currency, clientCurrency , data.balance + (parseFloat(data.paymenthCommissionAmount) || 0)).then(value=>{
             setLocalValue(value.toFixed(1))
-        }).catch(err=>{
-            console.log(err)
+        }).catch(() => {
             setLocalValue(0)
         })
     }, [data.balance, clientCurrency, data.currency, data.paymenthCommissionAmount])

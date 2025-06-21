@@ -90,7 +90,6 @@ export function incrementSerial({letter, number}){
             if(asciiCode[i]+1 > MAX_LETTER){
                 if(parseInt(i) === (asciiCode.length-1)){
                     superOverflow = true
-                    console.log('entre')
                 }
                 asciiCode[i] = INITIAL_LETTER
             }else{

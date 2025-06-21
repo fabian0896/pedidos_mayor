@@ -288,7 +288,6 @@ exports.addOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onCreate(
 
 
 exports.updateOrder = functions.firestore.document(`${ORDERS}/{orderId}`).onUpdate((change, context) => {
-    //console.log(context, snap)
     const oldOrder = change.before.data()
     const newOrder = change.after.data()
 

@@ -238,7 +238,6 @@ export async function registerUSer(email, password) {
 export function createSeller({ email, password, code, name }) { 
     return new Promise(async (res, rej) => {
         const codes = await getCodes()
-        console.log(codes)
         const matchCode = codes.find(actualCode => actualCode.value === code)
         if (!matchCode) {
             rej("El codigo de registro es invalido")
@@ -408,9 +407,7 @@ export async function addOrder(order) {
         message: 'Se añadio el pedido al sistema'
     }
 
-    //console.log("Se va a impromir los numeros")
     const totalProducts = order.products.reduce((prev, current) => {
-        //console.log(current.quantity)
         return prev + parseInt(current.quantity)
     }, 0)
 
@@ -495,8 +492,6 @@ export async function addOrder(order) {
                 seen: seenArray
             }
 
-            console.log(orderObject)
-
             transaction.set(firebase.firestore().collection(NOTIFICATIONS).doc(), notificationObject)
             transaction.set(oredrRef, orderObject)
             res('completed')
@@ -516,10 +511,7 @@ export async function updateOrder(order, id) {
 
     const seenArray =  await getSeenArray()
 
-
-    //console.log("se van a imprimir los numeros de edicion")
     const totalProducts = order.products.reduce((prev, current) => {
-        //console.log(current.size, ": ", current.quantity)
         return prev + parseInt(current.quantity)
     }, 0)
 
@@ -1158,9 +1150,6 @@ export async function deletePayment(id, payment){
             }
     
              positiveBalanceHistory = [positiveBalanceObject, ...client.positiveBalanceHistory]
-
-
-             console.log(clientBalance, newPositiveBalance, positiveBalanceHistory)
         }
 
 

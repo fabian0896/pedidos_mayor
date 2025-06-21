@@ -291,8 +291,7 @@ class ProductFrom extends React.Component{
     handleSubmit = (productValues, actions, selectRef)=>{
         const { isEditting, editIndex } = this.state
         const { setFieldValue, values, allProducts } = this.props
-        let finalProducts = []  
-        console.log(productValues)
+        let finalProducts = []
         const newProduct = {
             ...allProducts[productValues.product.value],
             ...productValues

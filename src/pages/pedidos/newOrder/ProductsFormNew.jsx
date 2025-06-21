@@ -463,7 +463,6 @@ class ProductFrom extends React.Component {
     setValuesForm = () => { }
 
     handleSubmit = (productValues, actions, selectRef) => {
-        //console.log(productValues)
         const {client} = this.props
 
         const { isEditting, editIndex } = this.state
@@ -562,7 +561,6 @@ class ProductFrom extends React.Component {
                     return prev
                 }
         }, [])
-        console.log(indexes)
         indexes.forEach(index=>{
             products.splice(index, 1, 0) // pongo un 0 en las posciciones que hay que borrar para luego saber y quitarlas del array
         })

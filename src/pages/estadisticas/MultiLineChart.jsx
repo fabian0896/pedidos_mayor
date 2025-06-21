@@ -90,7 +90,6 @@ const MultiLineChart = withStyles(theme => ({
                     pointHoverBackgroundColor: 'rgba(75,192,192,1)',
                 }
                 prev.datasets[labelIndex].data = [listData[curr]? listData[curr][label]:0]
-                console.log(prev)
             }else{
                 prev.datasets[labelIndex].data.push(listData[curr]? listData[curr][label]:0)
             }
@@ -101,8 +100,6 @@ const MultiLineChart = withStyles(theme => ({
         labels: Object.keys(MONTHS).map(id=>MONTHS[id]),
         datasets: []
     })
-
-    console.log(datasets)
 
     return (
         <Paper className={classes.root}>

@@ -139,7 +139,6 @@ class NewClient extends Component {
 
 
     handleBack = () => {
-        console.log("baaack")
         this.setState(state => ({
             activeStep: state.activeStep - 1,
         }));

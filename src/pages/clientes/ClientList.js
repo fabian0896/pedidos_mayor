@@ -20,7 +20,6 @@ class ClientList extends Component{
             if(a.name.toLowerCase().trim() < b.name.toLowerCase().trim()) return -1
             return 0
         })
-        console.log("Datos:",sortClients)
         this.setState({
             sortClients
         })

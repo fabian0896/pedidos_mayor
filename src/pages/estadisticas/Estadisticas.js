@@ -82,7 +82,6 @@ class Estadisticas extends Component {
     }
 
     handleUpdateStats = async () => {
-        console.log('Actualizando estadisticas...');
         const now = new Date().getFullYear()
         this.setState({ updatingLoading: true });
         await updateStats(now);

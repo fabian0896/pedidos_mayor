@@ -103,9 +103,6 @@ class OrderProductTable extends Component{
             ...rest
          } = this.props
 
-         
-         //console.log(formatProductForTable(data))
-         //console.log(data)
          const [formatData, sizeList] = formatProductForTable(data)
 
         return(

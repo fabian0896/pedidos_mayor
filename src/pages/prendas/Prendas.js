@@ -82,9 +82,6 @@ class Prendas extends Component{
         }
         
         await addOrUpdateProduct(values, id)
-        //await addProduct(values)
-        
-        console.log("Se actualizo la prenda")
 
         this.setState({
             loadingModal: false,
@@ -119,8 +116,6 @@ class Prendas extends Component{
 
     getTopProducts = async ()=>{
         const yearStats = await getYearStats(moment().year())
-        //const { allProducts } = this.props
-        //console.log(yearStats.products)
         const topProducts = Object.keys(yearStats? yearStats.products: {})
                                     .sort((a,b)=>yearStats.products[b].quantity - yearStats.products[a].quantity)
                                     .slice(0,5)
@@ -316,7 +311,7 @@ class Prendas extends Component{
                     }
                     </Grid>
                     <Grid item xs={12} sm={12} md={3}>
-                        <TopList handleClick={(id) => () =>{console.log(id)}}>
+                        <TopList>
                             <TopListItem
                                 title="Prendas Más Vendidas"
                                 data={topProducts}
@@ -340,8 +335,7 @@ const mapDispatchToProps = {
     addRecentProducts
 }
 
-function mapStateToProps(state, props){
-    console.log(state.products.all)
+function mapStateToProps(state){
     const allProducts = state.products.all
     const productList = Object.keys(allProducts).map(id => allProducts[id])
     const lines  = []
