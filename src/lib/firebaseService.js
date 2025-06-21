@@ -789,7 +789,7 @@ export async function getOrderByClient(clientId) {
 
 
 export async function getOrdersWithBalance(array=false) {
-    const db = firebase.firestore().collection(ORDERS).where('balance', '>', 0)
+    const db = firebase.firestore().collection(ORDERS).where('balance', '>', 0).limit(10)
     const snap = await db.get()
     const result = {}
     const arrayResult = []
@@ -806,9 +806,9 @@ export async function getOrdersWithBalance(array=false) {
 }
 
 export async function getUnShippedOrders(){
-    const pending = firebase.firestore().collection(ORDERS).where('state','==', 'pending').get()
-    const production = firebase.firestore().collection(ORDERS).where('state','==', 'production').get()
-    const readyToShip = firebase.firestore().collection(ORDERS).where('state','==', 'readyToShip').get()
+    const pending = firebase.firestore().collection(ORDERS).where('state','==', 'pending').limit(10).get()
+    const production = firebase.firestore().collection(ORDERS).where('state','==', 'production').limit(10).get()
+    const readyToShip = firebase.firestore().collection(ORDERS).where('state','==', 'readyToShip').limit(10).get()
     const snaps = await Promise.all([pending, production, readyToShip])
     const results = []
     
@@ -821,7 +821,7 @@ export async function getUnShippedOrders(){
 }
 
 export async function getReadyToShipOrders(){
-    const readyToShip = await firebase.firestore().collection(ORDERS).where('state','==', 'readyToShip').get()
+    const readyToShip = await firebase.firestore().collection(ORDERS).where('state','==', 'readyToShip').limit(10).get()
     const results = []
     readyToShip.forEach(item=>{
         results.push({...item.data(), id: item.id})

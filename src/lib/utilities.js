@@ -202,7 +202,7 @@ export function getFlagImageUrl(country) {
     if (country.flag) {
         return `https://flagcdn.com/${country.alpha2Code.toLowerCase()}.svg`;
     }
-    return country.flags[0];
+    return country.flags.svg;
 }
 
 

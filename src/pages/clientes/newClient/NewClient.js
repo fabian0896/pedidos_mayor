@@ -65,7 +65,7 @@ class NewClient extends Component {
     submitFunctions = []
 
     getAllConuntries = async () => {
-        const res = await fetch('https://restcountries.com/v2/all')
+        const res = await fetch('https://restcountries.com/v2/all?fields=name,translations,flags,callingCodes,alpha3Code,alpha2Code,currencies')
         const data = await res.json()
         const options = data.map((country, index) => {
             return {

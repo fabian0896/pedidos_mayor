@@ -35,8 +35,6 @@ class AddPaymentModal extends Component{
         return
     }
 
-
-
     async componentDidMount(){
         await this.updateOptions()
         this.setState({noRender: false})
@@ -47,13 +45,14 @@ class AddPaymentModal extends Component{
         const orders = await getOrdersWithBalance()
         const { clients } =  this.props
         const optionsOrders = Object.keys(orders).map(id=>{
+            const client = clients[orders[id].clientId];
             return{
                 label: orders[id].serialCode,
                 value: id,
-                client: clients[orders[id].clientId],
+                client: client,
                 balance: orders[id].balance,
                 currency: orders[id].currency,
-                secondary: this.props.clients[orders[id].clientId].name
+                secondary: client ? client.name : '',
             }
         })
         this.setState({optionsOrders, allOrders: orders})

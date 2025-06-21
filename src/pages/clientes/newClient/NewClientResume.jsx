@@ -40,7 +40,7 @@ function NewClientResume(props){
         zipCode,
         classes
     } = props
-    const flag = country.flags[0]
+    const flag = country.flags.svg
     const countryName = country.translations.es || country.name
     const callingCode = country.callingCodes[0]
     const formatPhonw = formatPhone(phone, callingCode )
