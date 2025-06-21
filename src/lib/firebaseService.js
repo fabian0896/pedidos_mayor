@@ -821,7 +821,7 @@ export async function getUnShippedOrders(){
 }
 
 export async function getReadyToShipOrders(){
-    const readyToShip = await firebase.firestore().collection(ORDERS).where('state','==', 'readyToShip').limit(10).get()
+    const readyToShip = await firebase.firestore().collection(ORDERS).where('state','==', 'readyToShip').limit(30).get()
     const results = []
     readyToShip.forEach(item=>{
         results.push({...item.data(), id: item.id})
