@@ -27,7 +27,7 @@ class ClientList extends Component{
     }
     
     render(){
-        const { clients, handleAddOrder } = this.props
+        const { handleAddOrder } = this.props
         const { expanded, sortClients } = this.state
 
         return(

@@ -1,9 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
-import {
-    thousandSeparator
-} from './utilities'
 
 
 import moment from 'moment'

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import Header from '../../componets/headerLayout/HeaderLayout'
-import { Typography, Grid, Button, CircularProgress, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { Typography, Grid, Button, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { getMonthStats } from '../../lib/statsService'
 import NotFound from '../../componets/notFound/NotFound';
 import StatsCard from '../../componets/statsCard/StatsCard'

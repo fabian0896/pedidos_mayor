@@ -52,10 +52,7 @@ class Estadisticas extends Component {
         updatingLoading: false,
     }
 
-    componentDidMount() {
-        const now = new Date().getFullYear()
-        //updateStats(now)    
-    }
+    componentDidMount() {}
 
     handleChangeYear = async (year) => {
         const [
@@ -96,8 +93,6 @@ class Estadisticas extends Component {
 
         const {
             year,
-            disableNext,
-            disablePrevius,
             months,
             limit
         } = this.state
