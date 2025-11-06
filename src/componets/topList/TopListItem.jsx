@@ -80,7 +80,7 @@ const TopListItem = withStyles(styles1)((props)=>{
                         {
                             data.map((element, index) =>(
                                 <MyListItem
-                                    handleClick={handleClick(element.id)} 
+                                    handleClick={() => handleClick && handleClick(element.id)} 
                                     key={element.id} 
                                     Icon={withNumbers && numbers[index]} 
                                     primary={element.primary} 

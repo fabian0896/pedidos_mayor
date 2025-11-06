@@ -311,12 +311,7 @@ class Prendas extends Component{
                     }
                     </Grid>
                     <Grid item xs={12} sm={12} md={3}>
-                        <TopList>
-                            <TopListItem
-                                title="Prendas Más Vendidas"
-                                data={topProducts}
-                                withNumbers
-                            />   
+                        <TopList>  
                             <TopListItem
                                 title="Ultimas Añadidas"
                                 data={recentProducts}
