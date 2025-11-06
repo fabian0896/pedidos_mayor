@@ -211,7 +211,6 @@ class Prendas extends Component{
             searchresults,
             isSearching,
             loadingSearch,
-            topProducts
         } = this.state
 
         const { allProducts, recentProducts } = this.props
